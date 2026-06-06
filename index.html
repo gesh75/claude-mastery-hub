@@ -3905,10 +3905,10 @@ var io=new IntersectionObserver(function(es){
       links.forEach(function(l){l.classList.toggle('active',l.getAttribute('data-id')===id);});
     }
   });
-},{rootMargin:'-30% 0px -55% 0px',threshold:0.01});
+},{rootMargin:'-30% 0px -55% 0px',threshold:0});
 secs.forEach(function(s){io.observe(s);});
 // also reveal-only observer (lower threshold so they animate in earlier)
-var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io2.unobserve(e.target);}});},{threshold:0.06});
+var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io2.unobserve(e.target);}});},{threshold:0});
 secs.forEach(function(s){io2.observe(s);});
 
 // copy buttons
