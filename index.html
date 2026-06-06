@@ -28,7 +28,7 @@
   --r:18px; --maxw:1320px;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:84px}
+html{scroll-padding-top:84px}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;overflow-x:clip}
 a{color:var(--cyan);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -3474,13 +3474,26 @@ if(sb)sb.oninput=function(){
 var side=document.getElementById('side');
 var mb=document.getElementById('menu');
 if(mb)mb.onclick=function(){side.classList.toggle('open');};
-// robust in-page navigation: smooth-scroll to the exact section (fixes jump-to-top)
+// robust in-page navigation: manual rAF tween (independent of native smooth-scroll / overflow quirks)
+function smoothTo(y){
+  y=Math.max(0,y);
+  var start=window.scrollY||document.documentElement.scrollTop||0, d=y-start;
+  if(Math.abs(d)<2){window.scrollTo(0,y);return;}
+  var t0=null, dur=Math.min(750, 260+Math.abs(d)*0.18);
+  function step(ts){ if(t0===null)t0=ts; var p=Math.min(1,(ts-t0)/dur);
+    var e=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+    window.scrollTo(0, Math.round(start+d*e));
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
 document.querySelectorAll('a[href^="#"]').forEach(function(a){
   a.addEventListener('click',function(e){
     var id=a.getAttribute('href').slice(1); if(!id) return;
     var t=document.getElementById(id);
     if(t){ e.preventDefault();
-      t.scrollIntoView({behavior:'smooth',block:'start'});
+      var y=t.getBoundingClientRect().top+(window.scrollY||document.documentElement.scrollTop||0)-76;
+      smoothTo(y);
       history.replaceState(null,'','#'+id);
       if(side) side.classList.remove('open');
     }
@@ -3489,7 +3502,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
 
 // back to top
 var top=document.getElementById('totop');
-if(top)top.onclick=function(){scrollTo({top:0,behavior:'smooth'});};
+if(top)top.onclick=function(){smoothTo(0);};
 
 // mascot reactions
 var faces=['\uD83E\uDD16','\uD83D\uDE0E','\uD83D\uDE80','\uD83E\uDDE0','\u26A1','\uD83C\uDF89','\uD83D\uDC68\u200D\uD83D\uDCBB'];
