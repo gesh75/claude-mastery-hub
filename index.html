@@ -99,7 +99,7 @@ a:hover{text-decoration:underline}
 .disc{max-width:760px;margin:22px auto 0;font-size:12.5px;color:var(--mut);background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:10px 16px}
 
 /* sections */
-.sec{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:22px;padding:30px 32px;margin:22px 0;opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease;scroll-margin-top:84px}
+.sec{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:22px;padding:30px 32px;margin:22px 0;opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease;scroll-margin-top:0}
 .sec.in{opacity:1;transform:none}
 .sec-head{display:flex;align-items:flex-start;gap:18px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:8px}
 .sec-icon{font-size:30px;width:62px;height:62px;flex:0 0 auto;display:grid;place-items:center;border-radius:16px;background:radial-gradient(circle at 30% 30%,rgba(255,122,89,.25),rgba(155,140,255,.18));border:1px solid var(--line);animation:bob 4s ease-in-out infinite}
@@ -3120,7 +3120,7 @@ acceptance criteria. Flag ONLY gaps that affect correctness.</code></pre>
       <div class="sec-titles">
         <div class="sec-num">SECTION 24</div>
         <h2>From the Source: Boris Cherny</h2>
-        <p class="sec-tag">Battle-tested tips straight from the creator of Claude Code.</p>
+        <p class="sec-tag">A complete, slide-by-slide walkthrough of Boris Cherny's Claude Code masterclass.</p>
       </div>
       <label class="mastered" title="Mark as mastered">
         <input type="checkbox" class="master-cb" data-id="boris-tips">
@@ -3128,73 +3128,469 @@ acceptance criteria. Flag ONLY gaps that affect correctness.</code></pre>
       </label>
     </div>
     <div class="sec-body">
-      
-<p class="lead">The creator of Claude Code, Boris Cherny, shared his most practical tips in a Code w/ Claude talk — here's the distilled playbook, cross-checked against everything else in this hub.</p>
-<p>Source: <a href="https://www.youtube.com/watch?v=B_KAEqiC-0Q" target="_blank" rel="noopener">"Mastering Claude Code in 30 Minutes" — Boris Cherny (Anthropic)</a>. Quotes paraphrased from the talk.</p>
+      <p class="lead">A full walkthrough of "Mastering Claude Code in 30 Minutes" by Boris Cherny — the creator of Claude Code — turned into slide-by-slide notes you can act on.</p>
+<p>Source: <a href="https://www.youtube.com/watch?v=B_KAEqiC-0Q" target="_blank" rel="noopener">Mastering Claude Code in 30 Minutes — Boris Cherny (Code w/ Claude, Anthropic)</a>. Quotes paraphrased.</p>
+<h3>From the Source: Boris Cherny on Claude Code</h3>
+<p>This section distills a talk by Boris Cherny — a member of technical staff at Anthropic and the creator of Claude Code — titled "Mastering Claude Code in 30 Minutes." Everything here comes straight from his words at Code w/ Claude.</p>
+<div class="cal pro">Boris built Claude Code. So when he describes how it's meant to be used, he isn't guessing at the design intent — he set it.</div>
 
-<div class="cal pro">His #1 tip for anyone starting out: <b>begin with codebase Q&amp;A</b> — just ask questions about your code before you edit anything. It teaches you how to prompt and shows you where Claude's limits are.</div>
+<h3>Slide 1 — What Claude Code Is</h3>
+<h4>A new kind of AI assistant</h4>
+<p>Past coding assistants completed a line, or a few lines, at a time — autocomplete on steroids. Claude Code is different: it is <span class="pill">fully agentic</span>. It is meant to build whole features, write entire functions and files, and fix entire bugs in one go.</p>
 
-<h3>The four-step path he teaches</h3>
 <div class="grid">
-  <div class="card"><h4>1 · Ask your codebase</h4><p>Anthropic teaches this day one — it cut technical onboarding from 2–3 weeks to 2–3 days. Local, no indexing, no upload. It even reads git history &amp; issues.</p></div>
-  <div class="card"><h4>2 · Edit with a plan</h4><p>For anything big, have it plan first and get your approval before writing code. Then a simple "commit, push, PR".</p></div>
-  <div class="card"><h4>3 · Plug in your tools</h4><p>Give it your CLIs (point it at <code>--help</code>) and MCP servers — then a way to <i>check its own work</i>.</p></div>
-  <div class="card"><h4>4 · Feed it context</h4><p>Tune <code>CLAUDE.md</code>, keep it short, and share it with your team for a network effect.</p></div>
+  <div class="card">
+    <h4>Old way: line completion</h4>
+    <p>Suggests the next line or two as you type. You stay the driver for every keystroke.</p>
+  </div>
+  <div class="card">
+    <h4>Claude Code: fully agentic</h4>
+    <p>You describe the outcome — "build this feature," "fix this bug" — and it figures out the steps end to end.</p>
+  </div>
 </div>
 
-<h3>Plan before big changes</h3>
-<p>Don't ask for a 3,000-line feature in one shot. Ask Claude to think first — you don't need a special mode, just say so:</p>
-<pre><code>&gt; Before writing any code, brainstorm an approach and make a plan.
-  Run it by me and wait for approval.
-
-&gt; commit, push, and open a PR</code></pre>
-<div class="cal tip">Claude infers your commit style, branch conventions, and PR format from your git log — you don't have to spell it out.</div>
-
-<h3>Let Claude check its own work (his biggest quality unlock)</h3>
-<p>Give Claude a feedback loop — unit tests, Puppeteer screenshots, the iOS simulator — and it will iterate two or three times to a near-perfect result.</p>
-<pre><code>&gt; Build this UI from mock.png. Use the Puppeteer MCP to screenshot
-  your result and iterate until it matches the mock.</code></pre>
-
-<h3>Context is king: the CLAUDE.md hierarchy</h3>
-<p>Auto-loaded each session. Put common commands, MCP tools, architecture decisions, key files, and your style guide — but keep it short, because a long file just burns context.</p>
-<div class="cal info">Check the shared project <code>CLAUDE.md</code> into git; keep a personal local one out of git. Nested <code>CLAUDE.md</code> files load on demand when Claude works in that directory.</div>
+<h4>Works with ALL your tools — no workflow change</h4>
+<p>A core design goal: you don't change how you work to use it. Claude Code slots into your existing setup instead of replacing it.</p>
 <table>
-  <thead><tr><th>Layer</th><th>Scope</th><th>Use it for</th></tr></thead>
-  <tbody>
-    <tr><td><span class="pill">Enterprise</span></td><td>All employees</td><td>Org-wide rules; auto-approve or <i>block</i> commands/URLs for everyone</td></tr>
-    <tr><td><span class="pill">User / global</span></td><td>All your projects</td><td>Personal preferences &amp; shortcuts</td></tr>
-    <tr><td><span class="pill">Project</span></td><td>This repo (shared)</td><td>Team conventions, commands, MCP — start here if unsure</td></tr>
-  </tbody>
-</table>
-<p>The same hierarchy governs slash commands, permissions, and MCP servers (<code>.mcp.json</code> checked in → teammates are auto-prompted to install). Use <code>/memory</code> to see/edit loaded files, and <kbd>#</kbd> to remember something on the fly.</p>
-
-<h3>Key bindings he calls out</h3>
-<table>
-  <thead><tr><th>Key</th><th>What it does</th></tr></thead>
-  <tbody>
-    <tr><td><kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Auto-accept edits mode (bash still asks)</td></tr>
-    <tr><td><kbd>#</kbd></td><td>Remember something into CLAUDE.md right now</td></tr>
-    <tr><td><kbd>!</kbd></td><td>Bash mode — output goes into the context window</td></tr>
-    <tr><td><kbd>@</kbd></td><td>Mention files/folders to add as context</td></tr>
-    <tr><td><kbd>Esc</kbd></td><td>Safely interrupt Claude anytime (won't corrupt the session)</td></tr>
-    <tr><td><kbd>Esc</kbd> <kbd>Esc</kbd></td><td>Jump back in history</td></tr>
-    <tr><td><kbd>Ctrl</kbd>+<kbd>R</kbd></td><td>Show the full output Claude sees</td></tr>
-  </tbody>
+  <tr><th>Dimension</th><th>What's supported</th></tr>
+  <tr><td>IDEs / editors</td><td>VS Code, Xcode, JetBrains, Vim/Emacs</td></tr>
+  <tr><td>Terminal</td><td>Every terminal — it's terminal-native</td></tr>
+  <tr><td>Where it runs</td><td>Locally, over remote SSH, inside tmux</td></tr>
+  <tr><td>Scope</td><td>General purpose — not tied to one language or stack</td></tr>
 </table>
 
-<h3>The SDK is a "super-intelligent Unix utility"</h3>
-<p>The <code>-p</code> / <code>--print</code> flag <i>is</i> the Agent SDK. Pass a prompt, allowed tools, and an output format — then pipe it like any Unix tool.</p>
-<pre><code>git log --oneline -20 | claude -p "summarize what shipped this week" \
-  --output-format json | jq -r '.result'</code></pre>
-<div class="cal pro">Anthropic runs this in CI, incident response, and data pipelines. He noted ~80% of technical staff at Anthropic use Claude Code every day — including researchers.</div>
+<h4>A power tool, intentionally un-opinionated</h4>
+<p>When you open Claude Code, you just see a prompt bar — nothing else. That minimalism is deliberate.</p>
+<div class="cal info">It's a power tool. Anthropic intentionally does <em>not</em> push you toward one "blessed" workflow. The blank prompt is an invitation to use it however your work demands.</div>
 
-<h3>Scale up like a power user</h3>
-<p>Run many sessions at once, use tmux, keep multiple checkouts of the same repo, and use <strong>git worktrees</strong> for isolation so parallel Claudes don't collide.</p>
+<h3>Slide 2 — Recommended First-Time Setup</h3>
+<p>Boris recommends a short setup pass the first time you run Claude Code. Each step is a one-time investment that makes everything afterward smoother.</p>
 
-<div class="cal warn">Why a CLI and not an IDE? Boris: the terminal is the common denominator across every editor, and models are improving so fast they didn't want to over-invest in UI layers.</div>
+<ol class="steps">
+  <li>Run <code>/terminal-setup</code> to fix multi-line input.</li>
+  <li>Run <code>/theme</code> to pick a theme that's comfortable for your eyes.</li>
+  <li>Run <code>/install-github-app</code> to bring Claude into your GitHub flow.</li>
+  <li>Customize your allowed tools so you stop getting prompted for routine actions.</li>
+  <li>(macOS) Turn on Dictation so you can <em>speak</em> your prompts.</li>
+</ol>
 
-<p class="muted">▶︎ Watch the full talk: <a href="https://www.youtube.com/watch?v=B_KAEqiC-0Q" target="_blank" rel="noopener">Mastering Claude Code in 30 Minutes — Boris Cherny</a></p>
+<h4>1. <code>/terminal-setup</code> — better multi-line input</h4>
+<p>By default, adding a new line in a terminal prompt is awkward. This command wires up <kbd>Shift</kbd>+<kbd>Enter</kbd> for new lines instead of forcing you to type trailing backslashes.</p>
+<pre><code>/terminal-setup
+# now: Shift+Enter = newline (no more \ at line ends)</code></pre>
 
+<h4>2. <code>/theme</code> — light, dark, and colorblind-friendly</h4>
+<p>Set the theme to match your environment and accessibility needs, including a Daltonize option for colorblind users.</p>
+<pre><code>/theme
+# choose: light  |  dark  |  Daltonize (colorblind)</code></pre>
+
+<h4>3. <code>/install-github-app</code> — @mention Claude on GitHub</h4>
+<p>This installs the new GitHub app. Once it's set up, you can @mention Claude on any GitHub issue or pull request and have it respond right there in the GitHub UI.</p>
+<pre><code>/install-github-app
+# then on any issue/PR:  @claude please review this and suggest a fix</code></pre>
+
+<h4>4. Customize your allowed tools</h4>
+<p>Claude Code asks for approval before taking certain actions. If there's something you get prompted about constantly, allow-list it once so you're not interrupted every time.</p>
+<div class="cal tip">Boris does this for the things he's prompted about a lot. The goal is to remove repeated friction — not to blindly approve everything. Allow what you trust; keep approvals on what changes system state.</div>
+
+<h4>5. Pro tip — talk to Claude Code (macOS Dictation)</h4>
+<p>Enable Dictation in <strong>System Settings &gt; Accessibility &gt; Dictation</strong>, then hit the dictation key twice and just speak your prompt out loud.</p>
+<div class="cal pro">Talk to Claude Code like it's another engineer on your team. Specific spoken prompts work great, and dictating saves a ton of typing — you can describe a whole task faster than you can type it.</div>
+
+<h3>Slide 3 — Tip 1: Start with Codebase Q&amp;A</h3>
+<p>This is Boris's number-one recommendation and the single best way to begin with Claude Code. Before you ask it to write anything, just point it at your repo and ask questions. It is also exactly what Anthropic teaches every new hire on day one of technical onboarding.</p>
+
+<div class="cal pro">"Just ask questions about your codebase." Anthropic teaches this to new engineers on day one: download Claude Code, set it up, then start asking about the code.</div>
+
+<h4>The onboarding result</h4>
+<p>Codebase Q&amp;A collapsed the time it takes a new engineer to become productive at Anthropic.</p>
+<table>
+<tr><th>Onboarding</th><th>Before Claude Code</th><th>After Claude Code</th></tr>
+<tr><td>Time to productive</td><td>~2–3 weeks</td><td>~2–3 days</td></tr>
+</table>
+
+<h4>Zero setup — and your code stays yours</h4>
+<p>There is nothing to configure before you can ask questions. Unlike tools that build a search index or upload your repo to a server, Claude Code reads the code locally, in place, on demand.</p>
+<div class="grid">
+<div class="card"><h4>No indexing</h4><p>No index to build, no embeddings, no wait. You point it at the repo and ask immediately.</p></div>
+<div class="card"><h4>Stays local</h4><p>Code is NOT uploaded to a remote database. It stays on your machine and you stay in control.</p></div>
+<div class="card"><h4>No training</h4><p>Anthropic does NOT train generative models on your code.</p></div>
+<div class="card"><h4>Zero setup</h4><p>No remote service, no indices to maintain — just open the prompt and ask.</p></div>
+</div>
+
+<h4>Deeper than text search</h4>
+<p>Plain text search (grep / Ctrl-F) only finds literal string matches. Claude Code goes a level deeper — it actually understands the code, so it can answer relational questions and surface real examples, at the quality of a wiki or internal docs.</p>
+<pre><code>&gt; How is the AuthSession class instantiated and used?</code></pre>
+<p>Instead of listing every line containing <code>AuthSession</code>, it finds the real call sites and shows you how the class is actually used in practice.</p>
+
+<h4>Ask about git history</h4>
+<p>This is where it shines. The model knows git — it was never system-prompted to do this; "the model is awesome" and reaches for git on its own.</p>
+<pre><code>&gt; Why does this function have 15 arguments named this weird way?</code></pre>
+<p>It looks through the git history to find who introduced those arguments, what issues the commits link to, and summarizes the whole story back to you.</p>
+
+<h4>Ask about GitHub issues</h4>
+<p>Using web fetch, Claude Code can read a linked GitHub issue and pull that context into its answer — connecting the code in front of you to the discussion behind it.</p>
+
+<h4>The Monday standup trick</h4>
+<p>Boris asks this every Monday before standup. It reads the git log, already knows his username, and produces a readout he pastes straight into a doc.</p>
+<pre><code>&gt; What did I ship this week?</code></pre>
+<div class="cal tip">Codebase Q&amp;A is also the best way to <em>learn how to prompt</em>. It teaches you the boundary of what Claude can do in one shot, two shots, or three shots — versus what needs an interactive back-and-forth (REPL) session.</div>
+
+<h3>Slide 4 — Tip 2: Editing Code with a Small Toolset</h3>
+<p>Claude Code is fully agentic. Agentic means: you give the model tools, and it figures out how to use them to accomplish your goal — you don't micromanage the steps.</p>
+
+<h4>The whole toolset is tiny</h4>
+<p>There are only a handful of core tools. The power comes from how Claude strings them together to explore, brainstorm, and then edit.</p>
+<div class="grid">
+<div class="card"><h4>Edit files</h4><p>Make changes to your source files.</p></div>
+<div class="card"><h4>Run bash</h4><p>Execute commands in your shell.</p></div>
+<div class="card"><h4>Search files</h4><p>Find and read the relevant code.</p></div>
+</div>
+
+<div class="cal info">You never name a specific tool in your prompt. You just say what you want done — Claude decides which tools to use and in what order to get there.</div>
+
+<pre><code>&gt; Add rate limiting to the /login endpoint and update the tests.</code></pre>
+<p>From that one sentence, Claude will search the codebase to find the endpoint, read the surrounding code, edit the handler, and run the tests — chaining its small toolset together on its own.</p>
+
+<h3>Slide 5 — Brainstorm &amp; Plan Before Big Features</h3>
+<p>The most common failure mode: handing Claude an enormous task cold. People ask it to "implement this 3,000-line feature" in one go. Sometimes it nails it — but sometimes it builds the wrong thing, because it guessed at decisions you never spelled out.</p>
+
+<div class="cal warn">Don't one-shot huge features blind. If Claude has to guess at the design, you may get 3,000 lines of the wrong thing.</div>
+
+<h4>The easiest fix: just ask it to think first</h4>
+<p>You do not need plan mode or any special tool. Plain language in your prompt is enough.</p>
+<pre><code>&gt; Brainstorm a few approaches for this feature, make a plan,
+  run it by me, and ask for my approval before you write any code.</code></pre>
+
+<div class="cal tip">"You don't need plan mode or special tools — just ask." Telling Claude to brainstorm, plan, and check in with you before coding fixes the wrong-thing problem almost every time.</div>
+
+<ol class="steps">
+<li>Explore the relevant code</li>
+<li>Brainstorm a few options</li>
+<li>Write a plan</li>
+<li>Get your approval</li>
+<li>Then — and only then — write the code</li>
+</ol>
+
+<h3>Slide 6 — The "Commit, Push, PR" Incantation</h3>
+<p>Once a change is done, one short phrase hands the whole git wrap-up to Claude.</p>
+<pre><code>&gt; commit, push, and open a PR</code></pre>
+<p>From that, Claude makes a commit, creates a branch, pushes it, and opens a pull request — the full ship sequence.</p>
+
+<h4>It matches your conventions automatically</h4>
+<p>Claude reads your code, your history, and your <code>git log</code> to figure out how your team writes commit messages — and then matches that format. This is not system-prompted; the model works it out from context.</p>
+
+<div class="grid">
+<div class="card"><h4>Commit</h4><p>Stages and commits the change.</p></div>
+<div class="card"><h4>Branch + push</h4><p>Creates a branch and pushes it up.</p></div>
+<div class="card"><h4>Open PR</h4><p>Opens the pull request for review.</p></div>
+<div class="card"><h4>Match style</h4><p>Reads git log to mirror your commit-message format.</p></div>
+</div>
+
+<div class="cal pro">Two short incantations cover most everyday work: "brainstorm a plan and check with me before coding," then once it's done — "commit, push, PR." No special modes, no tool names. Just plain English.</div>
+
+<h3>Slide 7 — Plug in your team's tools: bash/CLI and MCP</h3>
+<p>Claude Code is agentic: you give it tools, it figures out how to use them. Tip 3 in the talk is about extending its tiny built-in toolset (edit files, run bash, search files) with the tools your team already lives in. There are two kinds.</p>
+
+<div class="grid">
+  <div class="card">
+    <h4>1. Bash / CLI tools</h4>
+    <p>Tell Claude to use a command-line tool. The trick: point it at <code>--help</code> so it learns the tool on the spot, then it starts using it correctly.</p>
+  </div>
+  <div class="card">
+    <h4>2. MCP tools</h4>
+    <p>Add an MCP server, tell Claude how to use it, and it begins calling it. Extremely powerful on a new codebase — hand Claude every tool your team already uses.</p>
+  </div>
+</div>
+
+<h4>Teaching Claude a CLI</h4>
+<p>You don't pre-program specific tools — you just describe what you want and let Claude explore. The "made-up Barley CLI" example: introduce a tool by name and let it read its own help text.</p>
+<pre><code>&gt; We use the `barley` CLI for deploys. Run `barley --help` to
+  learn it, then deploy the staging environment.</code></pre>
+
+<div class="cal tip">If you find yourself re-explaining the same CLI every session, put it in <code>CLAUDE.md</code> so it persists. One-off discovery via <code>--help</code> is great; repeated use belongs in shared context.</div>
+
+<h4>Adding an MCP server</h4>
+<p>MCP (Model Context Protocol) lets Claude talk to external systems — issue trackers, design tools, browsers, internal services. Boris's headline example: a <span class="pill">Puppeteer MCP server</span> that lets Claude drive a real browser and screenshot the result.</p>
+<pre><code># Register an MCP server, then just ask Claude to use it
+claude mcp add puppeteer -- npx -y @modelcontextprotocol/server-puppeteer
+
+&gt; Use the Puppeteer server to open localhost:3000 and screenshot it.</code></pre>
+
+<div class="cal pro">"Extremely powerful on a new codebase — give it all the tools your team already uses." Plugging in CLIs + MCP is how Claude inherits your team's muscle memory.</div>
+
+<h3>Slide 8 — Workflows: explore → plan → confirm, then let Claude CHECK its work</h3>
+<p>The most common effective workflow is simple: let Claude <strong>explore</strong> a bit, <strong>plan</strong> a bit, and <strong>ask for confirmation</strong> before it writes code. You don't need a special mode — just ask.</p>
+<pre><code>&gt; Before you write any code: brainstorm a few approaches,
+  make a plan, run it by me, and wait for my approval.</code></pre>
+
+<div class="cal warn">People sometimes ask for an "enormous 3,000-line feature" in one shot. Sometimes it nails it — sometimes it builds the wrong thing. The cheapest insurance is to make it think and confirm first.</div>
+
+<h4>The big one: give Claude a way to check its own work</h4>
+<p>This is the most powerful pattern in the talk. When Claude has a <strong>feedback tool</strong> to verify what it built, it can <strong>iterate by itself</strong> — running, looking, fixing, re-running — until the result is near-perfect. No human in the loop between passes.</p>
+
+<div class="grid">
+  <div class="card">
+    <h4>Unit / integration tests</h4>
+    <p>Claude writes tests, runs them, reads failures, and fixes the code until they pass.</p>
+  </div>
+  <div class="card">
+    <h4>Puppeteer screenshots</h4>
+    <p>It screenshots a web UI in a headless browser, compares to the target, and adjusts.</p>
+  </div>
+  <div class="card">
+    <h4>iOS simulator screenshots</h4>
+    <p>It captures the running app from the simulator and self-corrects layout/visuals.</p>
+  </div>
+</div>
+
+<ol class="steps">
+  <li>Give Claude a mock and say "build this web UI."</li>
+  <li>It gets <em>close</em> on the first pass.</li>
+  <li>Give it a check (tests / screenshot tool) and let it iterate <strong>2–3 times</strong>.</li>
+  <li>It converges to <strong>near-perfect</strong> on its own.</li>
+</ol>
+
+<div class="cal pro">The whole trick: pair a build instruction with a way to verify the result. With a feedback loop, Claude's 2nd and 3rd attempts are dramatically better than its first.</div>
+
+<h3>Slide 9 — CLAUDE.md: the simplest way to give Claude context</h3>
+<p>More context = smarter decisions. As an engineer you carry tons of unwritten context; <code>CLAUDE.md</code> is how you hand some of that to Claude. It's a special filename in the <strong>project root</strong> (the same directory you start Claude in), and it's <strong>auto-read into context at the start of every session</strong> — it rides along on your first user turn.</p>
+
+<h4>Local vs checked-in</h4>
+<div class="grid">
+  <div class="card">
+    <h4>Project CLAUDE.md (checked in)</h4>
+    <p>Commit it, share it with the team. Write it once and everyone benefits — the network effect.</p>
+  </div>
+  <div class="card">
+    <h4>Local CLAUDE.md (not checked in)</h4>
+    <p>Just for you. Personal notes and preferences you don't want in source control.</p>
+  </div>
+</div>
+
+<h4>What to put in it</h4>
+<div class="grid">
+  <div class="card"><h4>Common bash commands</h4><p>Build, test, lint, run — the commands you'd tell a new hire.</p></div>
+  <div class="card"><h4>Common MCP tools</h4><p>Which servers exist and how the team uses them.</p></div>
+  <div class="card"><h4>Architecture decisions</h4><p>Key choices and conventions worth knowing up front.</p></div>
+  <div class="card"><h4>Important / core files</h4><p>Where the load-bearing code lives.</p></div>
+  <div class="card"><h4>Style guide</h4><p>Formatting and code conventions to follow.</p></div>
+  <div class="card"><h4>Anything onboarding-relevant</h4><p>What you'd need to know to work in this codebase.</p></div>
+</div>
+
+<div class="cal warn">Keep it SHORT. A bloated CLAUDE.md burns context on every session and is actually less useful — concise beats comprehensive.</div>
+
+<h4>Nested CLAUDE.md</h4>
+<p>You can drop a <code>CLAUDE.md</code> into child directories. Unlike the root file (always loaded), nested ones are pulled in <strong>on demand</strong> — only when Claude is working in that subtree. Great for module-specific guidance without bloating the global context.</p>
+<pre><code>repo/
+├── CLAUDE.md            # root — always loaded
+├── frontend/
+│   └── CLAUDE.md        # loaded when Claude works in frontend/
+└── services/payments/
+    └── CLAUDE.md        # loaded on demand for payments work</code></pre>
+
+<div class="cal tip">There's also an enterprise-level root CLAUDE.md shared across all codebases and users — org-wide context that follows every engineer.</div>
+
+<h3>Slide 10 — The context &amp; config hierarchy</h3>
+<p>It's not just CLAUDE.md — <strong>everything in Claude Code is hierarchical</strong>. Config flows from your repo, up to your personal global settings, up to org-wide enterprise policy. This applies to CLAUDE.md, slash commands, permissions, and MCP servers alike.</p>
+
+<table>
+  <thead>
+    <tr><th>Level</th><th>Scope</th><th>Governs</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Project</strong></td>
+      <td>Specific to one git repo. Check it in to share, or keep it personal/local.</td>
+      <td>Project <code>CLAUDE.md</code> · repo slash commands · <code>.mcp.json</code> · repo permissions</td>
+    </tr>
+    <tr>
+      <td><strong>Global (user)</strong></td>
+      <td>Applies across all of <em>your</em> projects on this machine.</td>
+      <td>Your personal CLAUDE.md · your slash commands · your permissions · your MCP servers</td>
+    </tr>
+    <tr>
+      <td><strong>Enterprise</strong></td>
+      <td>Global config rolled out to all employees, org-wide.</td>
+      <td>Mandated CLAUDE.md · shared slash commands · auto-approved <em>and</em> blocked commands/URLs · org MCP servers</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Permissions: auto-approve AND block, org-wide</h4>
+<p>Permissions work in both directions at the enterprise level:</p>
+<div class="grid">
+  <div class="card">
+    <h4>Auto-approve</h4>
+    <p>Check a safe command (e.g. your test runner) into enterprise policy so it's auto-approved for every employee — no per-prompt clicking.</p>
+  </div>
+  <div class="card">
+    <h4>Block (hard deny)</h4>
+    <p>Block a command or a URL org-wide — e.g. a URL that should <em>never</em> be fetched. Employees can't override it, so it can never be fetched.</p>
+  </div>
+</div>
+
+<h4>.mcp.json — ship MCP servers with the repo</h4>
+<p>Check a <code>.mcp.json</code> into the repository and anyone who runs Claude Code there is <strong>prompted to install</strong> those MCP servers automatically.</p>
+<pre><code>// .mcp.json (checked into the repo)
+{
+  "mcpServers": {
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    }
+  }
+}</code></pre>
+<div class="cal info">Real example from Anthropic: their apps repo ships a Puppeteer MCP server via checked-in <code>.mcp.json</code>, so every engineer can drive end-to-end tests and screenshot/iterate without installing anything themselves.</div>
+
+<h3>Slide 11 — /memory and the <code>#</code> shortcut</h3>
+<p>Because memory is hierarchical, you need a way to see and edit it. Two tools do that.</p>
+
+<div class="grid">
+  <div class="card">
+    <h4><code>/memory</code></h4>
+    <p>Shows every memory file currently being pulled into context — enterprise policy, your user memory, the project CLAUDE.md, and any nested CLAUDE.md — and lets you open and edit a specific one.</p>
+  </div>
+  <div class="card">
+    <h4>Type <kbd>#</kbd></h4>
+    <p>The fastest way to remember something. Type <code>#</code>, write the note, and pick which memory file it lands in. It's incorporated immediately.</p>
+  </div>
+</div>
+
+<pre><code>/memory            # list &amp; edit all active memory files
+
+# always run the test suite with `pnpm test --silent`
+   ↑ press '#', type the note, choose the destination file</code></pre>
+
+<div class="cal tip">A common use: Claude keeps using a tool the wrong way. Hit <kbd>#</kbd>, correct it, and the fix is written into CLAUDE.md right away — so it sticks for future sessions instead of being re-explained each time.</div>
+
+<h3>Slide 12 — Recommendation: start with shared project context</h3>
+<p>If you're unsure where to begin in the hierarchy, Boris's answer is clear: <strong>shared project context</strong>. Write your CLAUDE.md, slash commands, permissions, and <code>.mcp.json</code> once, check them into the repo, and share them with the team.</p>
+
+<div class="cal pro">"Write it once, share it with the team." Shared project context has a network effect — every engineer who clones the repo inherits the same commands, tools, conventions, and guardrails, and the whole team's Claude gets smarter together.</div>
+
+<table>
+  <thead><tr><th>If you want…</th><th>Start here</th></tr></thead>
+  <tbody>
+    <tr><td>Maximum payoff for the least effort</td><td>Checked-in project <code>CLAUDE.md</code></td></tr>
+    <tr><td>Team tools available to everyone</td><td>Checked-in <code>.mcp.json</code></td></tr>
+    <tr><td>Consistent, safe commands across the team</td><td>Repo (then enterprise) permissions</td></tr>
+    <tr><td>Personal-only tweaks</td><td>Local CLAUDE.md / global config</td></tr>
+  </tbody>
+</table>
+
+<h3>Slide 13 — Key Bindings: The Hidden Keyboard Layer</h3>
+<p>Boris flags these because most people never discover them — Claude Code looks like a single prompt bar, but a handful of keystrokes unlock its real power. Each one is about steering Claude mid-flight or feeding it exactly the context it needs.</p>
+
+<table>
+<thead>
+<tr><th>Key</th><th>What it does</th><th>When Boris uses it</th></tr>
+</thead>
+<tbody>
+<tr><td><kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Accept edits / cycle into <span class="pill">auto-accept-edits</span> mode — file edits are auto-applied, but bash commands still need approval</td><td>When Claude is clearly on the right track or iterating on tests; you can always ask Claude to undo later</td></tr>
+<tr><td><kbd>#</kbd></td><td>Make Claude <em>remember</em> something — it's incorporated into <code>CLAUDE.md</code> immediately, and you pick which memory file it goes to</td><td>"It's not using a tool correctly" — teach it once so the fix persists across sessions</td></tr>
+<tr><td><kbd>!</kbd></td><td>Drop into <span class="pill">bash mode</span> and run a command locally — the command <strong>and its output</strong> both go into the context window</td><td>Long-running commands, or anything you want Claude to "see" without it running the command itself</td></tr>
+<tr><td><kbd>@</kbd></td><td>Mention files and folders to pull them into context</td><td>Pointing Claude at the exact files/dirs that matter</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>Stop whatever Claude is doing — anytime, <strong>safely</strong>; it won't corrupt the session</td><td>Claude suggested a 20-line edit, 19 lines are perfect — stop it, correct the one line, redo</td></tr>
+<tr><td><kbd>Esc</kbd> <kbd>Esc</kbd></td><td>Jump back through conversation history</td><td>Rewinding to an earlier point in the session</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>R</kbd></td><td>See the full output — the exact same thing Claude sees in its context window</td><td>Inspecting truncated output / understanding what the model is actually working from</td></tr>
+</tbody>
+</table>
+
+<h4>Resuming work across sessions</h4>
+<p>You don't lose a session when you close the terminal. Two startup flags bring you right back.</p>
+<pre><code># Pick a previous session to resume
+claude --resume
+
+# Continue the most recent session
+claude --continue</code></pre>
+
+<div class="cal tip">The <kbd>Esc</kbd> key is the unsung hero. Because stopping is always safe, you can interrupt Claude freely instead of letting a near-perfect edit go wrong — interrupt, give one line of correction, and let it redo.</div>
+
+<div class="cal info">The difference between <kbd>!</kbd> bash mode and just asking Claude to run a command: with <kbd>!</kbd> <em>you</em> run it locally and the command + output land in context — perfect for long-running commands or output you want Claude to reason over.</div>
+
+<h3>Slide 14 — The SDK Is Already On Your Machine</h3>
+<p>There's no separate package to install. The <code>-p</code> / <code>--print</code> flag <strong>is</strong> the Claude Code SDK. Pass a prompt, get a result back, and exit — non-interactive, scriptable, composable.</p>
+
+<div class="cal pro">Boris's framing: think of <code>claude -p</code> as a <strong>super-intelligent Unix utility</strong>. Give it a prompt, get JSON back. Pipe in, pipe out — exactly like <code>grep</code>, <code>jq</code>, or any other tool in your pipeline.</div>
+
+<h4>The shape of a call</h4>
+<p>You control the prompt, which tools Claude is allowed to use (including specific bash commands), and the output format — plain text, a JSON blob, or a stream of JSON you can process as it arrives.</p>
+<pre><code># Basic one-shot
+claude -p "summarize the failing tests"
+
+# Constrain the toolset (allow-list specific tools/commands)
+claude -p "triage this build" --allowedTools "Bash(git log:*)" "Read"
+
+# Structured output for programmatic consumption
+claude -p "list the changed files and why" --output-format json
+
+# Streaming JSON to process incrementally
+claude -p "analyze this log" --output-format stream-json</code></pre>
+
+<h4>Piping: in and out</h4>
+<p>Because it reads stdin and writes stdout, <code>claude -p</code> slots into any shell pipeline.</p>
+<pre><code># Feed it command output, parse the result with jq
+git status | claude -p "which of these files are risky to commit?" --output-format json | jq '.result'
+
+# Pull a giant log from a GCP bucket and find what's interesting
+gsutil cat gs://my-bucket/prod.log | claude -p "what looks anomalous here?"
+
+# Fetch data from the Sentry CLI and let Claude act on it
+sentry-cli issues list | claude -p "group these by likely root cause"</code></pre>
+
+<div class="grid">
+<div class="card"><h4>CI</h4><p>Run Claude as a step in your continuous-integration pipeline — review diffs, summarize failures, gate merges.</p></div>
+<div class="card"><h4>Incident response</h4><p>Pipe logs, traces, or Sentry output straight in so Claude can triage and recommend actions during an outage.</p></div>
+<div class="card"><h4>Pipelines</h4><p>Drop it anywhere data flows — read a giant log, find what matters, hand the result to the next stage.</p></div>
+</div>
+
+<div class="cal info">A colleague gave a dedicated deep-dive on the SDK right after Boris's talk. His own verdict on the SDK's potential: "We've barely scratched the surface."</div>
+
+<h3>Slide 15 — Advanced Parallelism: Many Claudes at Once</h3>
+<p>Boris calls himself a "Claude normie" — one Claude at a time, a few terminal tabs for a few repos. But the power users he sees, inside and outside Anthropic, almost always run many Claudes in parallel.</p>
+
+<h4>How the power users scale up</h4>
+<div class="grid">
+<div class="card"><h4>tmux + SSH</h4><p>SSH sessions and <code>tmux</code> tunnels into running Claude sessions, so multiple agents persist and survive disconnects.</p></div>
+<div class="card"><h4>Multiple checkouts</h4><p>Several separate checkouts of the <em>same</em> repo, each running its own Claude, so many tasks progress at once.</p></div>
+<div class="card"><h4>Git worktrees</h4><p>Use <code>git worktree</code> for isolation — each Claude works in its own branch/directory without stepping on the others.</p></div>
+</div>
+
+<pre><code># Spin up an isolated worktree so a parallel Claude can't collide with your main checkout
+git worktree add ../feature-x -b feature-x
+# ...then start Claude inside that directory
+</code></pre>
+
+<div class="cal tip">The unifying idea is <strong>isolation</strong>: give each parallel Claude its own workspace (a separate checkout or a worktree) so they don't corrupt each other's state. Anthropic is actively making this easier — the goal is to run as many sessions as you want and get a lot done in parallel.</div>
+
+<h3>Slide 16 — Q&amp;A Gems</h3>
+
+<h4>The hardest thing to build: safe bash</h4>
+<p>Boris named making bash commands safe as the single hardest part of building Claude Code. Bash is inherently dangerous — it changes system state in unexpected ways — yet approving every command by hand kills productivity, and not everyone runs inside Docker.</p>
+<ol class="steps">
+<li><strong>Read-only detection</strong> — some commands are recognized as read-only and treated as low risk.</li>
+<li><strong>Static analysis</strong> — figures out which commands can be safely combined (e.g. chained commands) before running them.</li>
+<li><strong>Tiered permissions</strong> — a layered allow-list / block-list system that operates at different levels (project, global, enterprise).</li>
+</ol>
+
+<h4>Fully multimodal from day one</h4>
+<p>Claude Code has always been multimodal — it's just hard to discover in a terminal. There are three ways to give it an image.</p>
+<div class="grid">
+<div class="card"><h4>Drag &amp; drop</h4><p>Drag an image straight onto the terminal.</p></div>
+<div class="card"><h4>File path</h4><p>Give it a path to an image file.</p></div>
+<div class="card"><h4>Copy-paste</h4><p>Paste an image directly into the prompt.</p></div>
+</div>
+<div class="cal tip">Boris's favorite use: implementing from mocks. Drag in the mock, tell Claude to build it, and give it a Puppeteer server so it can screenshot its own work and iterate toward near-perfect.</div>
+
+<h4>Why a CLI and not an IDE?</h4>
+<p>At Anthropic people use a huge range of editors — VS Code, Zed, Xcode, Vim, Emacs. The <strong>terminal is the common denominator</strong> that works for everyone. And given how fast the model is improving, there's a real chance people won't be using IDEs the same way by year's end — so they deliberately avoid over-investing in UI layers that may not matter.</p>
+
+<h4>How much does Anthropic itself use it?</h4>
+<div class="cal pro">Roughly <strong>80% of technical staff at Anthropic use Claude Code every day</strong> — including researchers, who use it for things like the notebook tool to edit and run notebooks.</div>
+
+<div class="cal pro">Boris's throughline: don't over-prompt. Give Claude good context (CLAUDE.md), the right tools, and a way to check its own work — then let the model cook.</div>
+<p class="muted">▶︎ Watch the full talk: <a href="https://www.youtube.com/watch?v=B_KAEqiC-0Q" target="_blank" rel="noopener">youtube.com/watch?v=B_KAEqiC-0Q</a></p>
     </div>
   </section>
   <section class="sec" id="troubleshoot" data-id="troubleshoot">
@@ -3557,30 +3953,20 @@ if(sb)sb.oninput=function(){
 var side=document.getElementById('side');
 var mb=document.getElementById('menu');
 if(mb)mb.onclick=function(){side.classList.toggle('open');};
-// robust in-page navigation: rAF tween that RE-MEASURES the live target every frame
-// (defeats reflow-during-scroll: e.g. diagrams/sections growing as they enter view) + snaps after.
-function sy(){ return window.scrollY || document.documentElement.scrollTop || 0; }
-function animateScrollTo(getY){
-  var t0=null, dur=560, startY=sy();
-  function step(ts){ if(t0===null)t0=ts; var p=Math.min(1,(ts-t0)/dur);
-    var e=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
-    var tY=Math.max(0, getY());                 // recomputed each frame against CURRENT layout
-    window.scrollTo(0, Math.round(startY+(tY-startY)*e));
-    if(p<1){ requestAnimationFrame(step); }
-    else {                                       // settle, then correct twice for any late reflow
-      window.scrollTo(0, Math.max(0, getY()));
-      setTimeout(function(){ window.scrollTo(0, Math.max(0, getY())); }, 70);
-      setTimeout(function(){ window.scrollTo(0, Math.max(0, getY())); }, 280);
-    }
-  }
-  requestAnimationFrame(step);
+// robust in-page navigation: instant scrollIntoView (uses CSS scroll-padding-top for the offset),
+// re-applied after a beat to absorb any reflow (diagrams/sections growing as they render).
+// This is deliberately simple — it lands on the exact section on the FIRST click, every time.
+function goToSection(t){
+  t.scrollIntoView({block:'start'});
+  setTimeout(function(){ t.scrollIntoView({block:'start'}); }, 180);
+  setTimeout(function(){ t.scrollIntoView({block:'start'}); }, 460);
 }
 document.querySelectorAll('a[href^="#"]').forEach(function(a){
   a.addEventListener('click',function(e){
     var id=a.getAttribute('href').slice(1); if(!id) return;
     var t=document.getElementById(id);
     if(t){ e.preventDefault();
-      animateScrollTo(function(){ return t.getBoundingClientRect().top + sy() - 76; });
+      goToSection(t);
       history.replaceState(null,'','#'+id);
       if(side) side.classList.remove('open');
     }
@@ -3589,7 +3975,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
 
 // back to top
 var top=document.getElementById('totop');
-if(top)top.onclick=function(){animateScrollTo(function(){return 0;});};
+if(top)top.onclick=function(){window.scrollTo(0,0);};
 
 // mascot reactions
 var faces=['\uD83E\uDD16','\uD83D\uDE0E','\uD83D\uDE80','\uD83E\uDDE0','\u26A1','\uD83C\uDF89','\uD83D\uDC68\u200D\uD83D\uDCBB'];
