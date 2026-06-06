@@ -166,8 +166,8 @@ a:hover{text-decoration:underline}
 .diagram-head{display:flex;gap:11px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:rgba(155,140,255,.07)}
 .diagram-badge{flex:0 0 auto;font-size:10.5px;font-weight:800;letter-spacing:.07em;color:#1a1326;background:var(--grad);padding:4px 11px;border-radius:999px;white-space:nowrap}
 .diagram-why{color:#fff;font-size:14.5px;font-weight:600;line-height:1.4}
-.diagram-svg{padding:16px}
-.diagram-svg svg{display:block;width:100%;height:auto;max-height:420px}
+.diagram-svg{padding:16px;min-height:300px}
+.diagram-svg svg{display:block;width:100%;height:auto;aspect-ratio:880/380;max-height:440px}
 .diagram-cap{padding:0 18px 14px;color:var(--mut);font-size:12.5px;text-align:center;font-style:italic}
 
 /* footer */
@@ -3557,16 +3557,21 @@ if(sb)sb.oninput=function(){
 var side=document.getElementById('side');
 var mb=document.getElementById('menu');
 if(mb)mb.onclick=function(){side.classList.toggle('open');};
-// robust in-page navigation: manual rAF tween (independent of native smooth-scroll / overflow quirks)
-function smoothTo(y){
-  y=Math.max(0,y);
-  var start=window.scrollY||document.documentElement.scrollTop||0, d=y-start;
-  if(Math.abs(d)<2){window.scrollTo(0,y);return;}
-  var t0=null, dur=Math.min(750, 260+Math.abs(d)*0.18);
+// robust in-page navigation: rAF tween that RE-MEASURES the live target every frame
+// (defeats reflow-during-scroll: e.g. diagrams/sections growing as they enter view) + snaps after.
+function sy(){ return window.scrollY || document.documentElement.scrollTop || 0; }
+function animateScrollTo(getY){
+  var t0=null, dur=560, startY=sy();
   function step(ts){ if(t0===null)t0=ts; var p=Math.min(1,(ts-t0)/dur);
     var e=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
-    window.scrollTo(0, Math.round(start+d*e));
-    if(p<1) requestAnimationFrame(step);
+    var tY=Math.max(0, getY());                 // recomputed each frame against CURRENT layout
+    window.scrollTo(0, Math.round(startY+(tY-startY)*e));
+    if(p<1){ requestAnimationFrame(step); }
+    else {                                       // settle, then correct twice for any late reflow
+      window.scrollTo(0, Math.max(0, getY()));
+      setTimeout(function(){ window.scrollTo(0, Math.max(0, getY())); }, 70);
+      setTimeout(function(){ window.scrollTo(0, Math.max(0, getY())); }, 280);
+    }
   }
   requestAnimationFrame(step);
 }
@@ -3575,8 +3580,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     var id=a.getAttribute('href').slice(1); if(!id) return;
     var t=document.getElementById(id);
     if(t){ e.preventDefault();
-      var y=t.getBoundingClientRect().top+(window.scrollY||document.documentElement.scrollTop||0)-76;
-      smoothTo(y);
+      animateScrollTo(function(){ return t.getBoundingClientRect().top + sy() - 76; });
       history.replaceState(null,'','#'+id);
       if(side) side.classList.remove('open');
     }
@@ -3585,7 +3589,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
 
 // back to top
 var top=document.getElementById('totop');
-if(top)top.onclick=function(){smoothTo(0);};
+if(top)top.onclick=function(){animateScrollTo(function(){return 0;});};
 
 // mascot reactions
 var faces=['\uD83E\uDD16','\uD83D\uDE0E','\uD83D\uDE80','\uD83E\uDDE0','\u26A1','\uD83C\uDF89','\uD83D\uDC68\u200D\uD83D\uDCBB'];
