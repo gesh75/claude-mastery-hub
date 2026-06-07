@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%A4%96%3C/text%3E%3C/svg%3E">
-<meta name="description" content="An interactive guide to mastering Claude — Claude Code, the app, API & Agent SDK, MCP, skills, subagents, hooks, plugins and more. 25 sections, 13 animated diagrams, 130+ examples.">
+<meta name="description" content="An interactive guide to mastering Claude — Claude Code, the app, API & Agent SDK, MCP, skills, subagents, hooks, plugins, plus an AI Foundations 101 track. 37 sections, 22 animated diagrams, 130+ examples.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Claude Mastery Hub">
 <meta property="og:title" content="Claude Mastery Hub — extract maximum power from Claude">
-<meta property="og:description" content="25 deep-dive sections · 13 animated diagrams · 130+ examples. Master Claude Code, the API & Agent SDK, MCP, skills, subagents, hooks & more.">
+<meta property="og:description" content="37 deep-dive sections · 22 animated diagrams · 130+ examples. Master Claude Code, the API & Agent SDK, MCP, skills, subagents, hooks — plus AI Foundations 101.">
 <meta property="og:url" content="https://gesh75.github.io/claude-mastery-hub/">
 <meta property="og:image" content="https://gesh75.github.io/claude-mastery-hub/og.png">
 <meta property="og:image:width" content="1200">
@@ -16,7 +16,7 @@
 <meta property="og:image:alt" content="Claude Mastery Hub">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Claude Mastery Hub — extract maximum power from Claude">
-<meta name="twitter:description" content="25 deep-dive sections · 13 animated diagrams · 130+ examples on getting the most out of Claude.">
+<meta name="twitter:description" content="37 deep-dive sections · 22 animated diagrams · 130+ examples on Claude — plus a beginner AI Foundations 101 track.">
 <meta name="twitter:image" content="https://gesh75.github.io/claude-mastery-hub/og.png">
 <title>Claude Mastery Hub — Extract Maximum Power from Claude</title>
 <style>
@@ -208,8 +208,8 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
   <h1>Claude Mastery Hub</h1>
   <p class="sub"><span id="subtype"></span><span class="cursor">&nbsp;</span></p>
   <div class="hero-stats">
-    <div class="stat"><b>26</b><span>deep-dive sections</span></div>
-    <div class="stat"><b>4</b><span>learning tracks</span></div>
+    <div class="stat"><b>37</b><span>deep-dive sections</span></div>
+    <div class="stat"><b>5</b><span>learning tracks</span></div>
     <div class="stat"><b>100+</b><span>real examples</span></div>
     <div class="stat"><b>∞</b><span>power unlocked</span></div>
   </div>
@@ -225,7 +225,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
     <input class="search" id="search" type="search" placeholder="🔍 Filter topics…">
     <div class="ring-wrap">
       <div class="ring" id="ring"><b>0%</b></div>
-      <div class="ring-meta" id="ringmeta"><b>0 / 26</b> sections mastered</div>
+      <div class="ring-meta" id="ringmeta"><b>0 / 37</b> sections mastered</div>
     </div>
     <nav>
     <div class="nav-track">
@@ -243,6 +243,10 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
     <div class="nav-track">
       <div class="nav-track-h"><span>🎯</span> Mastery</div>
       <a class="nav-link" href="#prompting" data-id="prompting"><span class="nav-ic">🎯</span><span>Prompting for Best Results</span></a><a class="nav-link" href="#webapp" data-id="webapp"><span class="nav-ic">💬</span><span>Claude.ai: Chat, Projects & Artifacts</span></a><a class="nav-link" href="#cost" data-id="cost"><span class="nav-ic">💰</span><span>Cost & Speed Optimization</span></a><a class="nav-link" href="#security" data-id="security"><span class="nav-ic">🔒</span><span>Security Hardening</span></a><a class="nav-link" href="#writing-code" data-id="writing-code"><span class="nav-ic">💻</span><span>Best Practices: Writing Code</span></a><a class="nav-link" href="#documents" data-id="documents"><span class="nav-ic">📝</span><span>Best Practices: Docs & Writing</span></a><a class="nav-link" href="#organize" data-id="organize"><span class="nav-ic">🗂️</span><span>Organizing Your Workflow</span></a><a class="nav-link" href="#boris-tips" data-id="boris-tips"><span class="nav-ic">🎤</span><span>From the Source: Boris Cherny</span></a><a class="nav-link" href="#troubleshoot" data-id="troubleshoot"><span class="nav-ic">🛟</span><span>Troubleshooting & Pro Tips</span></a><a class="nav-link" href="#cheatsheet" data-id="cheatsheet"><span class="nav-ic">📋</span><span>Master Cheat Sheet</span></a>
+    </div>
+    <div class="nav-track">
+      <div class="nav-track-h"><span>🧬</span> AI Foundations</div>
+      <a class="nav-link" href="#ai-what" data-id="ai-what"><span class="nav-ic">🌍</span><span>What Is AI, Really?</span></a><a class="nav-link" href="#ai-ml" data-id="ai-ml"><span class="nav-ic">📈</span><span>Machine Learning: Learning from Data</span></a><a class="nav-link" href="#ai-neural" data-id="ai-neural"><span class="nav-ic">🕸️</span><span>Neural Networks & Deep Learning</span></a><a class="nav-link" href="#ai-llm" data-id="ai-llm"><span class="nav-ic">💬</span><span>What Is an LLM?</span></a><a class="nav-link" href="#ai-tokens" data-id="ai-tokens"><span class="nav-ic">🔤</span><span>Tokens, Embeddings & Vectors</span></a><a class="nav-link" href="#ai-transformer" data-id="ai-transformer"><span class="nav-ic">⚡</span><span>Transformers & Attention</span></a><a class="nav-link" href="#ai-training" data-id="ai-training"><span class="nav-ic">🏋️</span><span>Training, Fine-Tuning & RLHF</span></a><a class="nav-link" href="#ai-inference" data-id="ai-inference"><span class="nav-ic">🔮</span><span>Inference, Context & Hallucinations</span></a><a class="nav-link" href="#ai-agents" data-id="ai-agents"><span class="nav-ic">🔁</span><span>Agents, Tools & the AI Loop</span></a><a class="nav-link" href="#ai-safety" data-id="ai-safety"><span class="nav-ic">⚖️</span><span>AI Safety, Ethics & Limits</span></a><a class="nav-link" href="#ai-glossary" data-id="ai-glossary"><span class="nav-ic">📖</span><span>AI Jargon Buster</span></a>
     </div></nav>
   </aside>
 
@@ -3841,6 +3845,1481 @@ Current diff:
 !git diff $1</code></pre>
 
 <div class="cal pro">Front-load context in plan mode, then execute. A stable prefix gets cached once, so every later turn reads from cache (90%+ hit rates) instead of recomputing. Fresh context is free, so <code>/clear</code> between unrelated tasks.</div>
+    </div>
+  </section>
+  <section class="sec" id="ai-what" data-id="ai-what">
+    <div class="sec-head">
+      <div class="sec-icon">🌍</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 27</div>
+        <h2>What Is AI, Really?</h2>
+        <p class="sec-tag">Strip away the hype: AI is just software doing jobs we thought needed a brain.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-what">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">Knowing AI's nested layers helps beginners see that chatbots like Claude are one slice of a much bigger field.</span></div><div class="diagram-svg"><svg viewBox="0 0 880 400" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Concentric rings showing AI contains Machine Learning, Deep Learning, and Generative AI / LLMs, with example chips and a pulse moving toward the LLM core.">
+  <defs>
+    <radialGradient id="bg-grad-ai-what" cx="38%" cy="50%" r="75%">
+      <stop offset="0%" stop-color="#1d1830"/>
+      <stop offset="100%" stop-color="#171327"/>
+    </radialGradient>
+    <radialGradient id="core-grad-ai-what" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#ffd166"/>
+      <stop offset="100%" stop-color="#ff7a59"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="880" height="400" fill="url(#bg-grad-ai-what)"/>
+
+  <text x="40" y="38" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="16" font-weight="600">What Is AI, Really? — nested fields, smallest is newest</text>
+  <text x="40" y="58" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">Each ring lives inside the one before it. The pulse travels to today's LLM core.</text>
+
+  <g>
+    <circle cx="300" cy="235" r="150" fill="none" stroke="#9b8cff" stroke-width="2" opacity="0.55"/>
+    <circle cx="300" cy="235" r="113" fill="none" stroke="#54e6e0" stroke-width="2" opacity="0.55"/>
+    <circle cx="300" cy="235" r="78" fill="none" stroke="#5fd39a" stroke-width="2" opacity="0.55"/>
+    <circle cx="300" cy="235" r="44" fill="url(#core-grad-ai-what)" stroke="#ffd166" stroke-width="2"/>
+
+    <circle cx="300" cy="235" r="150" fill="none" stroke="#ffd166" stroke-width="3">
+      <animate attributeName="r" values="150;113;78;44;150" keyTimes="0;0.3;0.6;0.85;1" dur="3.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.85;0.7;0.55;1;0.85" keyTimes="0;0.3;0.6;0.85;1" dur="3.6s" repeatCount="indefinite"/>
+    </circle>
+
+    <text x="300" y="105" text-anchor="middle" fill="#9b8cff" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" font-weight="600">AI</text>
+    <text x="300" y="140" text-anchor="middle" fill="#54e6e0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" font-weight="600">Machine Learning</text>
+    <text x="300" y="173" text-anchor="middle" fill="#5fd39a" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" font-weight="600">Deep Learning</text>
+
+    <text x="300" y="231" text-anchor="middle" fill="#171327" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" font-weight="600">Gen AI</text>
+    <text x="300" y="247" text-anchor="middle" fill="#171327" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" font-weight="600">/ LLMs</text>
+  </g>
+
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">
+    <line x1="450" y1="120" x2="558" y2="120" stroke="#2b2542" stroke-width="2"/>
+    <rect x="558" y="103" width="158" height="34" rx="13" fill="#1d1830" stroke="#9b8cff" stroke-width="1.5"/>
+    <circle cx="578" cy="120" r="5" fill="#9b8cff"/>
+    <text x="592" y="124" fill="#ece9f5">Spam filter</text>
+
+    <line x1="450" y1="180" x2="558" y2="180" stroke="#2b2542" stroke-width="2"/>
+    <rect x="558" y="163" width="190" height="34" rx="13" fill="#1d1830" stroke="#54e6e0" stroke-width="1.5"/>
+    <circle cx="578" cy="180" r="5" fill="#54e6e0"/>
+    <text x="592" y="184" fill="#ece9f5">Recommendations</text>
+
+    <line x1="450" y1="240" x2="558" y2="240" stroke="#2b2542" stroke-width="2"/>
+    <rect x="558" y="223" width="198" height="34" rx="13" fill="#1d1830" stroke="#5fd39a" stroke-width="1.5"/>
+    <circle cx="578" cy="240" r="5" fill="#5fd39a"/>
+    <text x="592" y="244" fill="#ece9f5">Image recognition</text>
+
+    <line x1="450" y1="300" x2="558" y2="300" stroke="#2b2542" stroke-width="2"/>
+    <rect x="558" y="283" width="158" height="34" rx="13" fill="#1d1830" stroke="#ff7a59" stroke-width="1.5">
+      <animate attributeName="stroke-width" values="1.5;3;1.5" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <circle cx="578" cy="300" r="5" fill="#ff7a59"/>
+    <text x="592" y="304" fill="#ece9f5" font-weight="600">Claude (LLM)</text>
+  </g>
+
+  <text x="40" y="382" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">All AI is rule-driven smarts; ML learns from data; deep learning uses neural nets; LLMs generate language.</text>
+</svg></div><div class="diagram-cap">Concentric rings show AI containing Machine Learning, then Deep Learning, then Generative AI and LLMs, with example chips and a pulse moving inward to the Claude core.</div></div><p class="lead">Before we touch a single buzzword, let's nail down what "AI" actually means. Short version: it's software that does tasks we used to assume needed a human brain. That's it. No glowing red eyes required.</p>
+
+<h3>One plain sentence</h3>
+<p><b>Artificial Intelligence is software that performs tasks we once thought required human intelligence</b> — spotting spam, suggesting a song you'll like, finding the fastest route, answering a messy question in plain English. When you put it that way, "AI" stops sounding like science fiction and starts sounding like Tuesday.</p>
+
+<h3>The two ways software can be smart</h3>
+<p>This next idea is the spine of the entire track, so it's worth slowing down for. There are really only two ways to build something "intelligent," and the difference is who writes the rules.</p>
+
+<div class="grid">
+<div class="card">
+<h4>Rules-based (hand-written)</h4>
+<p>A human writes every <code>if-this-then-that</code> by hand. "IF the email contains 'FREE VIAGRA' THEN mark as spam." Predictable and easy to inspect — but a human has to imagine every case in advance, and spammers are creative.</p>
+</div>
+<div class="card">
+<h4>Learned (figured out from examples)</h4>
+<p>You don't write the rules. You show the system thousands of examples ("these 10,000 were spam, these weren't") and it figures out the patterns itself. Flexible and powerful — but harder to peek inside and explain.</p>
+</div>
+</div>
+
+<div class="cal tip">Almost everything people call "AI" today is the <b>learned</b> kind. The rules-based kind is older and still everywhere (your tax software, a thermostat) — it's just not what's making headlines.</div>
+
+<h3>The nesting dolls</h3>
+<p>Here's where the jargon usually gets confusing — AI, ML, Deep Learning, Generative AI, LLMs. They sound like rivals. They're not. They're <b>Russian nesting dolls (matryoshka)</b>: open the big one and a smaller, more specialized one sits inside.</p>
+
+<table>
+<thead><tr><th>Doll</th><th>What it is</th><th>Everyday face</th></tr></thead>
+<tbody>
+<tr><td><b>AI</b> (biggest)</td><td>The whole idea: machines doing brain-like tasks</td><td>The entire field</td></tr>
+<tr><td><b>Machine Learning</b></td><td>AI that <i>learns</i> rules from examples instead of being hand-coded</td><td>Spam filter, maps ETA</td></tr>
+<tr><td><b>Deep Learning</b></td><td>ML using many-layered "neural networks" — math loosely inspired by brain cells, great with images, audio, and language</td><td>Face unlock, voice typing</td></tr>
+<tr><td><b>Generative AI / LLMs</b> (smallest)</td><td>Deep learning that <i>creates</i> new text, images, or code (an <b>LLM</b> = Large Language Model, the text kind)</td><td>Claude, ChatGPT</td></tr>
+</tbody>
+</table>
+
+<p>Each doll is a more specific kind of the one wrapped around it. So Claude is a Large Language Model, which is Generative AI, which is Deep Learning, which is Machine Learning, which is AI. All true at once. No contradiction.</p>
+
+<h3>Narrow vs general — set your expectations</h3>
+<p>Today's AI is <b>narrow</b>: brilliant at <i>one</i> job. A spam filter can't drive a car. Claude can write a poem but can't water your plants. <span class="pill">AGI</span> — Artificial <i>General</i> Intelligence, a do-anything, human-level mind — <b>does not exist yet</b>, no matter what a flashy demo implies.</p>
+
+<div class="cal warn">When you hear "AI can do anything now," translate it to "this <i>narrow</i> AI is very good at its <i>one</i> thing." That mental swap will save you a lot of disappointment.</div>
+
+<h3>The whole story in one breath</h3>
+<p>You don't need the full history — just the shape of it. Read this as a single timeline:</p>
+<ol class="steps">
+<li><b>1950</b> — Alan Turing asks "can machines think?" The field gets its name a few years later, in 1956.</li>
+<li><b>1980s</b> — <i>Expert systems</i>: giant hand-written rulebooks. Clever, but brittle.</li>
+<li><b>1990s–2000s</b> — <i>Machine Learning</i> takes over: let the data write the rules.</li>
+<li><b>2012</b> — <i>Deep learning</i> explodes after neural nets crush an image-recognition contest.</li>
+<li><b>2017</b> — The <i>transformer</i> is invented — the engine behind every modern LLM.</li>
+<li><b>2022</b> — <i>ChatGPT</i> launches and suddenly everyone's grandma knows the word "AI."</li>
+<li><b>Today</b> — <i>Agents</i>: AI that doesn't just answer, but takes actions for you.</li>
+</ol>
+
+<h3>It's already in your pocket</h3>
+<p>If "AI" still feels abstract, look around — you've been using it for years:</p>
+<div class="grid">
+<div class="card"><h4>Spam filter</h4><p>Quietly sorting your inbox, learning what junk looks like.</p></div>
+<div class="card"><h4>Maps ETA</h4><p>Predicting traffic to guess your arrival time within minutes.</p></div>
+<div class="card"><h4>Recommendations</h4><p>The "you might also like" behind Netflix, Spotify, and your shopping cart.</p></div>
+<div class="card"><h4>Claude</h4><p>An LLM you can just talk to in plain language.</p></div>
+</div>
+
+<div class="cal info">Fun fact: your email spam folder was doing machine learning before it was cool — quietly judging your inbox since the late 1990s.</div>
+
+<div class="cal pro">Most of today's magic is the <b>learned</b> kind of AI. So in the next section, let's open that doll and see how a machine actually learns from examples.</div>
+    </div>
+  </section>
+  <section class="sec" id="ai-ml" data-id="ai-ml">
+    <div class="sec-head">
+      <div class="sec-icon">📈</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 28</div>
+        <h2>Machine Learning: Learning from Data</h2>
+        <p class="sec-tag">Stop writing the rulebook — hand the machine the photo album and let it figure out "cat."</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-ml">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">Machine learning powers nearly every modern AI product, turning past data into predictions about new, unseen situations.</span></div><div class="diagram-svg"><svg viewBox="0 0 880 400" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Machine learning training and inference flow diagram">
+  <defs>
+    <linearGradient id="bg-ai-ml" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d1830"/>
+      <stop offset="1" stop-color="#171327"/>
+    </linearGradient>
+    <marker id="arrow-ai-ml" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#a59fc0"/>
+    </marker>
+    <marker id="arrowloop-ai-ml" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#ffd166"/>
+    </marker>
+    <path id="trainpath-ai-ml" d="M120 150 L247 150"/>
+    <path id="inferpath-ai-ml" d="M120 320 L400 320 L740 320"/>
+  </defs>
+  <rect x="0" y="0" width="880" height="400" fill="url(#bg-ai-ml)"/>
+  <text x="40" y="38" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="16" font-weight="600" fill="#ece9f5">Machine Learning: learning from data, then predicting</text>
+  <line x1="40" y1="232" x2="840" y2="232" stroke="#2b2542" stroke-width="1" stroke-dasharray="4 6"/>
+  <text x="40" y="80" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" font-weight="600" fill="#9b8cff">1 . TRAINING — adjust weights from labeled data</text>
+  <rect x="40" y="118" width="120" height="64" rx="13" fill="#1d1830" stroke="#9b8cff" stroke-width="1.5"/>
+  <text x="100" y="146" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#ece9f5">Labeled data</text>
+  <text x="100" y="164" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#a59fc0">input + answer</text>
+  <line x1="160" y1="150" x2="247" y2="150" stroke="#a59fc0" stroke-width="1.5" marker-end="url(#arrow-ai-ml)"/>
+  <rect x="250" y="110" width="150" height="80" rx="14" fill="#1d1830" stroke="#54e6e0" stroke-width="1.5"/>
+  <text x="325" y="142" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" font-weight="600" fill="#ece9f5">Model</text>
+  <text x="325" y="162" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#54e6e0">adjusts weights</text>
+  <path d="M400 175 C470 215 470 95 405 130" fill="none" stroke="#ffd166" stroke-width="1.5" marker-end="url(#arrowloop-ai-ml)"/>
+  <text x="492" y="205" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#ffd166">repeat &amp; correct</text>
+  <rect x="560" y="118" width="130" height="64" rx="13" fill="#1d1830" stroke="#ff7a59" stroke-width="1.5"/>
+  <text x="625" y="146" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#ece9f5">Check error</text>
+  <text x="625" y="164" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#a59fc0">guess vs answer</text>
+  <line x1="400" y1="150" x2="557" y2="150" stroke="#a59fc0" stroke-width="1.5" marker-end="url(#arrow-ai-ml)"/>
+  <circle r="7" fill="#9b8cff">
+    <animateMotion dur="3s" repeatCount="indefinite">
+      <mpath href="#trainpath-ai-ml"/>
+    </animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <text x="40" y="270" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" font-weight="600" fill="#5fd39a">2 . INFERENCE — use the trained model on new input</text>
+  <rect x="40" y="290" width="120" height="60" rx="13" fill="#1d1830" stroke="#54e6e0" stroke-width="1.5"/>
+  <text x="100" y="316" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#ece9f5">New input</text>
+  <text x="100" y="334" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#a59fc0">no answer yet</text>
+  <line x1="160" y1="320" x2="397" y2="320" stroke="#a59fc0" stroke-width="1.5" marker-end="url(#arrow-ai-ml)"/>
+  <rect x="400" y="288" width="160" height="64" rx="14" fill="#1d1830" stroke="#5fd39a" stroke-width="1.5"/>
+  <text x="480" y="314" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" font-weight="600" fill="#ece9f5">Trained model</text>
+  <text x="480" y="332" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#5fd39a">weights frozen</text>
+  <line x1="560" y1="320" x2="737" y2="320" stroke="#a59fc0" stroke-width="1.5" marker-end="url(#arrow-ai-ml)"/>
+  <rect x="740" y="290" width="100" height="60" rx="13" fill="#1d1830" stroke="#ff6b8b" stroke-width="1.5"/>
+  <text x="790" y="316" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#ece9f5">Prediction</text>
+  <text x="790" y="334" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#a59fc0">answer</text>
+  <circle r="7" fill="#5fd39a">
+    <animateMotion dur="3.4s" repeatCount="indefinite">
+      <mpath href="#inferpath-ai-ml"/>
+    </animateMotion>
+    <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.1;0.5;0.9;1" dur="3.4s" repeatCount="indefinite"/>
+  </circle>
+</svg></div><div class="diagram-cap">A two-phase flow: training feeds labeled data into a model that adjusts its weights in a loop, then inference sends a new input through the trained model to get a prediction.</div></div><p class="lead">Here's the big flip this section owns: instead of a human painstakingly hand-coding rules, machine learning lets the computer <b>learn the patterns straight from data</b>. You don't tell it what a cat is — you show it, and it works the rest out itself.</p>
+
+<h3>The cat-photo story</h3>
+<p>Imagine teaching a child what a cat is. You don't hand them a rulebook saying "pointy ears, whiskers, four legs, smug expression." You just point at cats over the years and say "cat." Eventually the child recognizes a cat they've never seen before — even a weird hairless one.</p>
+<p>Machine learning does the same thing. Show a model a giant album of labeled cat photos and it learns <i>"cat-ness"</i> on its own. Nobody writes the rules; the rules emerge from the examples. That's the whole shift.</p>
+
+<h3>The working vocabulary</h3>
+<p>Four words unlock almost every ML conversation. Learn these and you're fluent enough to follow along.</p>
+<div class="grid">
+  <div class="card"><h4>Features</h4><p>The <b>inputs</b> — the raw stuff the model looks at. For a photo, the pixels. For a house price, the square footage and zip code.</p></div>
+  <div class="card"><h4>Labels</h4><p>The <b>answers</b> we want — "cat" or "not cat," the actual sale price. The correct response we're trying to predict.</p></div>
+  <div class="card"><h4>Model</h4><p>The <b>thing that learns</b> — the recipe that turns features into a guess at the label.</p></div>
+  <div class="card"><h4>Parameters / weights</h4><p>The <b>dials</b> the model tunes. Training is just nudging these numbers until the guesses get good. (Weights are the most common kind of parameter.)</p></div>
+</div>
+
+<h3>Three ways a machine can learn</h3>
+<p>There are three big "learning styles," called paradigms. One line each:</p>
+<table>
+  <thead><tr><th>Paradigm</th><th>How it learns</th><th>Everyday picture</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pill">Supervised</span></td><td>From <b>labeled</b> examples (features + correct answers)</td><td>Flashcards with the answer on the back</td></tr>
+    <tr><td><span class="pill">Unsupervised</span></td><td>Finds <b>hidden structure</b> with no labels at all</td><td>Sorting a messy drawer into natural piles</td></tr>
+    <tr><td><span class="pill">Reinforcement</span></td><td>By <b>trial and error</b>, chasing rewards</td><td>Training a dog with treats</td></tr>
+  </tbody>
+</table>
+<p>The cat-album example is <b>supervised learning</b> — every photo came with a label. That's the most common starting point, and the one to keep in your head.</p>
+
+<h3>Two phases of a model's life: training vs inference</h3>
+<p>This split shows up everywhere in AI, so it's worth nailing now.</p>
+<div class="grid">
+  <div class="card"><h4>Training = studying</h4><p>The model pores over the examples and adjusts its dials, over and over, until its guesses match the labels. Slow, expensive, and done in big batches (then occasionally repeated to keep the model fresh).</p></div>
+  <div class="card"><h4>Inference = taking the test</h4><p>The trained model meets <b>brand-new</b> data and makes a prediction. Fast, cheap, and what happens every time you use it. Like flipping a flashlight on — you don't need to know the electronics to use it.</p></div>
+</div>
+<div class="cal info">You'll meet "training vs inference" again and again across this track. Whenever a system is "learning," it's training; whenever it's "answering," it's inference.</div>
+
+<h3>Memorizing vs actually understanding</h3>
+<p>Here's the trap every model can fall into. We don't want it to <i>memorize</i> the album — we want it to <i>understand</i> cats well enough to handle ones it's never seen. That ability to handle new data is called <b>generalization</b>, and it's the entire point.</p>
+<p>The failure is called <b>overfitting</b>. Overfitting is the student who memorizes every past exam word-for-word, then panics when the teacher changes the numbers. They aced the practice test and bombed the real one — because they learned the answer key, not the subject.</p>
+<div class="cal warn">A model that scores perfectly on its training data but flops on new data is overfitting. Great on the practice test, useless in the real world. We always judge a model on data it has never seen.</div>
+<div class="cal tip">Rule of thumb: if results look <i>too</i> perfect on the training set, be suspicious. Real understanding means doing well on fresh examples, not reciting old ones.</div>
+
+<p>So far we've treated "the model" as a magic box that tunes dials. The most powerful ML models are built from <b>layered networks</b> of these dials stacked together — let's look under that hood next.</p>
+    </div>
+  </section>
+  <section class="sec" id="ai-neural" data-id="ai-neural">
+    <div class="sec-head">
+      <div class="sec-icon">🕸️</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 29</div>
+        <h2>Neural Networks & Deep Learning</h2>
+        <p class="sec-tag">Inside every AI is a giant mixing board of dimmer switches that learned to tune itself.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-neural">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">Neural networks power modern AI, learning patterns from data to recognize images, understand language, and make predictions.</span></div><div class="diagram-svg"><svg viewBox="0 0 880 400" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A feed-forward neural network with an input layer, two hidden layers, and an output layer, showing a signal pulse propagating forward across connections.">
+  <defs>
+    <radialGradient id="pulseGrad-ai-neural" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd166" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#ffd166" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="nodeIn-ai-neural" cx="35%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#7ef0ec"/>
+      <stop offset="100%" stop-color="#54e6e0"/>
+    </radialGradient>
+    <radialGradient id="nodeHid-ai-neural" cx="35%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#b6abff"/>
+      <stop offset="100%" stop-color="#9b8cff"/>
+    </radialGradient>
+    <radialGradient id="nodeOut-ai-neural" cx="35%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#ff9c83"/>
+      <stop offset="100%" stop-color="#ff7a59"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="880" height="400" rx="0" fill="#171327"/>
+  <rect x="14" y="14" width="852" height="372" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="1"/>
+
+  <text x="40" y="52" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="16" font-weight="600" fill="#ece9f5">Neural Network &#8212; Forward Pass</text>
+  <text x="40" y="74" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#a59fc0">A signal travels left to right; each node sums its inputs and fires onward.</text>
+
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#ece9f5">
+    <rect x="98" y="338" width="84" height="26" rx="12" fill="#1f1a32" stroke="#2b2542"/>
+    <text x="140" y="355" text-anchor="middle">Input</text>
+    <rect x="278" y="338" width="92" height="26" rx="12" fill="#1f1a32" stroke="#2b2542"/>
+    <text x="324" y="355" text-anchor="middle">Hidden 1</text>
+    <rect x="466" y="338" width="92" height="26" rx="12" fill="#1f1a32" stroke="#2b2542"/>
+    <text x="512" y="355" text-anchor="middle">Hidden 2</text>
+    <rect x="654" y="338" width="92" height="26" rx="12" fill="#1f1a32" stroke="#2b2542"/>
+    <text x="700" y="355" text-anchor="middle">Output</text>
+  </g>
+
+  <g stroke="#2b2542" stroke-width="1.5" fill="none">
+    <line x1="140" y1="130" x2="324" y2="110"/>
+    <line x1="140" y1="130" x2="324" y2="180"/>
+    <line x1="140" y1="130" x2="324" y2="250"/>
+    <line x1="140" y1="130" x2="324" y2="320"/>
+    <line x1="140" y1="200" x2="324" y2="110"/>
+    <line x1="140" y1="200" x2="324" y2="180"/>
+    <line x1="140" y1="200" x2="324" y2="250"/>
+    <line x1="140" y1="200" x2="324" y2="320"/>
+    <line x1="140" y1="270" x2="324" y2="110"/>
+    <line x1="140" y1="270" x2="324" y2="180"/>
+    <line x1="140" y1="270" x2="324" y2="250"/>
+    <line x1="140" y1="270" x2="324" y2="320"/>
+  </g>
+
+  <g stroke="#2b2542" stroke-width="1.5" fill="none">
+    <line x1="324" y1="110" x2="512" y2="110"/>
+    <line x1="324" y1="110" x2="512" y2="180"/>
+    <line x1="324" y1="110" x2="512" y2="250"/>
+    <line x1="324" y1="110" x2="512" y2="320"/>
+    <line x1="324" y1="180" x2="512" y2="110"/>
+    <line x1="324" y1="180" x2="512" y2="180"/>
+    <line x1="324" y1="180" x2="512" y2="250"/>
+    <line x1="324" y1="180" x2="512" y2="320"/>
+    <line x1="324" y1="250" x2="512" y2="110"/>
+    <line x1="324" y1="250" x2="512" y2="180"/>
+    <line x1="324" y1="250" x2="512" y2="250"/>
+    <line x1="324" y1="250" x2="512" y2="320"/>
+    <line x1="324" y1="320" x2="512" y2="110"/>
+    <line x1="324" y1="320" x2="512" y2="180"/>
+    <line x1="324" y1="320" x2="512" y2="250"/>
+    <line x1="324" y1="320" x2="512" y2="320"/>
+  </g>
+
+  <g stroke="#2b2542" stroke-width="1.5" fill="none">
+    <line x1="512" y1="110" x2="700" y2="165"/>
+    <line x1="512" y1="110" x2="700" y2="235"/>
+    <line x1="512" y1="180" x2="700" y2="165"/>
+    <line x1="512" y1="180" x2="700" y2="235"/>
+    <line x1="512" y1="250" x2="700" y2="165"/>
+    <line x1="512" y1="250" x2="700" y2="235"/>
+    <line x1="512" y1="320" x2="700" y2="165"/>
+    <line x1="512" y1="320" x2="700" y2="235"/>
+  </g>
+
+  <g fill="none" stroke="#ffd166" stroke-width="2.5" stroke-linecap="round">
+    <line x1="140" y1="200" x2="324" y2="180" stroke-opacity="0">
+      <animate attributeName="stroke-opacity" values="0;0.9;0" keyTimes="0;0.18;0.36" dur="3.2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="324" y1="180" x2="512" y2="250" stroke-opacity="0">
+      <animate attributeName="stroke-opacity" values="0;0;0.9;0" keyTimes="0;0.33;0.5;0.68" dur="3.2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="512" y1="250" x2="700" y2="235" stroke-opacity="0">
+      <animate attributeName="stroke-opacity" values="0;0;0.9;0" keyTimes="0;0.62;0.8;0.95" dur="3.2s" repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <g stroke="#54e6e0" stroke-width="1.5">
+    <circle cx="140" cy="130" r="16" fill="url(#nodeIn-ai-neural)"/>
+    <circle cx="140" cy="200" r="16" fill="url(#nodeIn-ai-neural)"/>
+    <circle cx="140" cy="270" r="16" fill="url(#nodeIn-ai-neural)"/>
+  </g>
+
+  <g stroke="#9b8cff" stroke-width="1.5">
+    <circle cx="324" cy="110" r="16" fill="url(#nodeHid-ai-neural)"/>
+    <circle cx="324" cy="180" r="16" fill="url(#nodeHid-ai-neural)"/>
+    <circle cx="324" cy="250" r="16" fill="url(#nodeHid-ai-neural)"/>
+    <circle cx="324" cy="320" r="16" fill="url(#nodeHid-ai-neural)"/>
+  </g>
+
+  <g stroke="#9b8cff" stroke-width="1.5">
+    <circle cx="512" cy="110" r="16" fill="url(#nodeHid-ai-neural)"/>
+    <circle cx="512" cy="180" r="16" fill="url(#nodeHid-ai-neural)"/>
+    <circle cx="512" cy="250" r="16" fill="url(#nodeHid-ai-neural)"/>
+    <circle cx="512" cy="320" r="16" fill="url(#nodeHid-ai-neural)"/>
+  </g>
+
+  <g stroke="#ff7a59" stroke-width="1.5">
+    <circle cx="700" cy="165" r="16" fill="url(#nodeOut-ai-neural)"/>
+    <circle cx="700" cy="235" r="16" fill="url(#nodeOut-ai-neural)"/>
+  </g>
+
+  <circle r="13" fill="url(#pulseGrad-ai-neural)">
+    <animateMotion path="M 140 200 L 324 180 L 512 250 L 700 235" dur="3.2s" repeatCount="indefinite" keyPoints="0;0.34;0.67;1" keyTimes="0;0.34;0.67;1" calcMode="linear"/>
+  </circle>
+  <circle r="5" fill="#fff6da">
+    <animateMotion path="M 140 200 L 324 180 L 512 250 L 700 235" dur="3.2s" repeatCount="indefinite" keyPoints="0;0.34;0.67;1" keyTimes="0;0.34;0.67;1" calcMode="linear"/>
+  </circle>
+
+  <text x="700" y="300" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#5fd39a">prediction &#8594;</text>
+</svg></div><div class="diagram-cap">A feed-forward network passes a signal pulse left-to-right from 3 inputs through two hidden layers to 2 outputs (the forward pass).</div></div><p class="lead">Remember the nesting doll from earlier? Open the "machine learning" doll and inside sits <b>deep learning</b>. Let's crack <i>that</i> one open too — because it turns out to be built from millions of copies of one tiny, almost embarrassingly simple gadget: the artificial neuron. Build one, stack a bunch, and you've got the engine behind nearly every modern AI.</p>
+
+<h3>Step one: build a single neuron</h3>
+<p>An artificial neuron is basically a tiny calculator. It does three things in a row:</p>
+<ol class="steps">
+<li><b>Take some inputs</b> — numbers coming in (say, the brightness of pixels, or "was it raining?").</li>
+<li><b>Multiply each by a weight, then add them up</b> — the weight says how much that input <i>matters</i>. Big weight = "pay attention to this." Near-zero weight = "ignore it."</li>
+<li><b>Push the total through an activation function</b> — a gate that bends the result so the network can learn curvy, non-straight-line patterns. Loosely: a bouncer who decides how much of the signal gets waved through.</li>
+</ol>
+<p>That's the whole neuron. Inputs in, one number out. Not magic — arithmetic.</p>
+
+<h3>Step two: stack neurons into layers</h3>
+<p>One neuron makes one little decision. The power comes from wiring thousands of them together in <b>layers</b>, where each layer's output feeds the next.</p>
+<div class="grid">
+<div class="card"><h4>Input layer</h4><p>Where the raw data enters — the pixels, the words, the sensor readings. No thinking happens here; it's just the loading dock.</p></div>
+<div class="card"><h4>Hidden layers</h4><p>The actual processing. Each layer transforms what the last one found into something more abstract. This is where the real work lives.</p></div>
+<div class="card"><h4>Output layer</h4><p>The final answer — "cat," "spam," or the next word in a sentence.</p></div>
+</div>
+<p>And <b>"deep"</b> learning? It just means there are <i>many</i> hidden layers stacked between input and output. That's the entire secret behind the scary-sounding word. Deep = lots of layers. That's it.</p>
+
+<h3>The knobs: weights are everything</h3>
+<p>Here's the anchor image to keep in your head. Picture a <b>giant sound-mixing board</b> covered in dimmer-switch sliders. Each <b>weight is one slider</b>. The activation function is the gate each signal passes through after the sliders set its level. A real network has <i>millions</i> (or even billions) of these sliders.</p>
+<p>When people say a model is "trained," they mean exactly one thing: all those sliders got nudged up and down until the output came out right. <b>Training is just tuning the knobs.</b> And here's the kicker — no human touches them by hand. The network adjusts its own sliders, which is the next thing to explain.</p>
+
+<h3>How it actually learns (the loop)</h3>
+<p>So how do you tune millions of sliders with nobody touching each one? You let the network do it, in a repeating four-beat loop:</p>
+<table>
+<thead><tr><th>Beat</th><th>Plain-English meaning</th></tr></thead>
+<tbody>
+<tr><td><b>Forward pass</b></td><td>Run data through and make a guess (it'll be terrible at first).</td></tr>
+<tr><td><b>Loss</b></td><td>Measure how wrong the guess was — one number for "how bad."</td></tr>
+<tr><td><b>Backpropagation</b></td><td>Trace the error backward to figure out which sliders caused it, and which way each should move.</td></tr>
+<tr><td><b>Gradient descent</b></td><td>Nudge every slider a little in the helpful direction. Repeat — often millions of times.</td></tr>
+</tbody>
+</table>
+<p>Gradient descent is the all-time favorite analogy here: imagine a <b>hiker descending a foggy mountain</b>, feeling which way is downhill and taking one careful step at a time. "Downhill" means "less error." Do that enough and you reach a valley floor — a network that's usually right.</p>
+<div class="cal tip">The model never gets <i>told</i> the right weights. It just keeps measuring its own mistakes and shrinking them, one tiny nudge per knob, until the output stops being wrong.</div>
+
+<h3>Why deep beats hand-crafted features</h3>
+<p>Before deep learning, humans had to hand-engineer the clues a program looked for — "an edge here, a curve there." Tedious, brittle, and capped by human imagination.</p>
+<p>Deep networks flip that. Given enough examples, they <b>discover their own hierarchy of clues</b>: early layers find edges, middle layers assemble edges into shapes, deeper layers assemble shapes into things like faces or wheels. Nobody programmed those stages — they emerged from turning the knobs.</p>
+<div class="cal info">The turning point was <b>2012</b>, when a deep network (nicknamed AlexNet) crushed the ImageNet image-recognition contest, beating hand-built methods by a stunning margin. It was basically AI's "oh — the dimmer switches actually <i>work</i>" moment, and the field never went back.</div>
+
+<h3>One honest caveat</h3>
+<div class="cal warn">The "it's like a brain" metaphor is handy but oversold. Real neurons are far more complex than a weighted sum, and brains don't learn by backpropagation or matrix math. "Neural network" is an inspired nickname, not a biology lesson — great for intuition, wrong as literal anatomy.</div>
+
+<h3>Where this is heading</h3>
+<p>You now know the whole engine: neurons, layers, weights as knobs, and a learning loop that tunes them by chasing lower error. Now take a network like this and make it <b>enormous</b> — billions of knobs — then feed it a huge chunk of all the text humans have ever written. Do that, and what you get is a <b>Large Language Model</b>. That's exactly where we go next.</p>
+    </div>
+  </section>
+  <section class="sec" id="ai-llm" data-id="ai-llm">
+    <div class="sec-head">
+      <div class="sec-icon">💬</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 30</div>
+        <h2>What Is an LLM?</h2>
+        <p class="sec-tag">A giant autocomplete that picked up coding and translation as accidental side hobbies.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-llm">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">N/A</span></div><div class="diagram-svg"><svg viewBox="0 0 880 400" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram of how a large language model predicts the next token and appends it to the sentence">
+  <defs>
+    <linearGradient id="llmbox-ai-llm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9b8cff"/>
+      <stop offset="1" stop-color="#54e6e0"/>
+    </linearGradient>
+    <marker id="arrow-ai-llm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#a59fc0"/>
+    </marker>
+    <marker id="arrowloop-ai-llm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ffd166"/>
+    </marker>
+    <path id="looppath-ai-llm" d="M690,112 L690,300 L135,300 L135,158" fill="none"/>
+  </defs>
+
+  <rect x="0" y="0" width="880" height="400" fill="#171327"/>
+  <text x="40" y="38" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="16" font-weight="600">What Is an LLM? &#8212; It Predicts the Next Word, One Token at a Time</text>
+
+  <!-- Prompt box -->
+  <rect x="40" y="80" width="190" height="70" rx="14" fill="#1d1830" stroke="#2b2542"/>
+  <text x="135" y="106" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" text-anchor="middle">Prompt</text>
+  <text x="135" y="130" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="13" text-anchor="middle">"The cat sat on the ___"</text>
+
+  <!-- arrow prompt -> LLM -->
+  <line x1="230" y1="115" x2="290" y2="115" stroke="#a59fc0" stroke-width="2" marker-end="url(#arrow-ai-llm)"/>
+
+  <!-- LLM stack -->
+  <rect x="292" y="72" width="150" height="86" rx="14" fill="url(#llmbox-ai-llm)" opacity="0.18"/>
+  <rect x="305" y="84" width="124" height="14" rx="5" fill="#9b8cff" opacity="0.85"/>
+  <rect x="305" y="103" width="124" height="14" rx="5" fill="#54e6e0" opacity="0.85"/>
+  <rect x="305" y="122" width="124" height="14" rx="5" fill="#5fd39a" opacity="0.85"/>
+  <text x="367" y="151" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="13" font-weight="600" text-anchor="middle">LLM</text>
+  <rect x="305" y="84" width="124" height="14" rx="5" fill="#ffffff" opacity="0">
+    <animate attributeName="opacity" values="0;0.35;0" dur="3s" begin="0s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="305" y="103" width="124" height="14" rx="5" fill="#ffffff" opacity="0">
+    <animate attributeName="opacity" values="0;0.35;0" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="305" y="122" width="124" height="14" rx="5" fill="#ffffff" opacity="0">
+    <animate attributeName="opacity" values="0;0.35;0" dur="3s" begin="1s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- arrow LLM -> probs -->
+  <line x1="442" y1="115" x2="500" y2="115" stroke="#a59fc0" stroke-width="2" marker-end="url(#arrow-ai-llm)"/>
+
+  <!-- Probability chart -->
+  <text x="510" y="74" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">Probability of next token</text>
+
+  <!-- mat 0.62 -->
+  <text x="510" y="103" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">mat</text>
+  <rect x="552" y="92" width="0" height="14" rx="6" fill="#ff7a59">
+    <animate attributeName="width" values="0;240" dur="0.8s" begin="0s" fill="freeze"/>
+  </rect>
+  <text x="834" y="103" fill="#ff7a59" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" text-anchor="end" font-weight="600">0.62</text>
+
+  <!-- floor 0.18 -->
+  <text x="510" y="131" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">floor</text>
+  <rect x="552" y="120" width="0" height="14" rx="6" fill="#9b8cff">
+    <animate attributeName="width" values="0;72" dur="0.8s" begin="0.15s" fill="freeze"/>
+  </rect>
+  <text x="634" y="131" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">0.18</text>
+
+  <!-- roof 0.05 -->
+  <text x="510" y="159" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">roof</text>
+  <rect x="552" y="148" width="0" height="14" rx="6" fill="#54e6e0">
+    <animate attributeName="width" values="0;20" dur="0.8s" begin="0.3s" fill="freeze"/>
+  </rect>
+  <text x="582" y="159" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">0.05</text>
+
+  <!-- pick top token highlight -->
+  <rect x="548" y="88" width="296" height="22" rx="8" fill="none" stroke="#ffd166" stroke-width="2" opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.25;0.35;0.7;1" dur="4s" begin="0s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Selected token chip that travels the loop -->
+  <g opacity="0">
+    <rect x="-26" y="-13" width="52" height="26" rx="9" fill="#ffd166"/>
+    <text x="0" y="5" fill="#171327" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="13" font-weight="600" text-anchor="middle">mat</text>
+    <animateMotion dur="4s" begin="0s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;0.35;0.9;1" calcMode="linear">
+      <mpath href="#looppath-ai-llm"/>
+    </animateMotion>
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.34;0.37;0.88;0.92" dur="4s" begin="0s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- Autoregressive loop arrow path (visual guide) -->
+  <path d="M690,112 L690,300 L135,300 L135,158" fill="none" stroke="#ffd166" stroke-width="2" stroke-dasharray="6 7" opacity="0.55" marker-end="url(#arrowloop-ai-llm)"/>
+  <text x="412" y="324" fill="#ffd166" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" text-anchor="middle">Autoregressive loop: append the winning token, then predict again</text>
+
+  <!-- Result sentence -->
+  <rect x="40" y="350" width="800" height="38" rx="12" fill="#1d1830" stroke="#2b2542"/>
+  <text x="60" y="374" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">Result:</text>
+  <text x="112" y="374" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="13">The cat sat on the<tspan fill="#ffd166" font-weight="600" opacity="0"> mat<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.85;0.9;1" dur="4s" begin="0s" repeatCount="indefinite"/></tspan></text>
+</svg></div><div class="diagram-cap">An animated view of next-token prediction: a prompt enters the LLM, which outputs token probabilities, then loops the top token back into the sentence.</div></div><p class="lead">You've used an LLM if you've ever talked to Claude, ChatGPT, or Gemini. But under the hood, the thing doing all that brilliant work is doing something almost comically simple: guessing the next chunk of text, over and over.</p>
+
+<h3>The one-line definition</h3>
+<p>A <b>Large Language Model (LLM)</b> is a very large neural network (remember those from the last section?) trained to do one simple thing: <b>predict the next token</b> — a token being a small piece of text, roughly a word or part of a word. That's it. Everything else — the essays, the code, the patient explanations — grows out of that single skill done at an absurd scale.</p>
+
+<h3>What does "large" actually mean?</h3>
+<p>Two things are large here, and both matter:</p>
+<div class="grid">
+  <div class="card">
+    <h4>Billions of parameters</h4>
+    <p>Parameters are the tunable "weights" inside the neural net — the knobs it adjusts while learning. Modern LLMs have <b>billions to trillions</b> of them. More knobs means more nuance it can capture.</p>
+  </div>
+  <div class="card">
+    <h4>A giant text diet</h4>
+    <p>It was trained on an enormous slice of the text humans put online, plus mountains of books. Think of it as having read more than any person could in many lifetimes.</p>
+  </div>
+</div>
+
+<h3>"Predict" doesn't mean "look up"</h3>
+<p>When we say it predicts, we mean it <b>models probabilities</b> over what comes next. Type <i>"I'll be there in ___"</i> and your phone suggests <span class="pill">five minutes</span>. An LLM does the same basic trick — just trained on a huge chunk of the internet instead of your text history, and scaled up enormously. Same idea, wildly more power.</p>
+
+<div class="cal warn">
+<p><b>The big misconception to kill right now:</b> an LLM is <i>not</i> a database or a search engine looking up stored answers. There's no filing cabinet inside it with "capital of France → Paris." Instead, <span class="pill">Paris</span> comes out because that pairing dominated its training data. It's a <b>pattern predictor</b> generating plausible text from learned weights — a statistical map of how language works, not a lookup table.</p>
+</div>
+
+<table>
+  <thead><tr><th></th><th>Search engine</th><th>LLM</th></tr></thead>
+  <tbody>
+    <tr><td><b>What it does</b></td><td>Points you to <i>where</i> an answer might live</td><td>Tries to <i>produce</i> the answer itself</td></tr>
+    <tr><td><b>Source</b></td><td>Indexed web pages</td><td>Patterns baked into its weights</td></tr>
+    <tr><td><b>If it's wrong</b></td><td>It showed you a page; you can judge the source</td><td>It can state a wrong answer fluently and confidently</td></tr>
+  </tbody>
+</table>
+
+<h3>How it writes: the autoregressive loop</h3>
+<p>Here's the surprising part — the model doesn't compose a whole answer at once. It builds every response one token at a time, in a tight loop:</p>
+<ol class="steps">
+  <li><b>Predict</b> a probability for every possible next token, given everything so far.</li>
+  <li><b>Pick</b> one token from that distribution (often, but not always, a top-ranked one).</li>
+  <li><b>Append</b> it, feed the whole thing back in, and predict again.</li>
+  <li><b>Repeat</b> — sometimes thousands of times — until the answer is complete.</li>
+</ol>
+<p>This predict-pick-append-repeat cycle is called <b>autoregressive generation</b>. Every answer you've ever gotten from an LLM is this loop run over and over. It's a bit like writing a sentence where each word is chosen knowing only the words before it.</p>
+
+<div class="cal info">
+<p>Because step 2 involves a bit of controlled randomness, the same question can produce slightly different wording each time — that's a feature, not a glitch.</p>
+</div>
+
+<h3>The plot twist: emergence</h3>
+<p>Here's what made LLMs a genuinely big deal. At small scale, a next-token predictor is just a clever autocomplete. But push the size up far enough — more parameters, more data — and abilities that weren't obvious at small scale start to <b>show up</b>: translating languages, writing working code, multi-step reasoning. Nobody hand-coded those in.</p>
+
+<div class="cal tip">
+<p>It learned to write working code and translate French essentially as a <b>side effect</b> of getting really, really good at finishing your sentences — nobody told it to. Researchers call these surprise skills <i>emergent abilities</i>, and they're a big part of why the field exploded.</p>
+</div>
+
+<h3>Meet the players</h3>
+<p>You already know the names. <b>Claude</b> (Anthropic), <b>GPT</b> (OpenAI), <b>Gemini</b> (Google), and <b>Llama</b> (Meta) are all LLMs. Different companies, different training, same core machine: a giant neural net predicting the next token.</p>
+
+<div class="cal info">
+<p>One more honest detail before we move on: the model never actually sees <i>words</i>. It sees <b>tokens</b> — the puzzle pieces text gets chopped into. Let's go meet them next.</p>
+</div>
+    </div>
+  </section>
+  <section class="sec" id="ai-tokens" data-id="ai-tokens">
+    <div class="sec-head">
+      <div class="sec-icon">🔤</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 31</div>
+        <h2>Tokens, Embeddings & Vectors</h2>
+        <p class="sec-tag">Models don't read words — they read tokens, then turn them into coordinates for meaning.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-tokens">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">Tokens and embeddings are how AI turns text into numbers it can compute with, so meaning becomes math.</span></div><div class="diagram-svg"><svg viewBox="0 0 880 400" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline from raw text to tokens to embedding vectors to points in a 2D vector space where similar words cluster">
+  <defs>
+    <linearGradient id="bg-ai-tokens" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d1830"/>
+      <stop offset="1" stop-color="#171327"/>
+    </linearGradient>
+    <marker id="arrow-ai-tokens" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#a59fc0"/>
+    </marker>
+    <radialGradient id="space-ai-tokens" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0" stop-color="#241d3a"/>
+      <stop offset="1" stop-color="#1a1530"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="880" height="400" fill="url(#bg-ai-tokens)"/>
+  <text x="28" y="34" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="16" font-weight="600">Tokens, Embeddings &amp; Vectors: turning words into numbers</text>
+  <text x="28" y="54" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">Text is split into tokens, each token becomes a vector, and similar meanings land close together.</text>
+
+  <!-- Stage 1: raw text -->
+  <rect x="28" y="92" width="150" height="56" rx="12" fill="#1d1830" stroke="#2b2542"/>
+  <text x="103" y="116" text-anchor="middle" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">raw text</text>
+  <text x="103" y="136" text-anchor="middle" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="13" font-weight="600">unbelievable</text>
+
+  <line x1="180" y1="120" x2="214" y2="120" stroke="#a59fc0" stroke-width="2" marker-end="url(#arrow-ai-tokens)"/>
+
+  <!-- Stage 2: tokenizer -->
+  <rect x="216" y="86" width="150" height="120" rx="12" fill="#1d1830" stroke="#2b2542"/>
+  <text x="291" y="106" text-anchor="middle" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">tokenizer splits it</text>
+  <rect x="232" y="120" width="40" height="26" rx="8" fill="#2a2240" stroke="#ff7a59"/>
+  <text x="252" y="138" text-anchor="middle" fill="#ff7a59" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">un</text>
+  <rect x="276" y="120" width="52" height="26" rx="8" fill="#2a2240" stroke="#9b8cff"/>
+  <text x="302" y="138" text-anchor="middle" fill="#9b8cff" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">believ</text>
+  <rect x="232" y="154" width="46" height="26" rx="8" fill="#2a2240" stroke="#54e6e0"/>
+  <text x="255" y="172" text-anchor="middle" fill="#54e6e0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">able</text>
+  <text x="291" y="198" text-anchor="middle" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">3 tokens</text>
+
+  <line x1="368" y1="120" x2="402" y2="120" stroke="#a59fc0" stroke-width="2" marker-end="url(#arrow-ai-tokens)"/>
+
+  <!-- Stage 3: embedding vectors -->
+  <rect x="404" y="80" width="160" height="132" rx="12" fill="#1d1830" stroke="#2b2542"/>
+  <text x="484" y="100" text-anchor="middle" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">embedding vectors</text>
+  <text x="420" y="126" fill="#ff7a59" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">un</text>
+  <text x="446" y="126" fill="#ece9f5" font-family="ui-monospace,Menlo,monospace" font-size="11">[0.21, -0.8, 0.5]</text>
+  <text x="420" y="152" fill="#9b8cff" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">bel</text>
+  <text x="446" y="152" fill="#ece9f5" font-family="ui-monospace,Menlo,monospace" font-size="11">[0.9, 0.12, -0.3]</text>
+  <text x="420" y="178" fill="#54e6e0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">abl</text>
+  <text x="446" y="178" fill="#ece9f5" font-family="ui-monospace,Menlo,monospace" font-size="11">[-0.4, 0.6, 0.7]</text>
+  <text x="484" y="202" text-anchor="middle" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">rows of numbers</text>
+
+  <line x1="566" y1="146" x2="600" y2="146" stroke="#a59fc0" stroke-width="2" marker-end="url(#arrow-ai-tokens)"/>
+
+  <!-- Stage 4: 2D vector space -->
+  <rect x="602" y="80" width="252" height="290" rx="14" fill="url(#space-ai-tokens)" stroke="#2b2542"/>
+  <text x="728" y="100" text-anchor="middle" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">2D vector space (similar words cluster)</text>
+  <line x1="626" y1="350" x2="838" y2="350" stroke="#2b2542" stroke-width="1.5"/>
+  <line x1="626" y1="120" x2="626" y2="350" stroke="#2b2542" stroke-width="1.5"/>
+
+  <!-- cluster A: belief words -->
+  <circle cx="690" cy="170" r="6" fill="#9b8cff"/>
+  <text x="700" y="166" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">believe</text>
+  <circle cx="722" cy="196" r="6" fill="#9b8cff"/>
+  <text x="732" y="200" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">trust</text>
+  <circle cx="676" cy="206" r="6" fill="#9b8cff"/>
+  <text x="640" y="224" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">faith</text>
+
+  <!-- cluster B: unrelated -->
+  <circle cx="800" cy="300" r="6" fill="#5fd39a"/>
+  <text x="752" y="318" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">banana</text>
+  <circle cx="780" cy="326" r="6" fill="#5fd39a"/>
+  <text x="752" y="342" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">apple</text>
+
+  <!-- traveling token: starts at embedding box, lands near cluster A (690,170) -->
+  <g>
+    <circle r="9" fill="#ffd166" stroke="#171327" stroke-width="1.5"/>
+    <text font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="10" fill="#171327" text-anchor="middle" dy="3" font-weight="700">tk</text>
+    <animateMotion dur="3.2s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;0.85;1" keyPoints="0;0.5;0.9;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.5 0 0.5 1" path="M560,146 L620,150 L680,165 L690,170"/>
+  </g>
+
+  <!-- pulse ring at landing spot to show "lands near similar ones" -->
+  <circle cx="690" cy="170" r="6" fill="none" stroke="#ffd166" stroke-width="2">
+    <animate attributeName="r" values="6;6;22;6" dur="3.2s" repeatCount="indefinite" keyTimes="0;0.82;0.92;1"/>
+    <animate attributeName="opacity" values="0;0;0.9;0" dur="3.2s" repeatCount="indefinite" keyTimes="0;0.82;0.92;1"/>
+  </circle>
+
+  <text x="728" y="364" text-anchor="middle" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">a new token lands next to words with similar meaning</text>
+</svg></div><div class="diagram-cap">A pipeline showing raw text split into tokens, each mapped to an embedding vector, then placed as a point in a 2D space where similar words cluster.</div></div><p class="lead">Here's the plot twist nobody tells beginners: a language model never actually reads words, or even letters. It reads <b>tokens</b> — bite-sized chunks of text. Everything else in this guide is built on top of that one fact.</p>
+
+<h3>What's a token?</h3>
+<p>A token is a sub-word chunk: sometimes a whole word, sometimes a piece of one, sometimes just a space or a punctuation mark. As a rough rule of thumb for English, <b>one token is about 4 characters</b>, or roughly <b>0.75 of a word</b>. So 100 words lands somewhere near 130 tokens.</p>
+<p>Why chop words up? Because keeping a separate entry for every word ever written would be wildly inefficient. Instead, the model learns a kit of reusable pieces. Take <code>unbelievable</code> — it can split into <code>un</code> / <code>believ</code> / <code>able</code>. Those same pieces snap back together to build <i>unthinkable</i>, <i>believer</i>, <i>readable</i>, and thousands more. Think of tokens as the <b>LEGO bricks of text</b>. (Different models slice slightly differently, so the exact pieces vary — but the idea is identical.)</p>
+
+<div class="cal info">Want to <i>see</i> it? Search for an online "tokenizer" tool, paste in a sentence, and watch your text get sliced into colored chunks. It's the fastest way for this to click.</div>
+
+<h3>From token to meaning: the embedding</h3>
+<p>A model can't do math on the letters <code>c-a-t</code>. So each token gets converted into an <b>embedding</b> — a long list of numbers (a <b>vector</b>) that captures its meaning. Not the spelling. The <i>meaning</i>.</p>
+<p>On its own, a token's embedding captures its <i>general</i> meaning, the dictionary-ish gist. The richer, in-context meaning (is "bank" a river or a vault?) gets layered on later by the <b>transformer</b> — that's the next section.</p>
+
+<h4>The anchor idea: GPS coordinates for meaning</h4>
+<p>Think about how GPS works. Two numbers — latitude and longitude — pinpoint any place on Earth. Grand Blanc, Michigan is just a pair of coordinates, and so is Detroit, and because they're close in real life, their numbers are close too.</p>
+<p>An embedding does the same trick, but for meaning instead of geography. Its list of numbers pinpoints a word in an imaginary <b>"meaning-space."</b> Words with similar meanings land near each other, like houses in the same neighborhood: <i>cat</i>, <i>kitten</i>, and <i>feline</i> cluster together, while <i>helicopter</i> sits way across town.</p>
+
+<h3>Meaning even has direction</h3>
+<p>The famous demo: take the vector for <i>king</i>, subtract <i>man</i>, add <i>woman</i>, and you land remarkably close to <i>queen</i>.</p>
+<pre><code>king − man + woman ≈ queen</code></pre>
+<p>That's not a parlor trick — it hints that meaning is <b>geometric and directional</b>: a rough "royalty" direction and "gender" direction actually exist as movements through the space.</p>
+<div class="cal warn">Treat this as a tidy ideal, not a guarantee. Real embeddings are messier than the clean textbook example — but the intuition (meaning has shape and direction) is genuinely how it works.</div>
+
+<h3>Why you should care: cost and the clock</h3>
+<p>Tokens aren't just an internal detail — they're the unit of <b>money</b> and the unit of <b>memory</b>. You're billed per token (in <i>and</i> out), and the model can only hold so many at once.</p>
+
+<div class="grid">
+  <div class="card">
+    <h4>Tokens = your wallet</h4>
+    <p>Providers price per token. A long document in plus a long answer out means more tokens, which means a bigger bill. Concise prompts are cheaper prompts.</p>
+  </div>
+  <div class="card">
+    <h4>Tokens = your budget</h4>
+    <p>The <b>context window</b> is the total number of tokens the model can hold at one time — prompt, conversation, and reply combined. Fill it up and the oldest stuff falls out the back.</p>
+  </div>
+  <div class="card">
+    <h4>The strawberry problem</h4>
+    <p>This is why an LLM can write you a flawless sonnet but fumble "how many R's are in strawberry." It sees chunky tokens, not individual letters — counting characters isn't its native language.</p>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>Text</th><th>≈ Tokens</th></tr></thead>
+  <tbody>
+    <tr><td>One short word ("cat")</td><td>1</td></tr>
+    <tr><td>"unbelievable"</td><td>~3 (un / believ / able)</td></tr>
+    <tr><td>A 100-word paragraph</td><td>~130</td></tr>
+    <tr><td>A 10-page document</td><td>~5,000+</td></tr>
+  </tbody>
+</table>
+
+<p>We'll come back to the context window when we talk about <b>inference</b> — for now, just hold the picture: it's a token budget, and you spend it as you go.</p>
+
+<div class="cal pro">Tokens and embeddings are the <b>ingredients</b>. Up next, the <b>transformer</b> is the machine that takes all these meaning-coordinates and lets them talk to each other.</div>
+    </div>
+  </section>
+  <section class="sec" id="ai-transformer" data-id="ai-transformer">
+    <div class="sec-head">
+      <div class="sec-icon">⚡</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 32</div>
+        <h2>Transformers & Attention</h2>
+        <p class="sec-tag">In 2017 one paper taught machines to read every word at once — and lit the fuse on ChatGPT.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-transformer">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">Self-attention lets a model decide which earlier words matter most, the breakthrough that powers every modern LLM.</span></div><div class="diagram-svg"><svg viewBox="0 0 880 400" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Self-attention diagram: the word it connects to other word tokens with beams whose thickness shows attention weight, strongest to the noun animal.">
+  <defs>
+    <linearGradient id="bgGrad-ai-transformer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d1830"/>
+      <stop offset="1" stop-color="#171327"/>
+    </linearGradient>
+    <linearGradient id="strongBeam-ai-transformer" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff7a59"/>
+      <stop offset="1" stop-color="#ffd166"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="880" height="400" fill="url(#bgGrad-ai-transformer)"/>
+
+  <text x="40" y="42" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="16" font-weight="600">Self-Attention: every word looks at every other word</text>
+  <text x="40" y="64" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">The focus word &#8220;it&#8221; weighs the others &#8212; thicker, brighter beam = more attention</text>
+
+  <g fill="none" stroke-linecap="round">
+    <path d="M590 250 Q 320 150 130 130" stroke="#9b8cff" stroke-width="2" opacity="0.35">
+      <animate attributeName="opacity" values="0.12;0.4;0.12" dur="3s" begin="0.1s" repeatCount="indefinite"/>
+    </path>
+    <path d="M590 250 Q 360 150 250 130" stroke="#54e6e0" stroke-width="2.5" opacity="0.4">
+      <animate attributeName="opacity" values="0.15;0.5;0.15" dur="3s" begin="0.4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M590 250 Q 540 150 470 130" stroke="#5fd39a" stroke-width="3" opacity="0.45">
+      <animate attributeName="opacity" values="0.2;0.55;0.2" dur="3s" begin="0.7s" repeatCount="indefinite"/>
+    </path>
+    <path d="M590 250 Q 660 150 700 130" stroke="#ff6b8b" stroke-width="2" opacity="0.3">
+      <animate attributeName="opacity" values="0.12;0.4;0.12" dur="3s" begin="1s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <path d="M590 250 Q 430 120 360 130" fill="none" stroke="url(#strongBeam-ai-transformer)" stroke-width="9" stroke-linecap="round" opacity="0.85">
+    <animate attributeName="stroke-width" values="6;11;6" dur="2.6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="2.6s" repeatCount="indefinite"/>
+  </path>
+  <circle r="5" fill="#ffd166">
+    <animateMotion path="M590 250 Q 430 120 360 130" dur="2.6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="2.6s" repeatCount="indefinite"/>
+  </circle>
+
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" text-anchor="middle">
+    <rect x="90" y="110" width="80" height="40" rx="12" fill="#1d1830" stroke="#2b2542"/>
+    <text x="130" y="135" fill="#ece9f5">The</text>
+    <rect x="208" y="110" width="84" height="40" rx="12" fill="#1d1830" stroke="#2b2542"/>
+    <text x="250" y="135" fill="#ece9f5">tired</text>
+    <rect x="312" y="106" width="96" height="48" rx="14" fill="#2a1f2a" stroke="#ff7a59" stroke-width="2"/>
+    <text x="360" y="134" fill="#ffd166" font-weight="600">animal</text>
+    <rect x="428" y="110" width="84" height="40" rx="12" fill="#1d1830" stroke="#2b2542"/>
+    <text x="470" y="135" fill="#ece9f5">crossed</text>
+    <rect x="660" y="110" width="80" height="40" rx="12" fill="#1d1830" stroke="#2b2542"/>
+    <text x="700" y="135" fill="#ece9f5">because</text>
+  </g>
+
+  <rect x="552" y="250" width="76" height="46" rx="14" fill="#3a2440" stroke="#ff7a59" stroke-width="2.5"/>
+  <text x="590" y="279" fill="#ff7a59" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="15" font-weight="600" text-anchor="middle">it</text>
+  <text x="590" y="316" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" text-anchor="middle">focus word</text>
+  <rect x="552" y="250" width="76" height="46" rx="14" fill="none" stroke="#ffd166" stroke-width="2" opacity="0">
+    <animate attributeName="opacity" values="0;0.7;0" dur="2.6s" repeatCount="indefinite"/>
+  </rect>
+
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif">
+    <rect x="40" y="330" width="300" height="50" rx="12" fill="#1d1830" stroke="#2b2542"/>
+    <text x="56" y="352" fill="#9b8cff" font-size="12" font-weight="600">Stacked layers &#215;N</text>
+    <text x="56" y="370" fill="#a59fc0" font-size="11">attention repeats, refining meaning each layer</text>
+  </g>
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif">
+    <rect x="356" y="330" width="300" height="50" rx="12" fill="#1d1830" stroke="#2b2542"/>
+    <text x="372" y="352" fill="#54e6e0" font-size="12" font-weight="600">Multi-head</text>
+    <text x="372" y="370" fill="#a59fc0" font-size="11">many heads look at different relations at once</text>
+  </g>
+
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">
+    <line x1="688" y1="345" x2="720" y2="345" stroke="url(#strongBeam-ai-transformer)" stroke-width="8" stroke-linecap="round"/>
+    <text x="726" y="349" fill="#a59fc0">strong</text>
+    <line x1="688" y1="367" x2="720" y2="367" stroke="#9b8cff" stroke-width="2" stroke-linecap="round"/>
+    <text x="726" y="371" fill="#a59fc0">weak</text>
+  </g>
+</svg></div><div class="diagram-cap">The word "it" sends pulsing attention beams to every other word, with the thickest, brightest beam landing on the noun it truly refers to ("animal").</div></div><p class="lead">Back at our 2017 stop on the timeline, a paper with the cheeky title <i>"Attention Is All You Need"</i> introduced the <b>transformer</b> — the architecture humming under the hood of virtually every modern LLM. The title was a flex, and for once it held up: <b>attention</b> really was the key idea, and it kicked off the entire ChatGPT era.</p>
+
+<h3>The heart of it: self-attention</h3>
+<p>Here's the one idea that matters. As the model reads, <b>every token</b> (a word or word-piece) <b>looks at the other tokens and decides how much each one matters to its own meaning</b>. That's it. That's self-attention.</p>
+<p>Picture a sentence: <i>"The trophy didn't fit in the suitcase because <b>it</b> was too big."</i> What does <i>"it"</i> mean — the trophy or the suitcase? You knew instantly. Self-attention is how the model figures it out too: the word <i>"it"</i> glances at the other words, scores which one is most relevant, and locks onto <i>"trophy."</i> Swap "big" for "small" and the answer flips to "suitcase" — and the model's attention flips right along with it.</p>
+
+<div class="cal info">Think of a lively dinner party. Every word is a guest who listens to <i>all</i> the other guests at once and decides whose comment matters most for understanding the conversation. That simultaneous, selective listening — everyone weighing everyone else in parallel — is self-attention in one image.</div>
+
+<h3>Why it crushed the old way (RNNs)</h3>
+<p>Before transformers, models called <b>RNNs</b> (recurrent neural networks) read text the way you'd read with a finger under each word — one word at a time, left to right, trying to remember everything that came before. Slow, and forgetful: by the end of a long paragraph, the start had faded.</p>
+<p>Attention reads the <i>whole</i> input at once. Two huge wins fall out of that:</p>
+
+<div class="grid">
+  <div class="card"><h4>Parallelizable</h4><p>All tokens are processed simultaneously, not single-file. That's what makes training on internet-sized text feasible — and fast on modern hardware (GPUs love doing many things at once).</p></div>
+  <div class="card"><h4>Long-range context</h4><p>A word near the end can directly "talk to" a word near the start in a single step, instead of passing the message hand-to-hand. Distant connections stay sharp instead of fading.</p></div>
+</div>
+
+<table>
+  <thead><tr><th>&nbsp;</th><th>RNN (the old way)</th><th>Transformer / attention</th></tr></thead>
+  <tbody>
+    <tr><td>Reading style</td><td>One word at a time</td><td>All words at once</td></tr>
+    <tr><td>Speed</td><td>Sequential, slow to train</td><td>Parallel, fast to train</td></tr>
+    <tr><td>Distant words</td><td>Fades over distance</td><td>Connects directly</td></tr>
+  </tbody>
+</table>
+
+<h3>Multi-head attention: several viewpoints at once</h3>
+<p>One round of attention is good. Transformers run several in parallel — called <b>heads</b> — and each head can learn to notice a different kind of relationship. Back at the dinner party: one guest tracks <i>grammar</i> (who's the subject, who's the verb), another tracks <i>topic</i> (which words are about the same thing), another tracks <i>who-refers-to-whom</i> (that "it" → "trophy" link). Combine all those viewpoints and you get a far richer read of the sentence than any single pass could give.</p>
+
+<h3>Stacked deep — the "deep" in deep learning</h3>
+<p>One block of attention isn't the whole model. These blocks are <b>stacked many layers high</b>, each one's output feeding into the next. Early layers tend to catch simple patterns; later layers build toward grammar, meaning, and intent — the same hierarchy-of-abstraction idea from the neural-networks section, just taller. That stacking <i>is</i> the "deep" in deep learning.</p>
+
+<div class="cal warn">One honest catch: attention by itself is <b>order-blind</b>. On its own it treats the input like a bag of words — <i>"dog bites man"</i> and <i>"man bites dog"</i> would look identical to it. Very different news stories. So position information is added in separately (called <b>positional encoding</b>) to tell the model where each word sits. Attention figures out <i>what relates to what</i>; position tells it <i>what came where</i>.</div>
+
+<div class="cal tip">If you remember one thing: a transformer reads everything at once and lets every word decide which other words to listen to. That single trick — selective listening, in parallel, stacked deep — is what powers today's LLMs.</div>
+
+<p>So now we have the architecture. But an empty transformer knows nothing — it's a brilliant student who hasn't opened a single book yet. How do you actually teach it? That's <b>training</b>, and it's our next stop.</p>
+    </div>
+  </section>
+  <section class="sec" id="ai-training" data-id="ai-training">
+    <div class="sec-head">
+      <div class="sec-icon">🏋️</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 33</div>
+        <h2>Training, Fine-Tuning & RLHF</h2>
+        <p class="sec-tag">A model goes to school in three stages: read the library, take a class, get coached.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-training">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">Training stages turn a raw text-predictor into a helpful, safe assistant that follows instructions and human values.</span></div><div class="diagram-svg"><svg viewBox="0 0 880 400" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="How models are trained: Pretraining, then supervised fine-tuning, then RLHF, shown as a token advancing and brightening through three stages">
+  <defs>
+    <linearGradient id="bg-grad-ai-training" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d1830"/>
+      <stop offset="1" stop-color="#171327"/>
+    </linearGradient>
+    <radialGradient id="tok-glow-ai-training" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#54e6e0" stop-opacity="0"/>
+    </radialGradient>
+    <path id="track-ai-training" d="M120 318 H300 H540 H806"/>
+    <marker id="arrow-ai-training" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#a59fc0"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="880" height="400" fill="url(#bg-grad-ai-training)"/>
+  <text x="40" y="40" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="16" font-weight="600">Training, Fine-Tuning &amp; RLHF &#8212; how a raw model becomes an aligned assistant</text>
+  <text x="40" y="62" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12">Follow the token as it advances through three stages, getting brighter and better aligned.</text>
+
+  <line x1="250" y1="170" x2="294" y2="170" stroke="#a59fc0" stroke-width="2" marker-end="url(#arrow-ai-training)"/>
+  <line x1="490" y1="170" x2="534" y2="170" stroke="#a59fc0" stroke-width="2" marker-end="url(#arrow-ai-training)"/>
+
+  <g>
+    <rect x="40" y="84" width="210" height="172" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="1.5"/>
+    <circle cx="74" cy="118" r="15" fill="#171327" stroke="#9b8cff" stroke-width="2"/>
+    <text x="74" y="123" text-anchor="middle" font-size="14" fill="#9b8cff" font-family="-apple-system,Segoe UI,Inter,sans-serif">1</text>
+    <text x="100" y="114" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="13" font-weight="600">Pretraining</text>
+    <text x="100" y="132" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">huge text corpus</text>
+    <rect x="62" y="152" width="166" height="9" rx="4" fill="#9b8cff" opacity="0.35"/>
+    <rect x="62" y="166" width="138" height="9" rx="4" fill="#9b8cff" opacity="0.45"/>
+    <rect x="62" y="180" width="166" height="9" rx="4" fill="#9b8cff" opacity="0.30"/>
+    <rect x="62" y="194" width="120" height="9" rx="4" fill="#9b8cff" opacity="0.45"/>
+    <text x="145" y="232" text-anchor="middle" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">predict the next word</text>
+  </g>
+
+  <g>
+    <rect x="296" y="84" width="194" height="172" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="1.5"/>
+    <circle cx="330" cy="118" r="15" fill="#171327" stroke="#54e6e0" stroke-width="2"/>
+    <text x="330" y="123" text-anchor="middle" font-size="14" fill="#54e6e0" font-family="-apple-system,Segoe UI,Inter,sans-serif">2</text>
+    <text x="356" y="114" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="13" font-weight="600">SFT</text>
+    <text x="356" y="132" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">instruction pairs</text>
+    <rect x="316" y="150" width="152" height="40" rx="8" fill="#171327" stroke="#54e6e0" stroke-width="1" opacity="0.85"/>
+    <text x="328" y="166" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="10">Q: prompt</text>
+    <text x="328" y="182" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="10">A: good answer</text>
+    <text x="393" y="222" text-anchor="middle" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">learns to follow instructions</text>
+  </g>
+
+  <g>
+    <rect x="536" y="84" width="304" height="172" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="1.5"/>
+    <circle cx="570" cy="118" r="15" fill="#171327" stroke="#5fd39a" stroke-width="2"/>
+    <text x="570" y="123" text-anchor="middle" font-size="14" fill="#5fd39a" font-family="-apple-system,Segoe UI,Inter,sans-serif">3</text>
+    <text x="596" y="114" fill="#ece9f5" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="13" font-weight="600">RLHF</text>
+    <text x="596" y="132" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">humans rank to reward model to tuned</text>
+
+    <text x="560" y="160" fill="#ffd166" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">human ranks</text>
+    <rect x="556" y="168" width="66" height="13" rx="4" fill="#5fd39a" opacity="0.8"/>
+    <text x="628" y="178" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="10">best</text>
+    <rect x="556" y="186" width="46" height="13" rx="4" fill="#ffd166" opacity="0.7"/>
+    <rect x="556" y="204" width="32" height="13" rx="4" fill="#ff6b8b" opacity="0.7"/>
+
+    <line x1="654" y1="195" x2="690" y2="195" stroke="#a59fc0" stroke-width="2" marker-end="url(#arrow-ai-training)"/>
+    <rect x="694" y="164" width="86" height="60" rx="10" fill="#171327" stroke="#ffd166" stroke-width="1.5"/>
+    <text x="737" y="190" text-anchor="middle" fill="#ffd166" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">reward</text>
+    <text x="737" y="206" text-anchor="middle" fill="#ffd166" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">model</text>
+    <text x="690" y="244" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11">scores guide tuning</text>
+  </g>
+
+  <g>
+    <circle cx="806" cy="318" r="22" fill="#171327" stroke="#5fd39a" stroke-width="2"/>
+    <circle cx="806" cy="318" r="9" fill="#5fd39a">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <text x="806" y="360" text-anchor="middle" fill="#5fd39a" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" font-weight="600">aligned</text>
+  </g>
+
+  <text x="120" y="360" text-anchor="middle" fill="#a59fc0" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="10">raw</text>
+
+  <g>
+    <circle r="22" fill="url(#tok-glow-ai-training)">
+      <animateMotion dur="3.2s" repeatCount="indefinite">
+        <mpath href="#track-ai-training"/>
+      </animateMotion>
+    </circle>
+    <circle r="9" fill="#9b8cff" stroke="#ece9f5" stroke-width="1.5">
+      <animateMotion dur="3.2s" repeatCount="indefinite">
+        <mpath href="#track-ai-training"/>
+      </animateMotion>
+      <animate attributeName="fill" values="#9b8cff;#9b8cff;#54e6e0;#54e6e0;#5fd39a;#5fd39a" keyTimes="0;0.2;0.45;0.6;0.85;1" dur="3.2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="6;6;8;8;10;10" keyTimes="0;0.2;0.45;0.6;0.85;1" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg></div><div class="diagram-cap">A three-stage pipeline (Pretraining to SFT to RLHF) with a token traveling left to right, getting brighter and more aligned at each stage.</div></div><p class="lead">A finished AI assistant isn't built in one step — it's <i>educated</i> in three. Picture a model going to school: first it reads the entire library, then it takes a class on answering questions, then mentors coach it until it's genuinely useful.</p>
+
+<h3>The three-class education of a model</h3>
+<p>Everything in this section happens during <b>training</b> — the slow, expensive "studying" phase where the model's internal numbers (its <i>weights</i>) get tuned. Once training wraps up, those weights are locked in and the model ships out to do its job (that's <b>inference</b>, covered elsewhere). Here are the three classes it takes, in order.</p>
+
+<div class="grid">
+  <div class="card">
+    <h4>1. Pretraining — read the library</h4>
+    <p>The model reads internet-scale text and plays one game trillions of times: <b>predict the next token</b> (a token is a word or word-fragment). No humans label anything — the text <i>is</i> its own answer key: hide what comes next, guess it, check, repeat. This is where nearly all its language skill and world knowledge come from.</p>
+  </div>
+  <div class="card">
+    <h4>2. SFT — take a class</h4>
+    <p>Now it studies curated <b>(instruction, response)</b> pairs written by people, so it learns to actually <i>follow instructions</i> instead of just continuing text. This mostly shapes behavior and tone — not new facts.</p>
+  </div>
+  <div class="card">
+    <h4>3. RLHF — get coached</h4>
+    <p>Humans <b>rank</b> competing answers. A "reward model" learns those preferences, then nudges the model toward being <b>helpful, honest, and harmless</b> — qualities too fuzzy to write down as labeled examples.</p>
+  </div>
+</div>
+
+<h3>Stage 1: Pretraining (self-supervised next-token prediction)</h3>
+<p>The model chews through a colossal pile of text and repeatedly guesses the next token. Because the right answer is simply whatever actually came next, no human grading is needed — that's why it's called <b>self-supervised</b>. The result is a <span class="pill">base model</span>: a raw text-completer that has absorbed grammar, facts, and patterns but isn't yet a polite assistant.</p>
+
+<div class="cal info">A base model fresh out of pretraining has read everything ever written but never had a real conversation — like a hermit genius who needs one quick class on small talk before it's any use.</div>
+
+<h3>Stage 2: Supervised fine-tuning (SFT)</h3>
+<p>Here the base model keeps training, but now on hand-picked examples of <i>good</i> instruction-and-answer pairs. It's the difference between someone who has read every cookbook and someone who's taken a class on actually answering "what should I make for dinner?" SFT teaches <b>how to respond</b> — the helpful format, the tone, the do-what-was-asked behavior. It generally doesn't pour in new knowledge; that came from Stage 1.</p>
+
+<h3>Stage 3: RLHF and preference tuning</h3>
+<p>Some things are hard to capture with example answers — "be honest," "don't be smug," "refuse this politely." So instead of writing perfect answers, humans look at two model replies and pick the better one. A <b>reward model</b> learns to predict those human preferences, and reinforcement learning gently steers the main model toward answers the reward model scores highly. It's coaching: try, get ranked, adjust, repeat.</p>
+
+<div class="cal tip">Anthropic adds a twist called <b>Constitutional AI</b>. Instead of humans labeling every single case, the model critiques and revises its own answers against a written set of principles — a "constitution." Claude is trained this way, which scales the coaching without needing a human to weigh in on every judgment.</div>
+
+<h3>The cost reality</h3>
+<p>The three stages are wildly unequal in price. Pretraining is the budget-buster; the later stages are cheap by comparison but disproportionately decide how the model <i>behaves</i>.</p>
+
+<table>
+  <thead><tr><th>Stage</th><th>Teaches</th><th>Needs humans?</th><th>Cost</th></tr></thead>
+  <tbody>
+    <tr><td>Pretraining</td><td>Language + world knowledge</td><td>No (self-supervised)</td><td>Enormous</td></tr>
+    <tr><td>SFT</td><td>Following instructions</td><td>Yes (curated pairs)</td><td>Much smaller</td></tr>
+    <tr><td>RLHF / Constitutional AI</td><td>Helpful, honest, harmless</td><td>Yes (rankings / principles)</td><td>Smaller still, but decisive</td></tr>
+  </tbody>
+</table>
+
+<div class="cal pro">The full arc in one line: <b>read the entire library</b> (pretraining), <b>take a focused class</b> on answering questions (SFT), then <b>get coached by mentors</b> who rank your answers until you're genuinely helpful (RLHF / Constitutional AI).</div>
+    </div>
+  </section>
+  <section class="sec" id="ai-inference" data-id="ai-inference">
+    <div class="sec-head">
+      <div class="sec-icon">🔮</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 34</div>
+        <h2>Inference, Context & Hallucinations</h2>
+        <p class="sec-tag">Inference is the model improvising — give it a script or it makes things up.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-inference">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">Knowing what the model can "see" and how temperature shapes output helps beginners trust answers and spot AI mistakes.</span></div><div class="diagram-svg"><svg viewBox="0 0 880 400" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram of a context window sliding over tokens, a temperature dial, and a hallucination warning">
+  <defs>
+    <linearGradient id="bg-ai-inference" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d1830"/>
+      <stop offset="1" stop-color="#171327"/>
+    </linearGradient>
+    <linearGradient id="dial-ai-inference" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#54e6e0"/>
+      <stop offset="0.5" stop-color="#ffd166"/>
+      <stop offset="1" stop-color="#ff7a59"/>
+    </linearGradient>
+    <clipPath id="scrollclip-ai-inference">
+      <rect x="40" y="118" width="500" height="120" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <rect x="0" y="0" width="880" height="400" fill="url(#bg-ai-inference)"/>
+  <text x="40" y="44" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="16" font-weight="600" fill="#ece9f5">Inference, Context &amp; Hallucinations</text>
+  <text x="40" y="66" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#a59fc0">The model only "sees" tokens inside its context window. Temperature tunes focus vs. creativity.</text>
+
+  <text x="40" y="104" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#9b8cff">Long scroll of tokens</text>
+  <rect x="40" y="118" width="500" height="120" rx="12" fill="#171327" stroke="#2b2542"/>
+  <g clip-path="url(#scrollclip-ai-inference)">
+    <g font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#a59fc0">
+      <animateTransform attributeName="transform" type="translate" values="0,0; -180,0; 0,0" dur="4s" repeatCount="indefinite"/>
+      <rect x="60" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="82" y="183" text-anchor="middle">The</text>
+      <rect x="112" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="134" y="183" text-anchor="middle">cat</text>
+      <rect x="164" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="186" y="183" text-anchor="middle">sat</text>
+      <rect x="216" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="238" y="183" text-anchor="middle">on</text>
+      <rect x="268" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="290" y="183" text-anchor="middle">the</text>
+      <rect x="320" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="342" y="183" text-anchor="middle">warm</text>
+      <rect x="372" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="394" y="183" text-anchor="middle">soft</text>
+      <rect x="424" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="446" y="183" text-anchor="middle">mat</text>
+      <rect x="476" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="498" y="183" text-anchor="middle">near</text>
+      <rect x="528" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="550" y="183" text-anchor="middle">fire</text>
+      <rect x="580" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="602" y="183" text-anchor="middle">all</text>
+      <rect x="632" y="158" width="44" height="40" rx="8" fill="#241e38"/><text x="654" y="183" text-anchor="middle">day</text>
+    </g>
+  </g>
+
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0,0; 120,0; 0,0" dur="4s" repeatCount="indefinite"/>
+    <rect x="150" y="124" width="170" height="108" rx="12" fill="#9b8cff" fill-opacity="0.14" stroke="#9b8cff" stroke-width="2"/>
+    <text x="235" y="226" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#9b8cff">context window (what it sees)</text>
+  </g>
+
+  <text x="600" y="104" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#ffd166">Temperature dial</text>
+  <rect x="600" y="116" width="240" height="160" rx="14" fill="#171327" stroke="#2b2542"/>
+  <path d="M 640 246 A 80 80 0 0 1 800 246" fill="none" stroke="url(#dial-ai-inference)" stroke-width="10" stroke-linecap="round"/>
+  <text x="636" y="266" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#54e6e0">low</text>
+  <text x="784" y="266" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#ff7a59">high</text>
+  <text x="720" y="150" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#a59fc0">focused to creative</text>
+  <g transform="translate(720,246)">
+    <line x1="0" y1="0" x2="0" y2="-62" stroke="#ece9f5" stroke-width="3" stroke-linecap="round">
+      <animateTransform attributeName="transform" type="rotate" values="-55;55;-20;40;-55" dur="3s" repeatCount="indefinite"/>
+    </line>
+    <circle cx="0" cy="0" r="7" fill="#ffd166"/>
+  </g>
+
+  <g transform="translate(600,300)">
+    <rect x="0" y="0" width="240" height="74" rx="12" fill="#2a1a22" stroke="#ff6b8b"/>
+    <g transform="translate(28,37)">
+      <polygon points="0,-16 16,12 -16,12" fill="none" stroke="#ff6b8b" stroke-width="2.5" stroke-linejoin="round">
+        <animate attributeName="stroke-opacity" values="1;0.3;1" dur="1.4s" repeatCount="indefinite"/>
+      </polygon>
+      <text x="0" y="9" text-anchor="middle" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="14" font-weight="600" fill="#ff6b8b">!</text>
+    </g>
+    <text x="54" y="30" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" font-weight="600" fill="#ff6b8b">Hallucination</text>
+    <text x="54" y="50" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#a59fc0">missing context = guess</text>
+  </g>
+
+  <text x="40" y="262" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#a59fc0">Tokens outside the frame are forgotten — the model cannot read them.</text>
+  <line x1="290" y1="340" x2="600" y2="330" stroke="#2b2542" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="40" y="334" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#5fd39a">If needed facts fall outside the window, the model may invent them.</text>
+</svg></div><div class="diagram-cap">A sliding context window highlights only the tokens it can read on a long scroll, a temperature dial wiggles between focused and creative, and missing context triggers a hallucination warning.</div></div><p class="lead">Training built the brain. <b>Inference</b> is what happens when you actually use it — and understanding this one moment explains why models are so fluent, so fast, and occasionally so confidently, spectacularly wrong.</p>
+
+<h3>Inference: using the frozen brain</h3>
+<p>Remember training — millions of examples nudging billions of dials until the model got good? <b>Inference is the exam, not the studying.</b> The dials are now locked. Every time you chat with a model, you're running that finished, frozen brain forward to generate text. The weights don't change, the skills are fixed in place. It doesn't learn from your conversation, and it won't remember you tomorrow.</p>
+
+<h3>The context window: its tiny working memory</h3>
+<p>The model has no memory of your last chat and no private notebook. All it can "see" is what fits in its <b>context window</b> right now — think of it as the model's short-term working memory, or the desk it's allowed to spread papers on.</p>
+<p>Here's the catch beginners always miss: that desk holds <b>everything at once</b> — your prompt, the entire back-and-forth history, the system instructions, <i>and</i> the answer it's currently writing. Anything that doesn't fit on the desk is simply gone. Not "kind of forgotten" — invisible. If a detail scrolled off the top, the model isn't ignoring it; from where it sits, that detail never existed.</p>
+<div class="cal info">This is why a long chat can suddenly "forget" something you said earlier, and why pasting the relevant document into the conversation works so much better than expecting the model to recall it. On the desk = it can use it. Off the desk = it can't.</div>
+
+<h3>Temperature: the creativity dial</h3>
+<p>When the model generates, it's choosing the next word from a list of likely candidates. <b>Temperature</b> (and related sampling settings) decides how adventurous that choice is.</p>
+<div class="grid">
+  <div class="card"><h4>Low temperature</h4><p>Focused, predictable, repeatable. It picks the safest, most likely word almost every time. Great for code, data extraction, and factual answers.</p></div>
+  <div class="card"><h4>High temperature</h4><p>Loose, surprising, creative. It gambles on less-likely words. Great for brainstorming, poetry, and "give me ten wild ideas."</p></div>
+</div>
+<div class="cal warn">Temperature controls randomness, <b>not correctness</b>. Turning it down makes answers more consistent — it does not make them more true. Temperature zero doesn't make a model honest; it just makes it lean toward the same confident answer every time, right or wrong.</div>
+
+<h3>Why models hallucinate</h3>
+<p>A <b>hallucination</b> is when the model states something false with total confidence — a fake citation, a made-up date, a plausible-sounding "fact" that isn't. Beginners assume this is a bug. Mostly, it's the core mechanism working exactly as designed.</p>
+<p>The model doesn't <i>look up</i> facts in a database. It <b>predicts plausible text</b>, one word at a time, based on patterns from training. When it has seen the answer often, the most plausible continuation happens to be correct. When it hasn't, the most plausible continuation is a confident-sounding guess — because in its training data, confident sentences almost never trail off with "...but honestly I'm not sure."</p>
+<div class="cal info"><b>The anchor analogy:</b> the model is an improv actor who never breaks character to say "I don't know." Hand them a script — your source document — and they're sharp and accurate. Leave them to ad-lib from memory and they'll invent details on the spot to keep the scene going. The show must go on.</div>
+
+<h3>The fix is shockingly effective</h3>
+<p>Here's the rule of thumb worth memorizing. When a model answers open-ended questions purely from memory, it can be wrong a meaningful chunk of the time — and you often can't tell which chunk. Hand it a source document to work from — and ask it to answer <i>using that document</i> — and accuracy improves dramatically, because now it's reading instead of guessing.</p>
+<p>The takeaway every pro repeats: <b>models are best as editors and synthesizers, not as knowledge sources.</b> Don't ask "what does the contract say?" — paste the contract in and ask "according to this, what does it say?"</p>
+
+<h4>Your practical mitigation toolkit</h4>
+<table>
+  <thead><tr><th>Move</th><th>Why it helps</th></tr></thead>
+  <tbody>
+    <tr><td>Give it context / sources (RAG)</td><td>RAG = retrieval-augmented generation: fetch relevant text and hand it to the model. The script instead of improv — the single biggest accuracy win.</td></tr>
+    <tr><td>Ask for citations</td><td>Forces it to point at where a claim came from, so you can check it (and still verify — citations can be faked too).</td></tr>
+    <tr><td>Lower the temperature</td><td>For factual work, fewer creative gambles means fewer invented flourishes.</td></tr>
+    <tr><td>Verify anything high-stakes</td><td>Medical, legal, financial, or money-moving answers always get a human check.</td></tr>
+  </tbody>
+</table>
+
+<h3>The knowledge cutoff</h3>
+<p>Every model was trained up to a certain date and then frozen. On its own, it knows <b>nothing</b> that happened after its <b>knowledge cutoff</b> — last week's news, today's prices, a result from this morning. Ask about recent events and it'll either admit the gap or, worse, confidently improvise. The fix is the same one as above: don't rely on stale memory, drop the fresh information straight into the context window.</p>
+
+<div class="cal pro">Notice the pattern: nearly every fix is "give the model the right context." So what if the model could fetch its own context — search the web, read a file, run a calculator — and act on it in a loop, instead of waiting for you to paste everything in? Give it tools and a loop, and you've built an <b>agent</b>. That's next.</div>
+    </div>
+  </section>
+  <section class="sec" id="ai-agents" data-id="ai-agents">
+    <div class="sec-head">
+      <div class="sec-icon">🔁</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 35</div>
+        <h2>Agents, Tools & the AI Loop</h2>
+        <p class="sec-tag">An agent is an LLM in a loop with hands: it acts, checks its work, and tries again.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-agents">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">Validated the SVG against all six checks and fixed two real issues plus hardened compatibility.</span></div><div class="diagram-svg"><svg viewBox="0 0 880 400" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An AI agent loop: Perceive, Think with the LLM, Act by calling a tool, Observe the result, then back to Perceive. A glowing token travels clockwise. A side rack lists tools: search, run code, edit file.">
+  <defs>
+    <radialGradient id="tokenGrad-ai-agents" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#ffd166"/>
+      <stop offset="100%" stop-color="#ff7a59"/>
+    </radialGradient>
+    <marker id="arrow-ai-agents" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9b8cff"/>
+    </marker>
+    <path id="loopPath-ai-agents" d="M 330 143 A 160 82 0 0 1 490 225 A 160 82 0 0 1 330 307 A 160 82 0 0 1 170 225 A 160 82 0 0 1 330 143 Z" fill="none"/>
+  </defs>
+
+  <rect x="0" y="0" width="880" height="400" fill="#171327"/>
+  <text x="40" y="40" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="16" font-weight="600" fill="#ece9f5">Agents, Tools &amp; the AI Loop</text>
+  <text x="40" y="60" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="12" fill="#a59fc0">An agent keeps cycling: it thinks, acts with a tool, sees the result, and repeats until done.</text>
+
+  <!-- guiding loop arc (faint) -->
+  <ellipse cx="330" cy="225" rx="160" ry="82" fill="none" stroke="#2b2542" stroke-width="2" stroke-dasharray="5 7"/>
+
+  <!-- directional arrows between nodes (clockwise) -->
+  <g stroke="#9b8cff" stroke-width="2.5" fill="none" marker-end="url(#arrow-ai-agents)">
+    <path d="M 378 152 A 160 82 0 0 1 462 196"/>
+    <path d="M 462 254 A 160 82 0 0 1 378 298"/>
+    <path d="M 282 298 A 160 82 0 0 1 198 254"/>
+    <path d="M 198 196 A 160 82 0 0 1 282 152"/>
+  </g>
+
+  <!-- NODE: Perceive (top) -->
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif">
+    <rect x="270" y="120" width="120" height="46" rx="13" fill="#1d1830" stroke="#54e6e0" stroke-width="2"/>
+    <text x="330" y="142" font-size="13" font-weight="600" fill="#54e6e0" text-anchor="middle">Perceive</text>
+    <text x="330" y="158" font-size="11" fill="#a59fc0" text-anchor="middle">read the task</text>
+  </g>
+
+  <!-- NODE: Think (right) -->
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif">
+    <rect x="430" y="202" width="120" height="46" rx="13" fill="#1d1830" stroke="#9b8cff" stroke-width="2"/>
+    <text x="490" y="224" font-size="13" font-weight="600" fill="#9b8cff" text-anchor="middle">Think (LLM)</text>
+    <text x="490" y="240" font-size="11" fill="#a59fc0" text-anchor="middle">decide next step</text>
+  </g>
+
+  <!-- NODE: Act (bottom) -->
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif">
+    <rect x="270" y="284" width="120" height="46" rx="13" fill="#1d1830" stroke="#ff7a59" stroke-width="2"/>
+    <text x="330" y="306" font-size="13" font-weight="600" fill="#ff7a59" text-anchor="middle">Act</text>
+    <text x="330" y="322" font-size="11" fill="#a59fc0" text-anchor="middle">call a tool</text>
+  </g>
+
+  <!-- NODE: Observe (left) -->
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif">
+    <rect x="110" y="202" width="120" height="46" rx="13" fill="#1d1830" stroke="#5fd39a" stroke-width="2"/>
+    <text x="170" y="224" font-size="13" font-weight="600" fill="#5fd39a" text-anchor="middle">Observe</text>
+    <text x="170" y="240" font-size="11" fill="#a59fc0" text-anchor="middle">see the result</text>
+  </g>
+
+  <!-- connector from Act to Tools rack -->
+  <path d="M 390 307 L 600 307" stroke="#ff7a59" stroke-width="2" stroke-dasharray="4 5" fill="none" marker-end="url(#arrow-ai-agents)"/>
+  <text x="498" y="298" font-family="-apple-system,Segoe UI,Inter,sans-serif" font-size="11" fill="#a59fc0" text-anchor="middle">picks one</text>
+
+  <!-- TOOLS RACK -->
+  <g font-family="-apple-system,Segoe UI,Inter,sans-serif">
+    <rect x="610" y="118" width="230" height="222" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="2"/>
+    <text x="725" y="146" font-size="13" font-weight="600" fill="#ece9f5" text-anchor="middle">Tools</text>
+
+    <rect x="630" y="162" width="190" height="44" rx="12" fill="#171327" stroke="#54e6e0" stroke-width="1.5"/>
+    <text x="648" y="183" font-size="12" font-weight="600" fill="#54e6e0">search</text>
+    <text x="648" y="199" font-size="11" fill="#a59fc0">look things up</text>
+
+    <rect x="630" y="216" width="190" height="44" rx="12" fill="#171327" stroke="#ffd166" stroke-width="1.5"/>
+    <text x="648" y="237" font-size="12" font-weight="600" fill="#ffd166">run code</text>
+    <text x="648" y="253" font-size="11" fill="#a59fc0">compute &amp; test</text>
+
+    <rect x="630" y="270" width="190" height="44" rx="12" fill="#171327" stroke="#ff6b8b" stroke-width="1.5"/>
+    <text x="648" y="291" font-size="12" font-weight="600" fill="#ff6b8b">edit file</text>
+    <text x="648" y="307" font-size="11" fill="#a59fc0">change the work</text>
+  </g>
+
+  <!-- glowing token traveling clockwise around the loop -->
+  <circle r="9" fill="url(#tokenGrad-ai-agents)">
+    <animateMotion dur="3.2s" repeatCount="indefinite" rotate="auto">
+      <mpath xlink:href="#loopPath-ai-agents" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+    </animateMotion>
+    <animate attributeName="r" values="9;12;9" dur="1.1s" repeatCount="indefinite"/>
+  </circle>
+</svg></div><div class="diagram-cap">A four-step agent loop (Perceive, Think, Act, Observe) with a glowing token circling clockwise and a side rack of tools the Act step calls.</div></div><p class="lead">A chatbot answers and stops. An agent reads a goal, takes a real action, looks at what happened, and keeps going until the job is done. That loop is the whole difference.</p>
+
+<h3>The leap: from chatting to doing</h3>
+<p>So far we've treated an LLM as something you talk to: prompt in, text out, done. An <b>agent</b> takes that same model and drops it into a <i>loop</i> where it can take actions in the world — search the web, run code, edit a file — and then react to the results. One single model call is <b>not</b> an agent. The loop is what earns the name.</p>
+<div class="cal info">The difference between a chatbot and an agent is the difference between someone who gives you directions and someone who actually grabs the keys and drives.</div>
+
+<h3>The core loop, one trip around</h3>
+<p>Every agent runs the same four-beat cycle, over and over, until the goal is met:</p>
+<ol class="steps">
+<li><b>Perceive</b> — read the goal and the current state ("the tests are failing; here's the error").</li>
+<li><b>Think</b> — plan the next single step ("I should open the file the error points to").</li>
+<li><b>Act</b> — call a tool or run code (open the file, run the test, search the docs).</li>
+<li><b>Observe</b> — read the result, then loop back to step 1 with that new information.</li>
+</ol>
+
+<h4>The anchor: a chef tasting the sauce</h4>
+<p>Picture a cook who never tastes anything — they just follow a fixed recipe and pray. Now picture a real chef: taste the sauce (<i>observe</i>), decide it needs salt (<i>think</i>), add a pinch (<i>act</i>), taste again (<i>loop</i>). That feedback cycle — not one frozen recipe — is exactly what makes an agent an agent.</p>
+
+<h3>What's a "tool," really?</h3>
+<p>A <b>tool</b> is just a function the model is allowed to call. Each one comes with three things: a <b>name</b>, a plain-English <b>description</b> of what it does, and a <b>typed input schema</b> (what arguments it expects). The model reads those descriptions and picks the right tool for the moment. Without tools, an LLM can only produce text — it can <i>say</i> "I'll search for that," but it can't actually do it.</p>
+<div class="grid">
+<div class="card"><h4>Web search</h4><p>Fetch fresh, real information the model never memorized.</p></div>
+<div class="card"><h4>Run code</h4><p>Execute a script and read the actual output — math it can verify, not guess.</p></div>
+<div class="card"><h4>Read / write files</h4><p>Open a file, edit it, save it. This is how Claude Code touches your project.</p></div>
+</div>
+
+<h3>Why the loop is the entire point</h3>
+<p>Feeding each result back into the next step lets the model <b>check its own work and self-correct</b>. Wrote a function? Run the test. Test failed? Read the error, fix the line, run it again. That tight perceive-act-observe rhythm is exactly how <span class="pill">Claude Code</span> operates — it doesn't just suggest a change, it makes the change, runs your tests, and reacts to what breaks.</p>
+
+<h3>Memory and a leash</h3>
+<p>Two practical pieces keep the loop sane. First, <b>working memory</b>: every tool result gets added to the conversation, so the model carries what it learned into the next step. Second, a <b>budget</b> — a maximum number of iterations — so it can't spin forever chasing a goal it can't reach.</p>
+<div class="cal tip">Remember the hallucination problem from earlier? Giving an agent a retrieval tool is one of the cleanest fixes. Instead of recalling a fact from fuzzy memory, the agent fetches the relevant document and reads from it — this is the idea behind <b>RAG</b> (retrieval-augmented generation). The mantra: an LLM is a great editor but a shaky encyclopedia, so paste in the source rather than trusting it to remember.</div>
+
+<h3>Where loops go wrong</h3>
+<table>
+<thead><tr><th>Failure mode</th><th>What it looks like</th><th>The fix</th></tr></thead>
+<tbody>
+<tr><td>Infinite loop</td><td>Tries the same thing forever</td><td>A max-iteration budget and clear stop conditions</td></tr>
+<tr><td>Wrong tool</td><td>Picks the search tool when it needed code</td><td>Clear tool names and descriptions</td></tr>
+<tr><td>Hallucinated result</td><td>"Pretends" a tool ran and invents output</td><td>Human-in-the-loop checkpoints on risky steps</td></tr>
+</tbody>
+</table>
+<div class="cal warn">An agent acting on the world is powerful — and that power cuts both ways. The same hands that fix a file can delete one. Up next: the real limits and risks, and how to keep an agent safe.</div>
+    </div>
+  </section>
+  <section class="sec" id="ai-safety" data-id="ai-safety">
+    <div class="sec-head">
+      <div class="sec-icon">⚖️</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 36</div>
+        <h2>AI Safety, Ethics & Limits</h2>
+        <p class="sec-tag">AI is a brilliant intern, not an oracle — know the limits and you become a power user.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-safety">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Here's the good news and the catch in one breath: AI is genuinely useful <i>and</i> genuinely limited. Knowing exactly where it falls short is what turns you into a power user instead of a worrier.</p>
+
+<p>Picture a brilliant, fast new intern. Incredibly capable, worth handing real work to — but you still review the important stuff, you don't give them the company passwords, and you don't let them sign the contract alone. That's the exact posture to take with AI. Trust, but verify.</p>
+
+<h3>The real limits (none of these are dealbreakers — just things to know)</h3>
+
+<div class="grid">
+  <div class="card"><h4>It hallucinates</h4><p>An LLM (large language model — the kind of AI behind chatbots) predicts <i>plausible</i> text, not <i>true</i> text. With no fact to recall, it'll invent one that sounds right. It can cite a study that doesn't exist with a completely straight face — treat it like that friend who's amazing at parties but shouldn't be your only source.</p></div>
+  <div class="card"><h4>It's biased</h4><p>The model reflects its training data — the huge pile of text it learned from. If that text leans a certain way on a topic, the answer might too. Bias isn't a glitch bolted on; it's baked in by what it read.</p></div>
+  <div class="card"><h4>No real understanding</h4><p>There's no consciousness, no feelings, no "knowing" behind the words. It's a stunningly good pattern machine, not a tiny mind in a box.</p></div>
+  <div class="card"><h4>Knowledge cutoff</h4><p>It only learned up to a certain date, so it has no built-in memory of recent events. Ask about last week's news and it may go stale, guess, or need a live search tool to catch up.</p></div>
+</div>
+
+<div class="cal warn">The dangerous combo isn't that AI is sometimes wrong — it's that it's wrong <b>confidently</b>, in fluent, professional-sounding prose. Smooth delivery is not evidence of accuracy.</div>
+
+<h3>The ethics surface, briefly</h3>
+
+<table>
+  <thead><tr><th>Concern</th><th>What it means in plain terms</th></tr></thead>
+  <tbody>
+    <tr><td><b>Bias &amp; fairness</b></td><td>Outputs can quietly favor or harm some groups — a real risk in hiring, lending, or medical contexts.</td></tr>
+    <tr><td><b>Privacy</b></td><td>Depending on the tool and its settings, what you type may be processed, logged, or used to improve models. Personal and confidential data deserve caution.</td></tr>
+    <tr><td><b>Copyright &amp; provenance</b></td><td>Models trained on others' work raise fair questions about credit, ownership, and consent. ("Provenance" just means where the data came from.)</td></tr>
+    <tr><td><b>Jobs</b></td><td>Some tasks get automated; many roles shift rather than vanish. Disruption is real and uneven.</td></tr>
+    <tr><td><b>Misinformation &amp; deepfakes</b></td><td>The same tech that drafts your email can mass-produce convincing fakes. Healthy skepticism scales.</td></tr>
+  </tbody>
+</table>
+
+<h3>Alignment: making AI do what we actually want</h3>
+
+<p><b>Alignment</b> is the engineering effort to make AI behave the way we genuinely intend — not just the literal words we typed. The shorthand is <span class="pill">HHH</span>: <b>Helpful</b>, <b>Honest</b>, and <b>Harmless</b>. Sounds simple. The hard part is all three <i>at once</i> — a model that refuses everything is harmless but useless; one that answers anything is helpful but unsafe. Balancing them is the open challenge.</p>
+
+<h3>Your practical user rulebook</h3>
+
+<ol class="steps">
+  <li><b>Keep a human in the loop.</b> AI drafts and suggests; you decide and approve. You're the editor, not the audience.</li>
+  <li><b>Verify high-stakes output.</b> Medical, legal, financial, or anything you'd put your name on? Double-check it against a real source.</li>
+  <li><b>Never paste secrets.</b> No passwords, API keys, client data, or anything you wouldn't hand to a stranger.</li>
+  <li><b>Cite and check sources.</b> Ask for references — then actually confirm they exist and say what the AI claims.</li>
+</ol>
+
+<div class="cal tip">Best practice from the pros: AI shines as an <b>editor and synthesizer</b>, not a memory bank. Paste in the source document and ask it to work from <i>that</i> — error rates plummet when it isn't recalling from thin air.</div>
+
+<h3>The calm takeaway</h3>
+
+<p>None of this is doom. These are solvable, ongoing engineering problems, and a lot of smart people are actively working on every one of them. The right stance is <b>caution, not fear</b> — the same everyday judgment you'd use with any powerful new tool.</p>
+
+<div class="cal info">You've now met every big idea in AI — from tokens and training to safety and alignment. Up next: a quick glossary to lock it all in.</div>
+    </div>
+  </section>
+  <section class="sec" id="ai-glossary" data-id="ai-glossary">
+    <div class="sec-head">
+      <div class="sec-icon">📖</div>
+      <div class="sec-titles">
+        <div class="sec-num">SECTION 37</div>
+        <h2>AI Jargon Buster</h2>
+        <p class="sec-tag">A pocket phrasebook for every AI term you met on the tour — point and remember.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="ai-glossary">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <p class="lead">You just toured the whole country of AI. This is the pocket card of key phrases to point at when one slips your mind — no memorizing required, just a quick "oh right, <i>that's</i> what that means." Each definition deliberately echoes the analogy from its home section, so it should feel like running into an old friend.</p>
+
+<h3>How to use this page</h3>
+<p>Read top to bottom and the terms build on each other; or just <kbd>Ctrl</kbd>+<kbd>F</kbd> for the one word that's bugging you. Definitions are one plain line each — zero jargon hiding inside the jargon.</p>
+
+<h4>Foundations</h4>
+<p><span class="pill">AI</span> <span class="pill">AGI</span> <span class="pill">ML</span> <span class="pill">Deep Learning</span> <span class="pill">Neural Network</span> <span class="pill">Parameter / Weight</span></p>
+
+<h4>Language plumbing</h4>
+<p><span class="pill">Token</span> <span class="pill">Embedding</span> <span class="pill">Vector</span> <span class="pill">Context Window</span></p>
+
+<h4>Architecture</h4>
+<p><span class="pill">Transformer</span> <span class="pill">Attention</span> <span class="pill">LLM</span></p>
+
+<h4>Training</h4>
+<p><span class="pill">Pretraining</span> <span class="pill">Fine-tuning</span> <span class="pill">RLHF</span></p>
+
+<h4>Using it</h4>
+<p><span class="pill">Inference</span> <span class="pill">Temperature</span> <span class="pill">Hallucination</span> <span class="pill">Prompt</span> <span class="pill">RAG</span></p>
+
+<h4>Frontier</h4>
+<p><span class="pill">Agent</span> <span class="pill">Multimodal</span> <span class="pill">Open vs Closed weights</span></p>
+
+<h3>The glossary</h3>
+<table>
+<thead><tr><th>Term</th><th>One-line plain definition</th></tr></thead>
+<tbody>
+<tr><td><b>AI</b></td><td>Any machine doing something that used to need a human brain.</td></tr>
+<tr><td><b>AGI</b></td><td>The hypothetical "can do <i>anything</i> a person can" AI — not here yet.</td></tr>
+<tr><td><b>ML</b></td><td>Machine Learning: software that learns patterns from examples instead of being hand-coded.</td></tr>
+<tr><td><b>Deep Learning</b></td><td>ML using many stacked layers — the assembly line that powers today's AI.</td></tr>
+<tr><td><b>Neural Network</b></td><td>A web of tiny calculators (loosely brain-inspired) that turns inputs into answers.</td></tr>
+<tr><td><b>Parameter / Weight</b></td><td>The faders on a mixing board — internal numbers the model tunes while learning (weights are the main kind).</td></tr>
+<tr><td><b>Token</b></td><td>The LEGO bricks of text — words and word-chunks the model reads in pieces.</td></tr>
+<tr><td><b>Embedding</b></td><td>GPS coordinates for meaning — numbers that place a word on a map where similar ideas sit close.</td></tr>
+<tr><td><b>Vector</b></td><td>Just the list of numbers itself — the actual coordinates an embedding lives at.</td></tr>
+<tr><td><b>Context Window</b></td><td>The model's short-term memory — how much it can hold in mind at once.</td></tr>
+<tr><td><b>Transformer</b></td><td>The engine design behind modern AI — it reads all the words at once instead of one by one.</td></tr>
+<tr><td><b>Attention</b></td><td>Everyone in the room sharing notes — each word decides which others to listen to.</td></tr>
+<tr><td><b>LLM</b></td><td>Large Language Model: phone autocomplete scaled up a trillion-fold.</td></tr>
+<tr><td><b>Pretraining</b></td><td>Reading a huge pile of text to learn how language works — the raw study phase.</td></tr>
+<tr><td><b>Fine-tuning</b></td><td>Extra coaching on a focused subject to specialize an already-trained model.</td></tr>
+<tr><td><b>RLHF</b></td><td>Teaching the model manners with human thumbs-up / thumbs-down so it answers helpfully.</td></tr>
+<tr><td><b>Inference</b></td><td>Taking the exam — actually <i>using</i> the trained model to get an answer.</td></tr>
+<tr><td><b>Temperature</b></td><td>The creativity dial — low for careful and predictable, high for loose and surprising.</td></tr>
+<tr><td><b>Hallucination</b></td><td>Confidently making something up — plausible-sounding text with no truth check.</td></tr>
+<tr><td><b>Prompt</b></td><td>What you type in — your instructions and question to the model.</td></tr>
+<tr><td><b>RAG</b></td><td>Letting the model peek at your documents first, so it answers from facts, not just memory.</td></tr>
+<tr><td><b>Agent</b></td><td>An LLM given hands — tools like search, code, and memory so it can act, not just talk.</td></tr>
+<tr><td><b>Multimodal</b></td><td>A model that also handles images, audio, or video — not text alone.</td></tr>
+<tr><td><b>Open vs Closed weights</b></td><td>Open = you can download and run the model yourself; closed = you rent it through someone's API.</td></tr>
+</tbody>
+</table>
+
+<div class="cal tip">Stuck on a term mid-track? Two big takeaways carry most of the weight: an LLM <i>predicts likely next text</i> (so paste in real context to keep it honest), and <i>temperature</i> tunes how adventurous it gets.</div>
+
+<div class="grid">
+<div class="card"><h4>If you only remember three</h4><p>Token = text in pieces. Embedding = meaning as coordinates. Inference = using the trained model. Almost everything else hangs off these.</p></div>
+<div class="card"><h4>Why echoes, not new words</h4><p>Each line reuses the picture from its home section on purpose — recognition beats re-learning every single time.</p></div>
+<div class="card"><h4>Recognize, don't recite</h4><p>You don't need to define these cold. Spotting them in the wild and nodding "ah, I know that one" is the whole goal.</p></div>
+</div>
+
+<div class="cal pro">You now speak AI. Twenty-four terms ago "token" meant an arcade coin and "temperature" meant a thermostat. Tuck this card in your pocket and go enjoy the country you just toured.</div>
     </div>
   </section>
   </main>
