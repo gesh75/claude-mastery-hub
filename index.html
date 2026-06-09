@@ -238,7 +238,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
     </div>
     <div class="nav-track">
       <div class="nav-track-h"><span>🔌</span> Power Features</div>
-      <a class="nav-link" href="#skills" data-id="skills"><span class="nav-ic">🎓</span><span>Skills</span></a><a class="nav-link" href="#subagents" data-id="subagents"><span class="nav-ic">🤖</span><span>Subagents & Delegation</span></a><a class="nav-link" href="#mcp" data-id="mcp"><span class="nav-ic">🔌</span><span>MCP Servers & Connectors</span></a><a class="nav-link" href="#hooks" data-id="hooks"><span class="nav-ic">🪝</span><span>Hooks (Automation)</span></a><a class="nav-link" href="#plugins" data-id="plugins"><span class="nav-ic">🧩</span><span>Plugins & Marketplaces</span></a><a class="nav-link" href="#workflows" data-id="workflows"><span class="nav-ic">🔀</span><span>Multi-Agent Workflows & Loops</span></a><a class="nav-link" href="#api-sdk" data-id="api-sdk"><span class="nav-ic">🛠️</span><span>Claude API & Agent SDK</span></a>
+      <a class="nav-link" href="#skills" data-id="skills"><span class="nav-ic">🎓</span><span>Skills</span></a><a class="nav-link" href="#subagents" data-id="subagents"><span class="nav-ic">🤖</span><span>Subagents & Delegation</span></a><a class="nav-link" href="#mcp" data-id="mcp"><span class="nav-ic">🔌</span><span>MCP Servers & Connectors</span></a><a class="nav-link" href="#hooks" data-id="hooks"><span class="nav-ic">🪝</span><span>Hooks (Automation)</span></a><a class="nav-link" href="#whats-new" data-id="whats-new"><span class="nav-ic">🆕</span><span>What's New — Fable 5</span></a><a class="nav-link" href="#plugins" data-id="plugins"><span class="nav-ic">🧩</span><span>Plugins & Marketplaces</span></a><a class="nav-link" href="#workflows" data-id="workflows"><span class="nav-ic">🔀</span><span>Multi-Agent Workflows & Loops</span></a><a class="nav-link" href="#api-sdk" data-id="api-sdk"><span class="nav-ic">🛠️</span><span>Claude API & Agent SDK</span></a>
     </div>
     <div class="nav-track">
       <div class="nav-track-h"><span>🎯</span> Mastery</div>
@@ -375,8 +375,11 @@ print(msg.content[0].text)</code></pre>
 
 <p>In 2026 the lineup is <span class="pill">Opus 4.8</span> for hard reasoning, <span class="pill">Sonnet 4.6</span> as the everyday coding workhorse, and <span class="pill">Haiku 4.5</span> for fast, high-volume work. Picking right saves money and time without hurting quality. The official advice is blunt: use Haiku for simple tasks, Sonnet for most production workloads, Opus only for the most complex reasoning.</p>
 
+<div class="cal pro">🆕 New flagship (June 9, 2026): <strong>Claude Fable 5</strong> (<code>claude-fable-5</code>) is now the most capable model — state-of-the-art on nearly every benchmark — at $10 / $50 per MTok. Use it for the hardest work; keep Haiku/Sonnet for everyday tasks. <a href="#whats-new">See What's New &rarr;</a></div>
+
 <h3>Meet the lineup</h3>
 <div class="grid">
+  <div class="card"><h4>Fable 5</h4><p>The new top tier (June 2026). Best-in-class coding, analysis, vision, and science; runs autonomously across millions of tokens. Premium price — reach for it only on genuinely hard tasks.</p></div>
   <div class="card"><h4>Opus 4.8</h4><p>Anthropic's most capable model. Built for long-horizon agentic coding, large-scale refactors, and complex systems engineering. Moderate speed, premium price.</p></div>
   <div class="card"><h4>Sonnet 4.6</h4><p>The best balance of speed and intelligence. Your default for code generation, data analysis, and agentic tool use. Fast and mid-priced.</p></div>
   <div class="card"><h4>Haiku 4.5</h4><p>The fastest model with near-frontier intelligence. Great for real-time apps, bulk processing, and sub-agent tasks. Cheapest by far.</p></div>
@@ -1685,6 +1688,56 @@ claude mcp add-from-claude-desktop   # import (macOS/WSL only)</code></pre>
 <div class="cal pro">Handlers also accept <code>"timeout"</code> (seconds) and <code>"async": true</code>. Use <code>async</code> for non-blocking work like an audit log &mdash; an unmatched <code>PostToolUse</code> hook that appends JSONL records every action without slowing Claude down.</div>
 
 <p>Manage and inspect your hooks live with the <code>/hooks</code> slash command, which shows what is configured across all your settings files.</p>
+    </div>
+  </section>
+  <section class="sec" id="whats-new" data-id="whats-new">
+    <div class="sec-head">
+      <div class="sec-icon">🆕</div>
+      <div class="sec-titles">
+        <div class="sec-num">WHAT'S NEW · JUNE 9, 2026</div>
+        <h2>Claude Fable 5 &amp; Mythos 5</h2>
+        <p class="sec-tag">Anthropic's new flagship — state-of-the-art on nearly every benchmark</p>
+      </div>
+    </div>
+    <div class="sec-body">
+      <p class="lead">On June 9, 2026 Anthropic released <span class="pill">Claude Fable 5</span> — its most capable model yet — plus <span class="pill">Claude Mythos 5</span>, the same model with safeguards lifted for vetted research.</p>
+
+      <div class="cal pro">Fable 5 is state-of-the-art on nearly every benchmark tested, can work autonomously across millions of tokens, and ships at less than half the price of the earlier Mythos Preview.</div>
+
+      <h3>What launched</h3>
+      <div class="grid">
+        <div class="card"><h4>Claude Fable 5</h4><p>The general-availability flagship, with full safeguards. API id <code>claude-fable-5</code>. Best-in-class at software engineering, knowledge work, vision, and science.</p></div>
+        <div class="card"><h4>Claude Mythos 5</h4><p>The same underlying model with safeguards lifted in narrow areas. Restricted to Project Glasswing partners and select biology researchers — not general access.</p></div>
+      </div>
+
+      <h3>The numbers</h3>
+      <table>
+        <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>API id</td><td><code>claude-fable-5</code></td></tr>
+          <tr><td>Price (in / out)</td><td>$10 / $50 per million tokens</td></tr>
+          <tr><td>Autonomy</td><td>Runs unattended across millions of tokens on long tasks</td></tr>
+          <tr><td>Availability</td><td>Live now on the Claude API and consumption-based Enterprise plans. Subscription plans: included through <strong>June 22</strong>, then via usage credits.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Why it's a big deal</h3>
+      <div class="grid">
+        <div class="card"><h4>Software engineering</h4><p>State-of-the-art on CursorBench and top score on Cognition's FrontierCode at medium effort. In a Stripe case study it compressed months of work on a 50-million-line Ruby migration into days.</p></div>
+        <div class="card"><h4>Analysis &amp; finance</h4><p>First model to break <strong>90%</strong> on complex analytical tasks — a 10-point jump over Opus — and the highest score of any model on Hebbia's finance benchmark.</p></div>
+        <div class="card"><h4>Science &amp; vision</h4><p>~10x faster protein design, novel molecular-biology hypotheses preferred 80% of the time vs. Opus-class, and strong vision work like rebuilding web apps from screenshots.</p></div>
+      </div>
+
+      <h3>What it means for you</h3>
+      <ul>
+        <li>Reach for Fable 5 when a task is genuinely hard — large refactors, deep research, multi-step agentic runs — where a better answer is worth the higher token price.</li>
+        <li>Keep routing cheap, high-volume work to Haiku and everyday coding to Sonnet. Fable 5 is the premium tier, not the default for everything (see <a href="#models">Pick the Right Brain</a>).</li>
+        <li>In Claude Code, switch with <code>/model claude-fable-5</code>. Front-load context once so prompt caching keeps the cost down.</li>
+      </ul>
+
+      <div class="cal info">Safety: Fable 5 has three classifier-based guards — cybersecurity, biology/chemistry, and model-distillation attempts — that fall back to Claude Opus 4.8. Anthropic reports these trigger in under 5% of sessions, and external red-teamers landed zero harmful single-turn requests across 30 jailbreak techniques.</div>
+
+      <p>Source: <a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank" rel="noopener">anthropic.com/news/claude-fable-5-mythos-5</a></p>
     </div>
   </section>
   <section class="sec" id="plugins" data-id="plugins">
@@ -5401,7 +5454,7 @@ document.querySelectorAll('.sec-body pre').forEach(function(pre){
 var KEY='claude_hub_mastery_v1';
 var done={};
 try{done=JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){done={};}
-var total=secs.length;
+var total=document.querySelectorAll('.master-cb').length;
 function refresh(){
   var n=Object.keys(done).filter(function(k){return done[k];}).length;
   var pct=Math.round(n/total*100);
