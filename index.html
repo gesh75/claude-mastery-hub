@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%A4%96%3C/text%3E%3C/svg%3E">
-<meta name="description" content="An interactive guide to mastering Claude — Claude Code, the app, API & Agent SDK, MCP, skills, subagents, hooks, plugins, CLI hacks, how-to recipes, plus an AI Foundations 101 track. 39 sections, 24 animated & explained diagrams, 150+ examples.">
+<meta name="description" content="An interactive guide to mastering Claude — Claude Code, the app, API & Agent SDK, MCP, skills, subagents, hooks, plugins, CLI hacks, how-to recipes, plus an AI Foundations 101 track. 40 sections, 24 animated & explained diagrams, 60+ quiz questions, a scored final exam, and 150+ examples.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Claude Mastery Hub">
 <meta property="og:title" content="Claude Mastery Hub — extract maximum power from Claude">
-<meta property="og:description" content="39 deep-dive sections · 24 animated & explained diagrams · 150+ examples. Master Claude Code, the API & Agent SDK, MCP, skills, subagents, hooks, CLI hacks — plus AI Foundations 101.">
+<meta property="og:description" content="40 deep-dive sections · 24 animated & explained diagrams · self-test quizzes + a scored final exam · 150+ examples. Master Claude Code, the API & Agent SDK, MCP, skills, subagents, hooks — plus AI Foundations 101.">
 <meta property="og:url" content="https://gesh75.github.io/claude-mastery-hub/">
 <meta property="og:image" content="https://gesh75.github.io/claude-mastery-hub/og.png">
 <meta property="og:image:width" content="1200">
@@ -16,7 +16,7 @@
 <meta property="og:image:alt" content="Claude Mastery Hub">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Claude Mastery Hub — extract maximum power from Claude">
-<meta name="twitter:description" content="39 deep-dive sections · 24 animated & explained diagrams · 150+ examples on Claude — plus a beginner AI Foundations 101 track.">
+<meta name="twitter:description" content="40 deep-dive sections · 24 animated diagrams · self-test quizzes + a scored final exam · 150+ examples on Claude — plus a beginner AI Foundations 101 track.">
 <meta name="twitter:image" content="https://gesh75.github.io/claude-mastery-hub/og.png">
 <title>Claude Mastery Hub — Extract Maximum Power from Claude</title>
 <style>
@@ -176,6 +176,53 @@ a:hover{text-decoration:underline}
 .anim-x ol{margin:10px 0 12px;padding:0 18px 0 36px;color:var(--mut);font-size:13px;line-height:1.65}
 .anim-x ol li{margin:6px 0}
 .anim-x ol li b{color:#ece9f5}
+/* quiz */
+.quiz{margin:22px 0 6px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#120f1f,#171226);overflow:hidden}
+.quiz-head{display:flex;align-items:center;gap:11px;padding:13px 16px;border-bottom:1px solid var(--line);background:rgba(95,211,154,.07)}
+.quiz-badge{flex:0 0 auto;font-size:10.5px;font-weight:800;letter-spacing:.07em;color:#0d1a12;background:linear-gradient(120deg,#5fd39a,#54e6e0);padding:4px 11px;border-radius:999px}
+.quiz-head b{color:#fff;font-size:14.5px}
+.quiz-head .quiz-score{margin-left:auto;font-size:12.5px;color:var(--mut);font-weight:700}
+.quiz-body{padding:6px 16px 16px}
+.q{padding:14px 0;border-bottom:1px dashed var(--line)}
+.q:last-child{border-bottom:0}
+.q-txt{font-weight:600;color:var(--ink);margin:0 0 10px;font-size:14.5px}
+.q-txt .qn{color:var(--green);font-weight:800;margin-right:7px}
+.opt{display:block;width:100%;text-align:left;margin:7px 0;padding:10px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font-size:13.5px;cursor:pointer;transition:border-color .12s,background .12s;font-family:inherit}
+.opt:hover:not(:disabled){border-color:var(--violet)}
+.opt:disabled{cursor:default}
+.opt .mk{float:right;font-weight:800;opacity:0}
+.opt.correct{border-color:var(--green);background:rgba(95,211,154,.13)}
+.opt.correct .mk{opacity:1;color:var(--green)}
+.opt.wrong{border-color:var(--red);background:rgba(255,107,139,.12)}
+.opt.wrong .mk{opacity:1;color:var(--red)}
+.q-exp{margin:9px 0 2px;padding:10px 13px;border-radius:10px;background:rgba(155,140,255,.08);border:1px solid var(--line);color:var(--mut);font-size:13px;line-height:1.55;display:none}
+.q-exp.show{display:block}
+.q-exp b{color:var(--ink)}
+.quiz-foot{display:flex;align-items:center;gap:12px;padding:12px 16px 2px;flex-wrap:wrap}
+.quiz-result{font-weight:700;font-size:14px}
+.quiz-result.pass{color:var(--green)}
+.quiz-result.review{color:var(--amber)}
+.quiz-retry{font-size:12.5px;color:var(--violet);background:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:inherit;font-weight:700}
+.quiz-retry:hover{border-color:var(--violet)}
+/* review chip */
+.review-chip{display:none;margin:8px 0 0;padding:10px 12px;border-radius:12px;border:1px solid #4a3b12;background:rgba(255,209,102,.1);color:var(--amber);font-size:12.5px;font-weight:700;cursor:pointer;text-align:left;width:100%;font-family:inherit;line-height:1.4}
+.review-chip.show{display:block}
+.review-chip:hover{border-color:var(--amber)}
+.quiz-meta{font-size:12px;color:var(--mut);margin-top:6px}
+.quiz-meta b{color:var(--green)}
+/* exam */
+.exam-q{padding:16px 0;border-bottom:1px solid var(--line)}
+.exam-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px}
+.btn-primary{background:var(--grad);color:#171226;font-weight:800;border:0;border-radius:11px;padding:12px 22px;font-size:15px;cursor:pointer;font-family:inherit}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost{background:none;border:1px solid var(--line);color:var(--ink);font-weight:700;border-radius:11px;padding:12px 18px;font-size:14px;cursor:pointer;font-family:inherit}
+.btn-ghost:hover{border-color:var(--violet)}
+.exam-result{margin-top:20px;padding:20px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,#151022,#1c1430);text-align:center;display:none}
+.exam-result.show{display:block}
+.exam-score{font-size:52px;font-weight:800;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.exam-rank{font-size:22px;font-weight:800;color:var(--ink);margin:8px 0 4px}
+.exam-blurb{color:var(--mut);font-size:14px;max-width:520px;margin:0 auto 14px}
+.exam-prog{font-size:12.5px;color:var(--mut);margin-top:10px}
 
 /* footer */
 footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;text-align:center;color:var(--mut)}
@@ -232,7 +279,9 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
     <input class="search" id="search" type="search" placeholder="🔍 Filter topics…">
     <div class="ring-wrap">
       <div class="ring" id="ring"><b>0%</b></div>
-      <div class="ring-meta" id="ringmeta"><b>0 / 39</b> sections mastered</div>
+      <div class="ring-meta" id="ringmeta"><b>0 / 40</b> sections mastered</div>
+      <div class="quiz-meta" id="quizmeta"></div>
+      <button class="review-chip" id="reviewchip" type="button"></button>
     </div>
     <nav>
     <div class="nav-track">
@@ -253,7 +302,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
     </div>
     <div class="nav-track">
       <div class="nav-track-h"><span>🧬</span> AI Foundations</div>
-      <a class="nav-link" href="#ai-what" data-id="ai-what"><span class="nav-ic">🌍</span><span>What Is AI, Really?</span></a><a class="nav-link" href="#ai-ml" data-id="ai-ml"><span class="nav-ic">📈</span><span>Machine Learning: Learning from Data</span></a><a class="nav-link" href="#ai-neural" data-id="ai-neural"><span class="nav-ic">🕸️</span><span>Neural Networks & Deep Learning</span></a><a class="nav-link" href="#ai-llm" data-id="ai-llm"><span class="nav-ic">💬</span><span>What Is an LLM?</span></a><a class="nav-link" href="#ai-tokens" data-id="ai-tokens"><span class="nav-ic">🔤</span><span>Tokens, Embeddings & Vectors</span></a><a class="nav-link" href="#ai-transformer" data-id="ai-transformer"><span class="nav-ic">⚡</span><span>Transformers & Attention</span></a><a class="nav-link" href="#ai-training" data-id="ai-training"><span class="nav-ic">🏋️</span><span>Training, Fine-Tuning & RLHF</span></a><a class="nav-link" href="#ai-inference" data-id="ai-inference"><span class="nav-ic">🔮</span><span>Inference, Context & Hallucinations</span></a><a class="nav-link" href="#ai-agents" data-id="ai-agents"><span class="nav-ic">🔁</span><span>Agents, Tools & the AI Loop</span></a><a class="nav-link" href="#ai-safety" data-id="ai-safety"><span class="nav-ic">⚖️</span><span>AI Safety, Ethics & Limits</span></a><a class="nav-link" href="#ai-glossary" data-id="ai-glossary"><span class="nav-ic">📖</span><span>AI Jargon Buster</span></a>
+      <a class="nav-link" href="#ai-what" data-id="ai-what"><span class="nav-ic">🌍</span><span>What Is AI, Really?</span></a><a class="nav-link" href="#ai-ml" data-id="ai-ml"><span class="nav-ic">📈</span><span>Machine Learning: Learning from Data</span></a><a class="nav-link" href="#ai-neural" data-id="ai-neural"><span class="nav-ic">🕸️</span><span>Neural Networks & Deep Learning</span></a><a class="nav-link" href="#ai-llm" data-id="ai-llm"><span class="nav-ic">💬</span><span>What Is an LLM?</span></a><a class="nav-link" href="#ai-tokens" data-id="ai-tokens"><span class="nav-ic">🔤</span><span>Tokens, Embeddings & Vectors</span></a><a class="nav-link" href="#ai-transformer" data-id="ai-transformer"><span class="nav-ic">⚡</span><span>Transformers & Attention</span></a><a class="nav-link" href="#ai-training" data-id="ai-training"><span class="nav-ic">🏋️</span><span>Training, Fine-Tuning & RLHF</span></a><a class="nav-link" href="#ai-inference" data-id="ai-inference"><span class="nav-ic">🔮</span><span>Inference, Context & Hallucinations</span></a><a class="nav-link" href="#ai-agents" data-id="ai-agents"><span class="nav-ic">🔁</span><span>Agents, Tools & the AI Loop</span></a><a class="nav-link" href="#ai-safety" data-id="ai-safety"><span class="nav-ic">⚖️</span><span>AI Safety, Ethics & Limits</span></a><a class="nav-link" href="#ai-glossary" data-id="ai-glossary"><span class="nav-ic">📖</span><span>AI Jargon Buster</span></a><a class="nav-link" href="#exam" data-id="exam"><span class="nav-ic">🎓</span><span>The Mastery Exam</span></a>
     </div></nav>
   </aside>
 
@@ -5644,6 +5693,25 @@ Current diff:
 <div class="cal pro">You now speak AI. Twenty-four terms ago "token" meant an arcade coin and "temperature" meant a thermostat. Tuck this card in your pocket and go enjoy the country you just toured.</div>
     </div>
   </section>
+  <section class="sec" id="exam" data-id="exam">
+    <div class="sec-head">
+      <div class="sec-icon">🎓</div>
+      <div class="sec-titles">
+        <div class="sec-num">FINAL EXAM</div>
+        <h2>The Claude Mastery Exam</h2>
+        <p class="sec-tag">20 questions across every track — find out where you really stand</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="exam">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <p class="lead">Retrieval beats rereading — the single most reliable way to make knowledge stick is to test yourself on it. This exam pulls one question from each major topic. Answer all 20, then submit for a score and a rank.</p>
+      <div class="cal info">Nothing here is sent anywhere — grading runs entirely in your browser and your best score is saved locally. Miss a few? The results tell you exactly which sections to revisit.</div>
+      <div id="exam-host"><!-- exam renders here --></div>
+    </div>
+  </section>
   </main>
 </div>
 
@@ -5802,6 +5870,274 @@ function party(){
     function step(){t++;rot+=8;d.style.transform='translate('+(vx*t)+'px,'+(vy*t*6)+'px) rotate('+rot+'deg)';d.style.opacity=String(1-t/90);if(t<90)requestAnimationFrame(step);else d.remove();}step();
   },i*16);})(i);}
 }
+
+/* ============ LEARNING ENGINE: quizzes, exam, spaced repetition ============ */
+var QUIZ={
+ models:[
+  {q:"You need to reformat 10,000 log lines — cheap and fast. Which model?",o:["Haiku 4.5","Sonnet 5","Opus 4.8","Fable 5"],c:0,e:"Haiku is the fastest tier and ~5× cheaper than Opus — ideal for high-volume, simple work."},
+  {q:"Which is Anthropic's most capable (and most expensive) model in mid-2026?",o:["Sonnet 5","Opus 4.8","Fable 5","Haiku 4.5"],c:2,e:"Fable 5 ($10/$50 per MTok) is the premium flagship — reach for it only when a task is genuinely hard."},
+  {q:"Switching models mid-session mainly hurts because it…",o:["Deletes your history","Invalidates the prompt cache","Turns off thinking","Logs you out"],c:1,e:"A model swap invalidates the cached prefix, forcing a slow, expensive uncached turn."}],
+ cli:[
+  {q:"Which flag runs Claude Code headless (prompt in, result out)?",o:["-p / --print","--headless","--quiet","--bare only"],c:0,e:"-p (print mode) turns Claude Code into a scriptable Unix tool."},
+  {q:"What does --fallback-model do?",o:["Downgrades every request","Sets a model to use if the primary is unavailable","Caps token spend","Picks an embedding model"],c:1,e:"It's automatic failover; the fallbackModel setting now takes up to three, tried in order."},
+  {q:"Launching with --safe-mode starts Claude Code with…",o:["No network access","All customizations (CLAUDE.md, plugins, hooks, MCP) disabled","Read-only tools","Verbose logging"],c:1,e:"Safe mode rules out your own config when you're debugging."}],
+ "plan-think":[
+  {q:"How do you toggle plan mode in the CLI?",o:["Shift+Tab","Ctrl+P","Type /plan only","Esc"],c:0,e:"Shift+Tab cycles permission modes, including plan mode."},
+  {q:"Which keyword buys the most reasoning depth?",o:["think","think hard","ultrathink","consider"],c:2,e:"'ultrathink' requests maximum deliberation — escalate only for hard problems."},
+  {q:"Plan mode's main safety benefit is…",o:["Faster output","An approval gate before Claude changes anything","Cheaper tokens only","Auto-committing"],c:1,e:"It shows the intended changes for your approval before touching code."}],
+ memory:[
+  {q:"Which file gives Claude persistent project context on every session?",o:["README.md","CLAUDE.md",".env","package.json"],c:1,e:"CLAUDE.md loads every session — put durable project truths there."},
+  {q:"Starting a chat message with # does what?",o:["Comments it out","Appends it to memory (CLAUDE.md)","Runs a shell command","Mentions a user"],c:1,e:"'#' is the quick way to add a memory without breaking flow."},
+  {q:"CLAUDE.md scopes merge in which order?",o:["Local first","Broadest (managed/user) first, then more specific","Random","Alphabetical"],c:1,e:"Managed policy → user → project → local, concatenated into one effective context."}],
+ skills:[
+  {q:"A skill's full body is loaded…",o:["Always, at startup","Only when a task matches its description","Never automatically","On every keystroke"],c:1,e:"Progressive disclosure: only the matching skill's body enters context; the rest stay dormant."},
+  {q:"A skill is defined by a folder containing…",o:["skill.json","SKILL.md with frontmatter","index.html","a Dockerfile"],c:1,e:"SKILL.md's frontmatter description is what Claude matches against the task."},
+  {q:"Why does progressive disclosure matter?",o:["It encrypts skills","You can install many skills and pay tokens only when one is used","It speeds the network","It hides skills from teammates"],c:1,e:"Descriptions sit in context cheaply; full bodies load on demand."}],
+ subagents:[
+  {q:"The main reason to delegate to a subagent is to…",o:["Make Claude smarter","Keep the main context clean while noisy work happens elsewhere","Avoid the API","Get a discount"],c:1,e:"Subagents run in their own context and return only a short summary."},
+  {q:"Can a subagent spawn its own subagents?",o:["Never","Yes — up to 5 levels deep","Only two","Only via the API"],c:1,e:"Nested delegation is real (mid-2026), up to 5 levels — but keep trees shallow."},
+  {q:"By default, subagents now run…",o:["In the foreground, blocking","In the background, concurrently","Only in CI","One at a time"],c:1,e:"They run in the background by default; the 'claude agents' view manages them."}],
+ mcp:[
+  {q:"What does an MCP server give Claude?",o:["A faster model","New tools (databases, browsers, APIs) inside the session","More context window","Cheaper tokens"],c:1,e:"MCP is a standard 'USB port' for AI tools."},
+  {q:"A local MCP server communicates over which transport?",o:["stdio","FTP","WebRTC","SMTP"],c:0,e:"Local servers use stdio (child processes); remote ones use Streamable HTTP."},
+  {q:"Security-wise, adding an MCP server is like…",o:["Reading a doc","Installing a dependency with full machine access","Opening a browser tab","Nothing risky"],c:1,e:"Its tools run with your permissions — only add servers you trust."}],
+ hooks:[
+  {q:"Hooks are…",o:["Model prompts","Deterministic shell commands at fixed points in the loop","Skills","MCP servers"],c:1,e:"Unlike instructions in a prompt, hooks can't be forgotten."},
+  {q:"Which hook can BLOCK a tool before it runs?",o:["Stop","PreToolUse (exit code 2)","PostToolUse","Notification"],c:1,e:"PreToolUse exiting 2 vetoes the tool call."},
+  {q:"To auto-format files Claude edits, use which event?",o:["UserPromptSubmit","PostToolUse matching Edit|Write","SessionStart","Stop"],c:1,e:"PostToolUse fires after the edit — run prettier on $CLAUDE_FILE_PATHS."}],
+ workflows:[
+  {q:"Dynamic workflows let Claude…",o:["Write orchestration that fans out to hundreds of parallel subagents","Only run one agent","Skip permissions","Train a model"],c:0,e:"Claude authors the orchestration script itself and runs it as one background job."},
+  {q:"Which keyword nudges Claude to use a workflow for big tasks?",o:["ultrathink","ultracode","superplan","megamode"],c:1,e:"'ultracode' sets effort to xhigh and lets Claude decide when a task warrants a workflow."},
+  {q:"The command to watch live workflow runs is…",o:["/agents","/workflows","/runs","/monitor"],c:1,e:"/workflows shows the live agent tree, status, and per-run activity."}],
+ "api-sdk":[
+  {q:"In the Messages API, when Claude wants a tool it returns…",o:["an error","a tool_use block","a refusal","nothing"],c:1,e:"You run the tool and send tool_result back; the loop repeats until end_turn."},
+  {q:"The Claude Agent SDK is essentially…",o:["A new model","Claude Code packaged as a library with built-in tools","An MCP server","A billing dashboard"],c:1,e:"It ships the full agent loop, built-in tools, hooks, and subagents."},
+  {q:"The Agent tool used to be called…",o:["Task","Worker","Sub","Job"],c:0,e:"Renamed from Task in v2.1.63; add Agent to allowedTools to auto-approve."}],
+ prompting:[
+  {q:"The most reliable way to improve an answer on a factual task is to…",o:["Ask louder","Give it real context/files instead of relying on memory","Raise temperature","Repeat the question"],c:1,e:"Ground it in actual context — that's what keeps an LLM honest."},
+  {q:"A vague prompt like 'investigate the codebase' tends to…",o:["Finish instantly","Cause endless exploration that floods context","Save tokens","Refuse"],c:1,e:"Scope it: name files, set boundaries, demand a short report."},
+  {q:"Which is the better prompt?",o:["\"Fix the bug\"","\"In src/auth/session.ts, validateToken() does a DB call per request — propose a cache\"","\"Make it good\"","\"Do the thing\""],c:1,e:"Specific, scoped prompts land in one pass."}],
+ webapp:[
+  {q:"A claude.ai Project mainly gives you…",o:["A faster model","A workspace with its own knowledge base + instructions","Free API keys","A local VM"],c:1,e:"Upload docs once and reuse them in every chat inside the project."},
+  {q:"Claude Cowork's standout capability is…",o:["Only coding","Running agentic tasks across your tools — even scheduled with no device online","Image generation","Voice calls"],c:1,e:"Cowork is the agentic surface; on web/mobile since July 2026, decisions can reach your phone."},
+  {q:"Web search in the app is…",o:["Always on","Off by default — you must enable it","Paid only","Automatic on mobile"],c:1,e:"A 'knowledge cutoff' answer to a current-events question means the toggle is off."}],
+ cost:[
+  {q:"A prompt-cache HIT costs roughly…",o:["The same as fresh input","~0.1× base input (90% off)","2× input","Nothing, ever"],c:1,e:"Cache reads are ~90% cheaper; caching is automatic in Claude Code."},
+  {q:"Fast mode trades…",o:["Quality for speed","Cost for ~2.5× speed on Opus","Context for tokens","Nothing at all"],c:1,e:"Same model & quality, higher price per token; toggle with /fast."},
+  {q:"Between two unrelated tasks you should…",o:["/compact","/clear to start fresh","Switch models","Do nothing"],c:1,e:"Fresh context is free; /clear stops old tokens riding along on every turn."}],
+ security:[
+  {q:"In Claude Code, what can widen what Claude is allowed to do?",o:["A clever prompt","A CLAUDE.md instruction","Only your settings, permission modes, and hooks","Any web page"],c:2,e:"The harness enforces permissions — a prompt can never widen them. That separation is the whole game."},
+  {q:"In the permission model, which rules are evaluated first?",o:["Allow","Ask","Deny rules","Random"],c:2,e:"A matching deny always wins — build your allowlist from things you'd approve every time."},
+  {q:"SkillCloak demonstrated that…",o:["Skills are always safe","Malicious skills can evade static scanners and detonate at runtime","MCP is unhackable","Hooks are the real risk"],c:1,e:"Treat an unreviewed third-party skill like unreviewed code."}],
+ howto:[
+  {q:"To reopen the most recent session in a project, run…",o:["claude --continue","claude --new","claude reset","claude open"],c:0,e:"--continue resumes; --resume gives an interactive picker."},
+  {q:"A custom slash command is just…",o:["A binary","A Markdown file in .claude/commands/","A JSON schema","An MCP server"],c:1,e:"$ARGUMENTS in the file receives whatever you type after the command."},
+  {q:"The most-recommended trick for running several Claudes on one repo is…",o:["Multiple tabs","git worktrees (one checkout per branch)","Copy the folder","Docker only"],c:1,e:"Each worktree is an isolated checkout, so parallel sessions never collide."}],
+ hacks:[
+  {q:"Double-tapping Esc lets you…",o:["Quit","Jump back in history and fork from an earlier prompt","Clear context","Switch model"],c:1,e:"It's undo for conversations — retry a turn without starting over."},
+  {q:"'cat error.log | claude -p \"explain\"' works because Claude Code…",o:["Has a GUI","Is a Unix citizen: stdin in, result out","Caches logs","Needs no model"],c:1,e:"It composes with pipes and jq like any CLI tool."},
+  {q:"'/compact focus on the API refactor' does what?",o:["Deletes history","Summarizes history but keeps the part you name","Switches model","Clears the cache"],c:1,e:"Steer compaction so the relevant thread survives."}],
+ "ai-llm":[
+  {q:"At its core, an LLM works by…",o:["Looking up answers in a database","Predicting the next token, over and over","Running if/else rules","Searching the web"],c:1,e:"Everything impressive emerges from repeated next-token prediction."},
+  {q:"An LLM's 'context window' is…",o:["Its training data","Its short-term working memory — what it can read at once","The screen size","A disk cache"],c:1,e:"Text that scrolls out of the window is gone from its working memory."},
+  {q:"'Temperature' controls…",o:["Model size","How adventurous/random the output is","Token price","Context length"],c:1,e:"Low = focused and predictable; high = loose and creative."}],
+ "ai-tokens":[
+  {q:"A 'token' is…",o:["A whole sentence","A word or word-chunk the model reads in pieces","A single letter","A pixel"],c:1,e:"Models read text in tokens, not whole words or letters."},
+  {q:"An 'embedding' is best described as…",o:["A backup","Coordinates for meaning — numbers placing a word on a map","A password","A cache key"],c:1,e:"Similar meanings land close together in that space."},
+  {q:"Why can't LLMs reliably count the letters in a word?",o:["They're lazy","They see tokens and coordinates, not raw characters","The window is too small","It's a bug"],c:1,e:"They reason over embeddings of tokens, not spelled-out letters."}],
+ "ai-transformer":[
+  {q:"'Attention' lets each word…",o:["Ignore context","Decide which other words to focus on","Change its spelling","Run code"],c:1,e:"That's the transformer's core move — resolving meaning by weighting, in parallel."},
+  {q:"The transformer's big advantage over older designs is that it…",o:["Reads one word at a time","Reads all the words at once","Needs no data","Uses no math"],c:1,e:"Parallel attention over the whole sequence is why context makes LLMs smart."},
+  {q:"In 'the animal didn't cross because it was tired', attention helps resolve…",o:["the verb","what 'it' refers to","the tense","the punctuation"],c:1,e:"The strongest attention beam links 'it' to 'animal'."}],
+ "ai-agents":[
+  {q:"An AI agent is…",o:["A bigger model","A model given tools and a feedback loop so it can act","A faster GPU","A chatbot with no tools"],c:1,e:"Perceive → Think → Act → Observe, repeating — exactly how Claude Code works."},
+  {q:"The agent loop repeats until…",o:["The user leaves","The model stops asking for tools (end_turn)","Midnight","Only when tokens run out"],c:1,e:"tool_result feeds back into the model until it produces a final answer."},
+  {q:"Without tools, an agent…",o:["Is faster","Degenerates into just talking","Costs more","Can't load"],c:1,e:"The Act step's tool rack is what makes it an agent rather than a chat."}]
+};
+var EXAM=[
+ {q:"For bulk, simple, high-volume edits, the cheapest sensible model is…",o:["Haiku 4.5","Sonnet 5","Opus 4.8","Fable 5"],c:0,sec:"models"},
+ {q:"Anthropic's most capable premium model in mid-2026 is…",o:["Sonnet 5","Opus 4.8","Fable 5","Haiku 4.5"],c:2,sec:"models"},
+ {q:"Which flag runs Claude Code headless?",o:["-p / --print","--headless","--silent","--ci"],c:0,sec:"cli"},
+ {q:"You toggle plan mode with…",o:["Shift+Tab","Ctrl+P","/plan only","Alt+P"],c:0,sec:"plan-think"},
+ {q:"Persistent project context lives in…",o:["README.md","CLAUDE.md","context.txt",".claude.json"],c:1,sec:"memory"},
+ {q:"A skill's full body is read into context…",o:["always","only when a task matches its description","never","every message"],c:1,sec:"skills"},
+ {q:"Subagents can nest…",o:["not at all","up to 5 levels deep","exactly twice","only in the SDK"],c:1,sec:"subagents"},
+ {q:"An MCP server primarily gives Claude…",o:["a bigger context window","new tools inside the session","a cheaper rate","a faster model"],c:1,sec:"mcp"},
+ {q:"Which hook can veto a tool before it runs?",o:["Stop","PreToolUse (exit 2)","PostToolUse","SessionStart"],c:1,sec:"hooks"},
+ {q:"The keyword that lets Claude decide to spin up a big workflow is…",o:["ultrathink","ultracode","hypermode","autoplan"],c:1,sec:"workflows"},
+ {q:"A prompt-cache read costs about…",o:["the same as fresh input","~0.1× base input","2× input","nothing"],c:1,sec:"cost"},
+ {q:"Fast mode gives you…",o:["a smarter model","~2.5× speed on Opus for a higher price","more context","free tokens"],c:1,sec:"cost"},
+ {q:"In Claude Code, permissions can be widened by…",o:["a clever prompt","CLAUDE.md","only settings, modes, and hooks","a web page"],c:2,sec:"security"},
+ {q:"Permission rules are evaluated…",o:["allow first","ask first","deny first","at random"],c:2,sec:"security"},
+ {q:"When Claude wants to use a tool, the API returns…",o:["an error","a tool_use block","a refusal","an empty message"],c:1,sec:"api-sdk"},
+ {q:"Web search in the claude.ai app is…",o:["always on","off by default","paid only","mobile only"],c:1,sec:"webapp"},
+ {q:"The strongest prompt of these is…",o:["\"fix it\"","a specific, scoped request naming the file and constraint","\"make it better\"","\"investigate everything\""],c:1,sec:"prompting"},
+ {q:"An LLM fundamentally works by…",o:["database lookup","predicting the next token repeatedly","hand-coded rules","live web search"],c:1,sec:"ai-llm"},
+ {q:"An embedding is…",o:["a backup file","coordinates for meaning","a password","a cache key"],c:1,sec:"ai-tokens"},
+ {q:"An agent is a model plus…",o:["a bigger GPU","tools and a feedback loop","a longer prompt","a database"],c:1,sec:"ai-agents"}
+];
+var SECNAME={models:"Pick the Right Brain",cli:"Terminal Commands","plan-think":"Plan Mode & Thinking",memory:"CLAUDE.md & Memory",skills:"Skills",subagents:"Subagents",mcp:"MCP Servers",hooks:"Hooks",workflows:"Multi-Agent Workflows","api-sdk":"API & Agent SDK",cost:"Cost & Speed",security:"Security Hardening",webapp:"Claude.ai App",prompting:"Prompting","ai-llm":"What Is an LLM?","ai-tokens":"Tokens & Embeddings","ai-agents":"Agents & the AI Loop"};
+var QK='claude_hub_quiz_v1', EK='claude_hub_exam_v1';
+function loadJSON(k){try{return JSON.parse(localStorage.getItem(k)||'{}');}catch(e){return {};}}
+var qstate=loadJSON(QK);
+var REVIEW_DAYS=[1,3,7,21,45], DAY=86400000;
+function nowTs(){return (new Date()).getTime();}
+function buildQuiz(id){
+  var data=QUIZ[id]; var sec=document.getElementById(id); if(!data||!sec)return;
+  var body=sec.querySelector('.sec-body'); if(!body)return;
+  var wrap=document.createElement('div'); wrap.className='quiz'; wrap.setAttribute('data-quiz',id);
+  var head=document.createElement('div'); head.className='quiz-head';
+  head.innerHTML='<span class="quiz-badge">✓ CHECK YOURSELF</span><b>Quick quiz</b><span class="quiz-score"></span>';
+  var qbody=document.createElement('div'); qbody.className='quiz-body';
+  var foot=document.createElement('div'); foot.className='quiz-foot';
+  wrap.appendChild(head); wrap.appendChild(qbody); wrap.appendChild(foot);
+  var answered, correctCount;
+  function render(){
+    answered=0; correctCount=0; qbody.innerHTML=''; foot.innerHTML=''; head.querySelector('.quiz-score').textContent='';
+    data.forEach(function(item,qi){
+      var q=document.createElement('div'); q.className='q';
+      var t=document.createElement('p'); t.className='q-txt';
+      var qn=document.createElement('span'); qn.className='qn'; qn.textContent='Q'+(qi+1)+'.';
+      t.appendChild(qn); t.appendChild(document.createTextNode(item.q)); q.appendChild(t);
+      var exp=document.createElement('div'); exp.className='q-exp';
+      item.o.forEach(function(opt,oi){
+        var b=document.createElement('button'); b.className='opt'; b.type='button';
+        b.appendChild(document.createTextNode(opt));
+        var mk=document.createElement('span'); mk.className='mk'; b.appendChild(mk);
+        b.onclick=function(){
+          if(q.getAttribute('data-done'))return;
+          q.setAttribute('data-done','1'); answered++;
+          var opts=q.querySelectorAll('.opt');
+          opts[item.c].classList.add('correct'); opts[item.c].querySelector('.mk').textContent='✓';
+          if(oi===item.c){correctCount++;} else{b.classList.add('wrong'); b.querySelector('.mk').textContent='✗';}
+          opts.forEach(function(o){o.disabled=true;});
+          exp.innerHTML='<b>Why:</b> '; exp.appendChild(document.createTextNode(item.e)); exp.classList.add('show');
+          if(answered===data.length)finish();
+        };
+        q.appendChild(b);
+      });
+      q.appendChild(exp); qbody.appendChild(q);
+    });
+  }
+  function finish(){
+    var passed=correctCount/data.length>=0.67;
+    head.querySelector('.quiz-score').textContent=correctCount+' / '+data.length;
+    var res=document.createElement('span'); res.className='quiz-result '+(passed?'pass':'review');
+    res.textContent=passed?('🎉 Passed — '+correctCount+'/'+data.length):('Keep going — '+correctCount+'/'+data.length+', review above');
+    var retry=document.createElement('button'); retry.className='quiz-retry'; retry.type='button'; retry.textContent='Try again';
+    retry.onclick=function(){render();};
+    foot.appendChild(res); foot.appendChild(retry);
+    var prev=qstate[id]||{best:0,total:data.length,reps:0};
+    var rec={best:Math.max(prev.best||0,correctCount),total:data.length,ts:nowTs(),reps:prev.reps||0};
+    if(passed)rec.reps=(prev.reps||0)+1;
+    qstate[id]=rec; localStorage.setItem(QK,JSON.stringify(qstate));
+    if(passed)burst(res);
+    updateLearningMeta();
+  }
+  render();
+  var prev=qstate[id];
+  if(prev&&prev.best){head.querySelector('.quiz-score').textContent='best '+prev.best+' / '+prev.total;}
+  body.appendChild(wrap);
+}
+function quizzesPassed(){var n=0; for(var id in QUIZ){var r=qstate[id]; if(r&&r.best/r.total>=0.67)n++;} return n;}
+function dueForReview(){
+  var due=[]; for(var id in QUIZ){var r=qstate[id]; if(!r||r.best/r.total<0.67)continue;
+    var iv=REVIEW_DAYS[Math.min((r.reps||1)-1,REVIEW_DAYS.length-1)]*DAY;
+    if(nowTs()-r.ts>iv)due.push(id);} return due;
+}
+function updateLearningMeta(){
+  var qm=document.getElementById('quizmeta');
+  if(qm){var n=quizzesPassed(),tot=Object.keys(QUIZ).length; qm.innerHTML='<b>'+n+'</b> / '+tot+' section quizzes passed';}
+  var chip=document.getElementById('reviewchip'); if(!chip)return;
+  var due=dueForReview();
+  if(due.length){chip.classList.add('show');
+    chip.textContent='🔁 '+due.length+' quiz'+(due.length>1?'zes':'')+' due for review — tap to start';
+    chip.onclick=function(){var t=document.getElementById(due[0]); if(t){t.scrollIntoView({block:'start'});}};
+  } else {chip.classList.remove('show');}
+}
+Object.keys(QUIZ).forEach(buildQuiz);
+updateLearningMeta();
+(function(){
+  var host=document.getElementById('exam-host'); if(!host)return;
+  var ebest=loadJSON(EK);
+  var picks=new Array(EXAM.length).fill(null), submitted=false;
+  function render(){
+    host.innerHTML=''; picks=new Array(EXAM.length).fill(null); submitted=false;
+    EXAM.forEach(function(item,qi){
+      var q=document.createElement('div'); q.className='exam-q';
+      var t=document.createElement('p'); t.className='q-txt';
+      var qn=document.createElement('span'); qn.className='qn'; qn.textContent='Q'+(qi+1)+'.';
+      t.appendChild(qn); t.appendChild(document.createTextNode(item.q)); q.appendChild(t);
+      item.o.forEach(function(opt,oi){
+        var b=document.createElement('button'); b.className='opt'; b.type='button';
+        b.appendChild(document.createTextNode(opt));
+        var mk=document.createElement('span'); mk.className='mk'; b.appendChild(mk);
+        b.onclick=function(){ if(submitted)return;
+          picks[qi]=oi;
+          q.querySelectorAll('.opt').forEach(function(o){o.style.borderColor='';o.style.background='';});
+          b.style.borderColor='var(--violet)'; b.style.background='rgba(155,140,255,.13)';
+          sub.disabled=picks.indexOf(null)>=0;
+        };
+        q.appendChild(b);
+      });
+      host.appendChild(q);
+    });
+    var ctr=document.createElement('div'); ctr.className='exam-controls';
+    var sub=document.createElement('button'); sub.className='btn-primary'; sub.type='button'; sub.textContent='Submit exam'; sub.disabled=true;
+    var prog=document.createElement('span'); prog.className='exam-prog';
+    if(ebest.best!=null)prog.textContent='Your best so far: '+ebest.best+' / '+EXAM.length;
+    ctr.appendChild(sub); ctr.appendChild(prog); host.appendChild(ctr);
+    var result=document.createElement('div'); result.className='exam-result'; host.appendChild(result);
+    sub.onclick=function(){ if(picks.indexOf(null)>=0)return; grade(sub,result); };
+  }
+  function rankFor(score){
+    if(score>=20)return["Claude Orchestrator","Flawless. You can teach this — go orchestrate a team of agents."];
+    if(score>=17)return["Claude Practitioner","Excellent command of the whole stack. A miss or two to tighten up."];
+    if(score>=14)return["Power User","Solid. You know the tools; revisit the flagged sections to reach mastery."];
+    if(score>=10)return["Claude Apprentice","Good foundation. Work through the sections you missed and retake."];
+    return["Curious Newcomer","Great start — the guide above is your map. Read, quiz, and come back."];
+  }
+  function grade(sub,result){
+    submitted=true; sub.disabled=true;
+    var score=0, missSecs={};
+    var qs=host.querySelectorAll('.exam-q');
+    EXAM.forEach(function(item,qi){
+      var opts=qs[qi].querySelectorAll('.opt');
+      opts.forEach(function(o){o.disabled=true;o.style.borderColor='';o.style.background='';});
+      opts[item.c].classList.add('correct'); opts[item.c].querySelector('.mk').textContent='✓';
+      if(picks[qi]===item.c){score++;}
+      else{opts[picks[qi]].classList.add('wrong'); opts[picks[qi]].querySelector('.mk').textContent='✗'; missSecs[item.sec]=1;}
+    });
+    var rank=rankFor(score);
+    var prevBest=(ebest.best!=null)?ebest.best:-1;
+    if(score>prevBest){ebest={best:score,total:EXAM.length,ts:nowTs()};localStorage.setItem(EK,JSON.stringify(ebest));}
+    result.innerHTML='';
+    var sc=document.createElement('div'); sc.className='exam-score'; sc.textContent=score+' / '+EXAM.length; result.appendChild(sc);
+    var rk=document.createElement('div'); rk.className='exam-rank'; rk.textContent='Rank: '+rank[0]; result.appendChild(rk);
+    var bl=document.createElement('div'); bl.className='exam-blurb'; bl.textContent=rank[1]; result.appendChild(bl);
+    var miss=Object.keys(missSecs);
+    if(miss.length){
+      var rv=document.createElement('div'); rv.className='exam-blurb'; rv.style.marginTop='4px';
+      rv.appendChild(document.createTextNode('Revisit: '));
+      miss.forEach(function(sid,i){
+        var a=document.createElement('a'); a.href='#'+sid; a.textContent=SECNAME[sid]||sid; a.style.color='var(--violet)'; a.style.fontWeight='700';
+        rv.appendChild(a); if(i<miss.length-1)rv.appendChild(document.createTextNode(' · '));
+      });
+      result.appendChild(rv);
+    }
+    var ctr=document.createElement('div'); ctr.className='exam-controls'; ctr.style.justifyContent='center';
+    var copy=document.createElement('button'); copy.className='btn-ghost'; copy.type='button'; copy.textContent='Copy my result';
+    copy.onclick=function(){var txt='I scored '+score+'/'+EXAM.length+' on the Claude Mastery Exam — Rank: '+rank[0]+' 🎓  gesh75.github.io/claude-mastery-hub';
+      navigator.clipboard.writeText(txt).then(function(){copy.textContent='Copied!';setTimeout(function(){copy.textContent='Copy my result';},1400);});};
+    var retake=document.createElement('button'); retake.className='btn-ghost'; retake.type='button'; retake.textContent='Retake exam';
+    retake.onclick=function(){render();host.scrollIntoView({block:'start'});};
+    ctr.appendChild(copy); ctr.appendChild(retake); result.appendChild(ctr);
+    result.classList.add('show'); result.scrollIntoView({block:'center'});
+    if(score>=17)party();
+  }
+  render();
+})();
+
 </script>
 </body>
 </html>
