@@ -433,7 +433,7 @@ print(msg.content[0].text)</code></pre>
 <p>Press <kbd>s</kbd> in the picker to switch for the current session only without changing your saved default.</p>
 
 <h4>At launch from the CLI</h4>
-<p>The <code>--model</code> flag sets the session model and overrides both the <code>model</code> setting and the <code>ANTHROPIC_MODEL</code> env var. Add <code>--fallback-model</code> for automatic failover.</p>
+<p>The <code>--model</code> flag sets the session model and overrides both the <code>model</code> setting and the <code>ANTHROPIC_MODEL</code> env var. Add <code>--fallback-model</code> for automatic failover — the <code>fallbackModel</code> setting now takes up to three models, tried in order when the primary is overloaded or unavailable.</p>
 <pre><code>claude --model claude-sonnet-5
 claude --model claude-opus-4-8 --fallback-model sonnet
 claude -p "summarize these logs" --model haiku   # headless, cheap</code></pre>
@@ -506,7 +506,7 @@ claude
 
 # Or trigger login directly any time
 /login</code></pre>
-<div class="cal tip">Stuck? Run <code>/doctor</code> to diagnose install and auth problems, and <code>/status</code> to see which account you are signed in as.</div>
+<div class="cal tip">Stuck? <code>/doctor</code> is now a full setup checkup that can diagnose <i>and fix</i> issues (<code>/checkup</code> is its alias); <code>/status</code> shows which account you're signed in as. To rule out your own config, launch with <code>--safe-mode</code> (or <code>CLAUDE_CODE_SAFE_MODE</code>), which starts Claude Code with all customizations — CLAUDE.md, plugins, skills, hooks, MCP servers — disabled.</div>
 
 <h3>Step 3 — Run Claude in a project</h3>
 <p>Always <code>cd</code> into a real project folder before starting. Claude reads files relative to where you launch it, so the folder you start in becomes its working directory.</p>
@@ -1393,7 +1393,7 @@ Report each as a short summary.</code></pre>
 <h3>When delegation helps vs hurts</h3>
 <div class="grid"><div class="card"><h4>Delegate when</h4><p>Output is verbose and you don't need it in main context, you want tool/permission limits enforced, or the work is self-contained and returns a summary.</p></div><div class="card"><h4>Stay in the main chat when</h4><p>You need frequent back-and-forth, phases share context, the change is a quick one-liner, or latency matters — subagents start cold and must re-gather context.</p></div></div>
 
-<div class="cal warn">Subagents cannot spawn other subagents — there is no nested delegation. For multi-stage workflows, chain them from the main conversation or use Skills. Also note <code>Agent</code>, <code>AskUserQuestion</code>, and plan-mode tools are unavailable inside a subagent.</div>
+<div class="cal info">Subagents can now spawn their own subagents (up to <b>5 levels deep</b>), so true nested delegation is available for multi-stage work — but keep trees shallow, since each level adds cold-start latency and coordination overhead. <code>AskUserQuestion</code> and plan-mode tools are still unavailable inside a subagent.</div>
 
 <h3>Two power features</h3>
 <p>Add <code>memory: project</code> to give an agent persistent notes across sessions (stored in <code>.claude/agent-memory/&lt;name&gt;/</code>). Add <code>skills:</code> to preload full skill content into the subagent at startup — subagents get the entire skill injected, not just its description.</p>
@@ -1540,7 +1540,9 @@ claude mcp add --scope project --transport http docs https://code.claude.com/doc
 claude mcp get github           # show details + which scope holds it
 claude mcp remove github        # remove (add --scope if in several)
 claude mcp add-json db '{"type":"stdio","command":"..."}'
-claude mcp add-from-claude-desktop   # import (macOS/WSL only)</code></pre>
+claude mcp add-from-claude-desktop   # import (macOS/WSL only)
+claude mcp login github               # authenticate a server from the CLI
+claude mcp logout github              # sign it back out (--no-browser works over SSH)</code></pre>
 
 <h3>Example servers to start with</h3>
 <div class="grid">
@@ -1731,7 +1733,7 @@ claude mcp add-from-claude-desktop   # import (macOS/WSL only)</code></pre>
           <tr><td>API id</td><td><code>claude-fable-5</code></td></tr>
           <tr><td>Price (in / out)</td><td>$10 / $50 per million tokens</td></tr>
           <tr><td>Autonomy</td><td>Runs unattended across millions of tokens on long tasks</td></tr>
-          <tr><td>Availability</td><td>Live now on the Claude API and consumption-based Enterprise plans. Subscription plans: included through <strong>June 22</strong>, then via usage credits.</td></tr>
+          <tr><td>Availability</td><td>Live on the Claude API and consumption-based Enterprise plans. On subscription plans, Fable 5 now runs on <strong>usage credits</strong> — without credits enabled, access is cut off.</td></tr>
         </tbody>
       </table>
 
@@ -1910,7 +1912,7 @@ claude plugin list --json</code></pre>
 
 <table><thead><tr><th>Use subagents / loops when</th><th>Stay in the main chat when</th></tr></thead><tbody><tr><td>Task spits out verbose output you do not need to keep</td><td>You need frequent back-and-forth steering</td></tr><tr><td>Several investigations are independent (fan-out)</td><td>Phases share the same context</td></tr><tr><td>You want to enforce tool/permission limits</td><td>The change is a quick one-line diff</td></tr><tr><td>Work is self-contained and returns a summary</td><td>Latency matters (cold start costs time)</td></tr></tbody></table>
 
-<div class="cal warn">Subagents cannot spawn other subagents. There is no nested delegation. Chain them from the main conversation, or use Skills, when you need multiple stages.</div>
+<div class="cal info">Nested delegation is now real: subagents can spawn their own subagents up to <b>5 levels deep</b>. Use it sparingly — every level adds cold-start cost and makes the run harder to follow. For anything genuinely large, prefer a dynamic workflow (below), which keeps the whole tree coordinated and visible.</div>
 
 <h3>Pattern 1: Parallel fan-out (research)</h3>
 
@@ -1987,11 +1989,33 @@ claude -p "Fix it, then run the suite until green" \
 
 <div class="cal info"><code>--permission-mode dontAsk</code> denies anything not in your allow rules; <code>acceptEdits</code> auto-approves file writes plus safe filesystem commands. Pair with <code>--allowedTools</code> so locked-down loops never hang on a prompt.</div>
 
-<h3>Monitoring and backgrounding agents</h3>
+<h3>Dynamic workflows: orchestration Claude writes for you</h3>
 
-<p>Long jobs do not have to block you. Press <kbd>Ctrl</kbd>+<kbd>B</kbd> to background a running task, or set <code>background: true</code> in an agent's frontmatter. Backgrounded agents run concurrently and auto-deny anything that would prompt.</p>
+<p>The patterns above are ones you design by hand. <strong>Dynamic workflows</strong> (GA across the CLI, Desktop, and VS Code) let Claude design the orchestration itself: from your prompt it writes an orchestration script that fans work out across <em>tens to hundreds</em> of parallel subagents in a single background run, checks the results, and hands you one coordinated answer. Work you'd normally scope in quarters can land in days.</p>
 
-<div class="grid"><div class="card"><h4>/agents</h4><p>Opens a tabbed UI. The Running tab shows live subagents; the Library tab creates and edits them.</p></div><div class="card"><h4>claude agents</h4><p>Dispatch and watch parallel background sessions. <code>claude agents --json</code> prints them for scripting.</p></div><div class="card"><h4>isolation: worktree</h4><p>Runs a subagent in a throwaway git worktree so parallel agents never collide on the same files.</p></div><div class="card"><h4>memory: project</h4><p>Gives an agent persistent cross-session memory under <code>.claude/agent-memory/</code> — the recommended default.</p></div></div>
+<p>Two ways to start one:</p>
+<pre><code># 1. Just ask
+&gt; create a workflow to migrate every component off the legacy API
+
+# 2. Turn on ultracode &mdash; sets effort to xhigh and lets Claude
+#    decide when a task is big enough to warrant a workflow
+/config    # enable "ultracode" (also on the effort menu)
+
+/workflows # watch runs: live agent tree, status, per-run activity</code></pre>
+
+<p>How it reaches answers a single pass can't: agents attack the problem from independent angles, <em>other</em> agents try to refute what they found, and the run keeps iterating until the answers converge. Progress is saved as it goes, so an interrupted job resumes instead of restarting, and because the coordination happens outside your conversation the plan stays on track no matter how large the task grows.</p>
+
+<div class="cal warn">Dynamic workflows consume <b>meaningfully more usage</b> than a normal session. The first time one triggers, Claude Code shows what's about to run and asks you to confirm; a "Dynamic workflow size" setting (small/medium/large) advises how many agents to spawn, and org admins can disable workflows via managed settings.</div>
+
+<div class="cal info">On by default for Max, Team, Enterprise, and API use; Pro users enable them in <code>/config</code>. Pair with <b>auto mode</b> for the smoothest experience &mdash; each subagent spawn is checked by the permission classifier before it launches.</div>
+
+<h3>Background agents: dispatch, detach, come back to a PR</h3>
+
+<p>Long jobs don't block you. Subagents run in the background by default, and the <code>claude agents</code> view is mission control for parallel background sessions &mdash; dispatch new ones, peek at status, attach to steer, detach to move on.</p>
+
+<div class="grid"><div class="card"><h4>claude agents</h4><p>The background-session dashboard. Sessions that need input or finish fire the <code>Notification</code> hook (<code>agent_needs_input</code> / <code>agent_completed</code>). <code>--json</code> (with <code>--all</code>) prints them for scripting.</p></div><div class="card"><h4>! background shell</h4><p>In the agents view, type <code>!&nbsp;&lt;cmd&gt;</code> (or <code>claude --bg --exec '&lt;cmd&gt;'</code>) to run a shell command as an attachable background session.</p></div><div class="card"><h4>Auto draft PRs</h4><p>A background agent that finishes code work in a worktree now <b>commits, pushes, and opens a draft PR</b> on its own instead of stopping to ask.</p></div><div class="card"><h4>isolation: worktree</h4><p>Runs a subagent in a throwaway git worktree so parallel agents never collide; <code>memory: project</code> gives it persistent cross-session memory.</p></div></div>
+
+<div class="cal tip">Point research/exploration subagents at <span class="pill">haiku</span> (<code>model: haiku</code> in frontmatter): they read a lot of files and burn context, so running the sweep cheaply keeps Opus free on the main thread. And ask agents for <b>evidence</b> &mdash; the test output, the command and what it returned, a screenshot &mdash; not just a claim of success; reviewing evidence is faster than re-running the check, especially for sessions you weren't watching.</div>
 
 <h3>Token discipline for any multi-agent run</h3>
 
@@ -2224,7 +2248,7 @@ server = create_sdk_mcp_server(name="math", tools=[add])
 
 <p>External MCP servers go through <code>mcpServers</code>/<code>mcp_servers</code> or a <code>.mcp.json</code> file, over stdio, HTTP/SSE, or in-process. Tool names follow <code>mcp__{server}__{tool}</code>; auto-approve with wildcards like <code>mcp__github__*</code>.</p>
 
-<div class="cal info">Subagents run in a fresh, isolated context and return only their final answer to the parent — keeping the main context lean. Define them via the <code>agents</code> option, as markdown in <code>.claude/agents/</code>, or use <code>general-purpose</code>. They are invoked via the <code>Agent</code> tool (renamed from <code>Task</code> in v2.1.63), so add <code>Agent</code> to <code>allowedTools</code> to auto-approve. Subagents cannot spawn their own subagents.</div>
+<div class="cal info">Subagents run in a fresh, isolated context and return only their final answer to the parent — keeping the main context lean. Define them via the <code>agents</code> option, as markdown in <code>.claude/agents/</code>, or use <code>general-purpose</code>. They are invoked via the <code>Agent</code> tool (renamed from <code>Task</code> in v2.1.63), so add <code>Agent</code> to <code>allowedTools</code> to auto-approve. Subagents can spawn their own subagents, up to 5 levels deep.</div>
 
 <h4>Hooks, sessions &amp; cost caps</h4>
 
@@ -2455,6 +2479,19 @@ Never invent interface names &mdash; ask if a config is missing.</code></pre>
 
 <div class="cal warn">Web search is off by default and Claude won't browse without it. If you get a "my knowledge has a cutoff" answer to a current-events question, you forgot to enable the toggle.</div>
 
+<h3>Cowork: hand Claude the whole job, from any device</h3>
+
+<p><strong>Claude Cowork</strong> is the app's agentic surface — where you don't just ask for an answer, you hand over the <em>work</em>. Claude operates across your files, calendar, email, messaging apps, the web, and whatever tools you connect, until the job is done. It began as a desktop-only feature and, as of <strong>July 2026</strong>, runs on <strong>web and mobile</strong> too (rolling out in beta, Max plans first).</p>
+
+<div class="grid">
+<div class="card"><h4>Your work follows you</h4><p>Start a task at your desk, check progress from your phone, pick up the finished output anywhere. Chat and Cowork now share one home, with projects and artifacts across both.</p></div>
+<div class="card"><h4>Runs in the background</h4><p>Close the laptop and Claude keeps going. <b>Scheduled tasks run with no device online</b> — set Monday's client prep for 6am and review the drafted briefing over coffee.</p></div>
+<div class="card"><h4>You keep the decisions</h4><p>When Claude hits a call only you can make, the question reaches your phone. You can redirect a draft mid-meeting; nothing ships until you've reviewed it.</p></div>
+<div class="card"><h4>Computer use (preview)</h4><p>On Pro/Max, Claude can open files and click around your screen to do tasks itself — no setup — making it useful well beyond code.</p></div>
+</div>
+
+<div class="cal info">Desktop remains the deepest surface: there Claude also reaches your <b>local files and browser</b> in an isolated VM. Web and mobile bring the same delegate-and-check-later loop to devices that can't install the app. Over 90% of Cowork usage is non-coding work — ops, research, content.</div>
+
 <h3>Putting it together: a coworking session</h3>
 
 <p>The real power is the combination. Here's a typical flow that uses all four surfaces at once.</p>
@@ -2506,8 +2543,9 @@ Never invent interface names &mdash; ask if a config is missing.</code></pre>
 <thead><tr><th>Model</th><th>In / Out (per MTok)</th><th>Speed</th><th>Use it for</th></tr></thead>
 <tbody>
 <tr><td>Haiku 4.5</td><td>$1 / $5</td><td>Fastest</td><td>High-volume, simple edits, search, subagents, real-time</td></tr>
-<tr><td>Sonnet 4.6</td><td>$3 / $15</td><td>Fast</td><td>Most production work: code gen, analysis, tool use</td></tr>
+<tr><td>Sonnet 5</td><td>$3 / $15 <i>(intro $2 / $10)</i></td><td>Fast</td><td>Most production work: code gen, analysis, tool use</td></tr>
 <tr><td>Opus 4.8</td><td>$5 / $25</td><td>Moderate</td><td>Hard reasoning, big refactors, long-horizon agentic runs</td></tr>
+<tr><td>Fable 5</td><td>$10 / $50</td><td>Deliberate</td><td>The genuinely hardest work &mdash; premium tier, use only when it earns it</td></tr>
 </tbody>
 </table>
 
@@ -2592,7 +2630,26 @@ claude "in src/auth/session.ts, find why validateToken() does a DB call per requ
 session_id=$(claude -p "Start a review of the diff" --output-format json | jq -r '.session_id')
 claude -p "Now check for type errors" --resume "$session_id"</code></pre>
 
-<div class="cal info">For the API and async work, the Batch API runs jobs at <strong>50% off</strong> (e.g. Sonnet 4.6 drops to $1.50 in / $7.50 out per MTok). Ideal for large, non-interactive jobs you don't need answered in real time.</div>
+<div class="cal info">For the API and async work, the Batch API runs jobs at <strong>50% off</strong> (e.g. Sonnet 5 drops to $1.50 in / $7.50 out per MTok). Ideal for large, non-interactive jobs you don't need answered in real time.</div>
+
+<h3>Fast mode: pay for speed when latency is the bottleneck</h3>
+
+<p>Cost isn't the only axis — sometimes you just want the answer <em>now</em>. <strong>Fast mode</strong> (research preview) runs Claude Opus up to <strong>2.5&times; faster</strong> at a higher price per token. It's the same model with the same quality, just a config that trades cost efficiency for speed. Toggle it in the CLI with <code>/fast</code>.</p>
+
+<pre><code>/fast          # toggle fast mode on/off (Claude Code CLI; not in VS Code)
+claude --version   # need v2.1.36+; Opus 4.8 is the default fast tier</code></pre>
+
+<table>
+<thead><tr><th>Model</th><th>Fast-mode price (in / out per MTok)</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Opus 4.8</td><td>$10 / $50</td><td>The durable fast tier &mdash; 2&times; standard rate for 2.5&times; speed</td></tr>
+<tr><td>Opus 4.7</td><td>$30 / $150</td><td>Fast mode <b>deprecated</b>; removed Jul 24, 2026 &mdash; migrate to 4.8</td></tr>
+</tbody>
+</table>
+
+<div class="cal tip">Reach for it during <b>interactive, latency-sensitive work</b>: rapid iteration, live debugging, a tight deadline. Toggle it back off for batch or background jobs where cost matters more than the wait.</div>
+
+<div class="cal warn">Fast mode is a research preview and Opus-only (not Sonnet/Haiku). On subscription plans (Pro/Max/Team/Enterprise) it bills via <b>usage credits</b> only, outside your included limits, and Team/Enterprise Owners must enable it first. Not available on Bedrock, Vertex, Foundry, or Claude Platform on AWS.</div>
 
 <h4>Trim CLAUDE.md ruthlessly</h4>
 
@@ -2784,6 +2841,11 @@ secrets/
 <p>First-time codebase runs and new MCP servers require trust verification. Note that verification is disabled in non-interactive <code>-p</code> mode (except <code>--worktree</code>, which still requires accepted trust) — so don't pipe an untrusted repo straight into headless mode.</p>
 
 <p>When you do auto-approve MCP tools, scope them with wildcards rather than reaching for <code>bypassPermissions</code>. Note that <code>acceptEdits</code> does not auto-approve MCP tools at all.</p>
+
+<h4>Skills and plugins are supply chain too</h4>
+<p>The same "installing a dependency with machine access" logic applies to skills and plugins — they can carry hooks, MCP servers, and executables. Vet the source before installing, and prefer the curated <code>claude-plugins-official</code> marketplace or your org's reviewed list.</p>
+
+<div class="cal warn">Static scanning is not a safety guarantee. In mid-2026 researchers published <b>SkillCloak</b>, a technique that hides malicious behavior in Agent Skills so it slips past over 90% of static scanners, detonating only at runtime. Treat an unreviewed third-party skill like unreviewed code: read it, run it sandboxed first, and don't grant it broad tool access on trust alone.</div>
 
 <pre><code>{
   "permissions": {
