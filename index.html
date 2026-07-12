@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%A4%96%3C/text%3E%3C/svg%3E">
-<meta name="description" content="An interactive guide to mastering Claude — Claude Code, the app, API & Agent SDK, MCP, skills, subagents, hooks, plugins, CLI hacks, how-to recipes, plus an AI Foundations 101 track. 40 sections, 24 animated & explained diagrams, 60+ quiz questions, a scored final exam, and 150+ examples.">
+<meta name="description" content="An interactive guide to mastering Claude — Claude Code, the app, API & Agent SDK, MCP, skills, subagents, hooks, plugins, CLI hacks, how-to recipes, plus an AI Foundations 101 track. 40 sections, 24 animated & explained diagrams, 100+ self-test quiz questions, a scored final exam, and 150+ examples.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Claude Mastery Hub">
 <meta property="og:title" content="Claude Mastery Hub — extract maximum power from Claude">
-<meta property="og:description" content="40 deep-dive sections · 24 animated & explained diagrams · self-test quizzes + a scored final exam · 150+ examples. Master Claude Code, the API & Agent SDK, MCP, skills, subagents, hooks — plus AI Foundations 101.">
+<meta property="og:description" content="40 deep-dive sections · 24 animated & explained diagrams · 100+ self-test quiz questions + a scored final exam · 150+ examples. Master Claude Code, the API & Agent SDK, MCP, skills, subagents, hooks — plus AI Foundations 101.">
 <meta property="og:url" content="https://gesh75.github.io/claude-mastery-hub/">
 <meta property="og:image" content="https://gesh75.github.io/claude-mastery-hub/og.png">
 <meta property="og:image:width" content="1200">
@@ -16,7 +16,7 @@
 <meta property="og:image:alt" content="Claude Mastery Hub">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Claude Mastery Hub — extract maximum power from Claude">
-<meta name="twitter:description" content="40 deep-dive sections · 24 animated diagrams · self-test quizzes + a scored final exam · 150+ examples on Claude — plus a beginner AI Foundations 101 track.">
+<meta name="twitter:description" content="40 deep-dive sections · 24 animated diagrams · 100+ self-test quiz questions + a scored final exam · 150+ examples on Claude — plus a beginner AI Foundations 101 track.">
 <meta name="twitter:image" content="https://gesh75.github.io/claude-mastery-hub/og.png">
 <title>Claude Mastery Hub — Extract Maximum Power from Claude</title>
 <style>
@@ -224,6 +224,26 @@ a:hover{text-decoration:underline}
 .exam-blurb{color:var(--mut);font-size:14px;max-width:520px;margin:0 auto 14px}
 .exam-prog{font-size:12.5px;color:var(--mut);margin-top:10px}
 
+/* search + anchors + print */
+.nores{display:none;padding:8px 12px;color:var(--mut);font-size:12.5px}
+.sec-body h3{position:relative}
+.hanchor{opacity:0;margin-left:8px;color:var(--violet);text-decoration:none;font-weight:700;font-size:.72em;vertical-align:middle;transition:opacity .12s}
+.sec-body h3:hover .hanchor{opacity:.65}
+.hanchor:hover,.hanchor:focus{opacity:1;outline:none}
+.hanchor.copied::after{content:" link copied";color:var(--green);font-size:.85em;font-weight:600}
+@media print{
+  .topbar,.menu-btn,.side,nav,#stars,.fab,.mascot,.quiz,.review-chip,.copy,.hanchor,.confetti,#exam-host,.exam-controls{display:none!important}
+  html,body{background:#fff!important;color:#111!important}
+  .wrap{max-width:none;padding:0}
+  main{display:block!important}
+  .sec{opacity:1!important;transform:none!important;display:block!important;border:1px solid #ddd;box-shadow:none;background:#fff;break-inside:avoid;page-break-inside:avoid}
+  .sec-body,.card,.cal,.diagram,table,pre,.grid{break-inside:avoid;page-break-inside:avoid}
+  h1,h2,h3,h4,.sec-num,.q-txt{color:#111!important}
+  p,li,td,th,.lead{color:#1a1a1a!important}
+  a{color:#111!important}
+  .diagram{border:1px solid #ccc}
+  pre,code{background:#f4f4f4!important;color:#111!important}
+}
 /* footer */
 footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;text-align:center;color:var(--mut)}
 .cites{list-style:none;padding:0;max-width:880px;margin:14px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:6px;text-align:left;font-size:13px}
@@ -325,6 +345,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
       <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">Learn one mental model and it transfers everywhere — chat, terminal, and your own apps all run on the same Claude brains.</span></div><div class="diagram-svg"><svg viewBox="0 0 880 380" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Claude models at the center powering three surfaces: the Claude.ai app, Claude Code, and the API and Agent SDK"><defs><marker id="arr-starthere" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9b8cff"/></marker></defs><rect x="10" y="10" width="860" height="360" rx="18" fill="#171327" opacity="0.35"/><path id="p-top" d="M340,150 C470,110 560,98 640,90" fill="none" stroke="#ff7a59" stroke-width="2" stroke-dasharray="5 6" marker-end="url(#arr-starthere)"/><path id="p-mid" d="M348,190 C470,190 560,190 640,190" fill="none" stroke="#54e6e0" stroke-width="2" stroke-dasharray="5 6" marker-end="url(#arr-starthere)"/><path id="p-bot" d="M340,230 C470,270 560,282 640,290" fill="none" stroke="#5fd39a" stroke-width="2" stroke-dasharray="5 6" marker-end="url(#arr-starthere)"/><g><rect x="60" y="128" width="280" height="124" rx="16" fill="#1d1830" stroke="#9b8cff" stroke-width="1.5"/><animate attributeName="opacity" values="1;.6;1" dur="3s" repeatCount="indefinite"/></g><text x="200" y="170" text-anchor="middle" fill="#ece9f5" font-size="16" font-weight="600" font-family="-apple-system,Segoe UI,Inter,sans-serif">Claude models</text><text x="200" y="195" text-anchor="middle" fill="#a59fc0" font-size="13" font-family="-apple-system,Segoe UI,Inter,sans-serif">one shared brain</text><g font-family="-apple-system,Segoe UI,Inter,sans-serif"><rect x="72" y="212" width="48" height="24" rx="12" fill="#171327" stroke="#ff7a59" stroke-width="1.5"/><text x="96" y="228" text-anchor="middle" fill="#ff7a59" font-size="11" font-weight="600">Opus</text><rect x="128" y="212" width="62" height="24" rx="12" fill="#171327" stroke="#54e6e0" stroke-width="1.5"/><text x="159" y="228" text-anchor="middle" fill="#54e6e0" font-size="11" font-weight="600">Sonnet</text><rect x="198" y="212" width="48" height="24" rx="12" fill="#171327" stroke="#5fd39a" stroke-width="1.5"/><text x="222" y="228" text-anchor="middle" fill="#5fd39a" font-size="11" font-weight="600">Haiku</text><rect x="254" y="212" width="68" height="24" rx="12" fill="#171327" stroke="#ffd166" stroke-width="1.5"><animate attributeName="stroke-opacity" values="1;.5;1" dur="2.4s" repeatCount="indefinite"/></rect><text x="288" y="228" text-anchor="middle" fill="#ffd166" font-size="11" font-weight="600">Fable 5</text></g><g font-family="-apple-system,Segoe UI,Inter,sans-serif"><rect x="642" y="56" width="216" height="72" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="1.5"/><text x="750" y="86" text-anchor="middle" fill="#ece9f5" font-size="15" font-weight="600">Claude.ai app</text><text x="750" y="108" text-anchor="middle" fill="#a59fc0" font-size="12">chat · Projects · Artifacts</text></g><g font-family="-apple-system,Segoe UI,Inter,sans-serif"><rect x="642" y="156" width="216" height="72" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="1.5"/><text x="750" y="186" text-anchor="middle" fill="#ece9f5" font-size="15" font-weight="600">Claude Code</text><text x="750" y="208" text-anchor="middle" fill="#a59fc0" font-size="12">terminal + IDE agent</text></g><g font-family="-apple-system,Segoe UI,Inter,sans-serif"><rect x="642" y="256" width="216" height="72" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="1.5"/><text x="750" y="286" text-anchor="middle" fill="#ece9f5" font-size="15" font-weight="600">API &amp; Agent SDK</text><text x="750" y="308" text-anchor="middle" fill="#a59fc0" font-size="12">build your own</text></g><circle r="5" fill="#ff7a59"><animateMotion dur="3s" repeatCount="indefinite"><mpath href="#p-top"/></animateMotion></circle><circle r="5" fill="#54e6e0"><animateMotion dur="3s" begin="0.6s" repeatCount="indefinite"><mpath href="#p-mid"/></animateMotion></circle><circle r="5" fill="#5fd39a"><animateMotion dur="3s" begin="1.2s" repeatCount="indefinite"><mpath href="#p-bot"/></animateMotion></circle><text x="490" y="346" text-anchor="middle" fill="#a59fc0" font-size="12" font-family="-apple-system,Segoe UI,Inter,sans-serif">same models power every surface — only the interface differs</text></svg></div><div class="diagram-cap">A central Claude models core (Fable 5 / Opus / Sonnet / Haiku) powering three surfaces that fan out: the Claude.ai app, Claude Code, and the API & Agent SDK.</div><details class="anim-x"><summary>🎬 Animation, explained</summary><ol><li>The pulsing core is the <b>model family</b> — Fable 5, Opus, Sonnet, and Haiku — the one brain behind everything.</li><li>The three animated beams fan out to the three <b>surfaces</b> you'll use it from: the Claude.ai app, Claude Code in your terminal, and the raw API / Agent SDK.</li><li>The dots travel <b>outward from the core</b>, not between surfaces — each surface is a different doorway into the same intelligence, not a different AI.</li><li>Takeaway: skills you build on one surface (prompting, context, tool thinking) transfer to all the others for free.</li></ol></details></div><p class="lead">Claude is one family of models you reach three ways — a chat app, a coding agent, and an API — and mastery is just knowing which one to grab.</p>
 <p>Most people only ever open the chat box and stop there. The real wins come from picking the right surface for the job, then giving Claude the context it needs to nail it on the first try.</p>
 <p>This hub builds you up in four layers: <span class="pill">Foundations</span> <span class="pill">Core</span> <span class="pill">Power Features</span> <span class="pill">Mastery</span>. Start here, then go in order or jump to what you need.</p>
+<details class="anim-x" id="changelog" style="margin:14px 0 0"><summary>🆕 Recently updated</summary><ol><li><b>Jul 2026</b> — Self-test <b>quizzes on every teachable section</b> (100+ questions), upgraded full-text search, deep-link heading anchors, and a print-friendly stylesheet.</li><li><b>Jul 2026</b> — <b>Learning engine</b>: per-section quizzes, a scored 20-question final exam with ranks, and a spaced-repetition review nudge.</li><li><b>Jul 2026</b> — <b>Mid-2026 currency pass</b>: dynamic workflows &amp; ultracode, fast mode, background agents, and Claude Cowork (web + mobile).</li><li><b>Jun 2026</b> — <b>Claude Sonnet 5</b> &amp; <b>Fable 5</b> across the model tables, “Animation, explained” panels on all 24 diagrams, plus How-To Recipes and CLI Hacks.</li></ol></details>
 
 <h3>The three surfaces</h3>
 <p>Each surface runs the same underlying models (Opus, Sonnet, Haiku) but is tuned for a different kind of work.</p>
@@ -372,7 +393,7 @@ cat error.log | claude -p "What caused this crash?"</code></pre>
 
 client = Anthropic()
 msg = client.messages.create(
-    model="claude-sonnet-4-6",
+    model="claude-sonnet-5",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Summarize this ticket in one line."}],
 )
@@ -384,7 +405,7 @@ print(msg.content[0].text)</code></pre>
 <thead><tr><th>Model</th><th>Best for</th><th>Speed</th><th>Price (in / out per MTok)</th></tr></thead>
 <tbody>
 <tr><td>Haiku 4.5</td><td>Simple, high-volume, real-time tasks</td><td>Fastest</td><td>$1 / $5</td></tr>
-<tr><td>Sonnet 4.6</td><td>Most production work — coding, analysis, content</td><td>Fast</td><td>$3 / $15</td></tr>
+<tr><td>Sonnet 5</td><td>Most production work — coding, analysis, content</td><td>Fast</td><td>$3 / $15</td></tr>
 <tr><td>Opus 4.8</td><td>Hardest reasoning, big refactors, long agentic runs</td><td>Moderate</td><td>$5 / $25</td></tr>
 </tbody>
 </table>
@@ -661,7 +682,7 @@ claude --model opus
 claude --model sonnet
 
 # Or a full model id
-claude --model claude-sonnet-4-6
+claude --model claude-sonnet-5
 
 # Add a fallback if the primary is unavailable
 claude --model opus --fallback-model sonnet</code></pre>
@@ -764,7 +785,7 @@ claude --permission-mode plan --allow-dangerously-skip-permissions</code></pre>
 /model sonnet    # best all-round speed + intelligence
 /model haiku     # fastest, cheap, simple tasks
 /model default   # recommended default; may auto-route Opus on hard work</code></pre>
-<div class="cal tip">A rule of thumb from the docs: start on Haiku 4.5, move to Sonnet 4.6 for most production work, and reach for Opus 4.8 only for long-horizon agentic coding or complex systems work.</div>
+<div class="cal tip">A rule of thumb from the docs: start on Haiku 4.5, move to Sonnet 5 for most production work, and reach for Opus 4.8 only for long-horizon agentic coding or complex systems work.</div>
 
 <h3>Session lifecycle: /resume and friends</h3>
 <p>Your conversations are saved. Pick one back up instead of starting cold.</p>
@@ -1137,7 +1158,7 @@ export MAX_THINKING_TOKENS=10000
 
 <h4>A model note worth knowing</h4>
 
-<p>The thinking story differs by model. Opus 4.x uses adaptive thinking rather than the standard extended-thinking toggle, while Sonnet 4.6 and Haiku 4.5 support extended thinking. The practical workflow is the same either way; the model decides how to apply the reasoning.</p>
+<p>The thinking story differs by model. Opus 4.x and Sonnet 5 use adaptive thinking (Sonnet 5 runs it by default) rather than the standard extended-thinking toggle, while Haiku 4.5 supports the extended-thinking toggle and keywords. The practical workflow is the same either way; the model decides how to apply the reasoning.</p>
 
 <h3>Putting them together</h3>
 
@@ -2115,7 +2136,7 @@ from anthropic import Anthropic
 
 client = Anthropic()
 msg = client.messages.create(
-    model="claude-sonnet-4-6",
+    model="claude-sonnet-5",
     max_tokens=1024,
     system="You are a terse senior network engineer.",
     messages=[{"role": "user", "content": "Explain BGP route reflectors in 2 sentences."}],
@@ -2156,7 +2177,7 @@ console.log(msg.content[0].type === "text" &amp;&amp; msg.content[0].text);</cod
 messages = [{"role": "user", "content": "Weather in Detroit?"}]
 while True:
     resp = client.messages.create(
-        model="claude-sonnet-4-6", max_tokens=1024, tools=tools, messages=messages
+        model="claude-sonnet-5", max_tokens=1024, tools=tools, messages=messages
     )
     messages.append({"role": "assistant", "content": resp.content})
     if resp.stop_reason != "tool_use":
@@ -2181,7 +2202,7 @@ while True:
 <p>Set <code>stream: true</code> for SSE. The event flow is <code>message_start</code> then per-block <code>content_block_start / _delta / _stop</code>, then <code>message_delta</code> and <code>message_stop</code>. SDK helpers hide the plumbing.</p>
 
 <pre><code>with client.messages.stream(
-    model="claude-sonnet-4-6", max_tokens=1024,
+    model="claude-sonnet-5", max_tokens=1024,
     messages=[{"role": "user", "content": "Write a haiku about subnets."}],
 ) as stream:
     for text in stream.text_stream:
@@ -5812,11 +5833,41 @@ refresh();
 
 // search filter
 var sb=document.getElementById('search');
-if(sb)sb.oninput=function(){
-  var q=sb.value.toLowerCase().trim();
-  links.forEach(function(l){var t=l.textContent.toLowerCase();l.style.display=(!q||t.indexOf(q)>=0)?'':'none';});
-  secs.forEach(function(s){var t=s.textContent.toLowerCase();s.style.display=(!q||t.indexOf(q)>=0)?'':'none';});
-};
+if(sb){
+  var secById={}; secs.forEach(function(s){secById[s.getAttribute('data-id')]={el:s,text:s.textContent.toLowerCase()};});
+  var noRes=document.createElement('div'); noRes.className='nores'; noRes.textContent='No matches \u2014 try another term.';
+  sb.parentNode.insertBefore(noRes, sb.nextSibling);
+  function doSearch(){
+    var q=sb.value.toLowerCase().trim(), any=false;
+    secs.forEach(function(s){var hit=!q||secById[s.getAttribute('data-id')].text.indexOf(q)>=0; if(hit)any=true; s.style.display=hit?'':'none';});
+    links.forEach(function(l){var o=secById[l.getAttribute('data-id')];
+      var hit=!q||l.textContent.toLowerCase().indexOf(q)>=0||(o&&o.text.indexOf(q)>=0);
+      l.style.display=hit?'':'none';});
+    noRes.style.display=(q&&!any)?'block':'none';
+  }
+  sb.oninput=doSearch;
+  sb.addEventListener('keydown',function(e){if(e.key==='Escape'){sb.value='';doSearch();}});
+}
+
+// heading deep-link anchors
+(function(){
+  function slug(t){return (t||'x').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'h';}
+  document.querySelectorAll('.sec').forEach(function(sec){
+    var sid=sec.getAttribute('data-id'), used={};
+    sec.querySelectorAll('.sec-body h3').forEach(function(h){
+      var base=sid+'-'+slug(h.textContent), id=base, n=2;
+      while(document.getElementById(id)||used[id]){id=base+'-'+(n++);} used[id]=1; h.id=id;
+      var a=document.createElement('a'); a.className='hanchor'; a.href='#'+id; a.textContent='#'; a.setAttribute('aria-label','Copy link to this heading');
+      a.onclick=function(e){e.preventDefault();
+        var url=location.href.split('#')[0]+'#'+id;
+        if(navigator.clipboard)navigator.clipboard.writeText(url);
+        history.replaceState(null,'','#'+id); h.scrollIntoView({block:'start'});
+        a.classList.add('copied'); setTimeout(function(){a.classList.remove('copied');},1200);
+      };
+      h.appendChild(a);
+    });
+  });
+})();
 
 // mobile menu
 var side=document.getElementById('side');
@@ -5952,7 +6003,72 @@ var QUIZ={
  "ai-agents":[
   {q:"An AI agent is…",o:["A bigger model","A model given tools and a feedback loop so it can act","A faster GPU","A chatbot with no tools"],c:1,e:"Perceive → Think → Act → Observe, repeating — exactly how Claude Code works."},
   {q:"The agent loop repeats until…",o:["The user leaves","The model stops asking for tools (end_turn)","Midnight","Only when tokens run out"],c:1,e:"tool_result feeds back into the model until it produces a final answer."},
-  {q:"Without tools, an agent…",o:["Is faster","Degenerates into just talking","Costs more","Can't load"],c:1,e:"The Act step's tool rack is what makes it an agent rather than a chat."}]
+  {q:"Without tools, an agent…",o:["Is faster","Degenerates into just talking","Costs more","Can't load"],c:1,e:"The Act step's tool rack is what makes it an agent rather than a chat."}],
+ setup:[
+  {q:"How do you install the Claude Code CLI?",o:["npm install -g @anthropic-ai/claude-code","pip install claude-code","brew install claude","curl claude.sh | sh"],c:0,e:"It's an npm global package: npm install -g @anthropic-ai/claude-code."},
+  {q:"After installing, how do you start Claude in a project?",o:["claude-code start","cd into the project and run 'claude'","npx claude open","claude --project"],c:1,e:"Change into the project directory and run 'claude' to open the interactive REPL."},
+  {q:"A one-shot, non-interactive run uses which flag?",o:["-i","-p","-x","--once"],c:1,e:"'claude -p \"...\"' prints a single answer and exits — the headless mode."}],
+ slash:[
+  {q:"Which command wipes conversation history entirely?",o:["/compact","/clear","/reset","/new"],c:1,e:"/clear starts fresh; /compact only summarizes."},
+  {q:"To summarize history but keep going, use…",o:["/clear","/compact","/trim","/save"],c:1,e:"/compact condenses context at a breakpoint — steer it with '/compact focus on X'."},
+  {q:"Which command shows the session's token usage and cost?",o:["/usage","/cost","/bill","/tokens"],c:1,e:"/cost reports tokens and estimated spend for the session."}],
+ shortcuts:[
+  {q:"To reference a specific file as context, you type…",o:["@ then the path","!file","#file","/file"],c:0,e:"@ references files and folders; Tab completes the path."},
+  {q:"Running a shell command inline from the prompt uses…",o:["!","@","#",">"],c:0,e:"! runs a bash command inline without leaving Claude."},
+  {q:"Starting a line with # does what?",o:["Comments it","Adds a quick memory to CLAUDE.md","Runs bash","References a file"],c:1,e:"# is the quick-memory shortcut."}],
+ ide:[
+  {q:"Claude Code's IDE integration is available for…",o:["Only VS Code","VS Code and JetBrains","Only JetBrains","Vim only"],c:1,e:"Two integrations, one engine: a VS Code extension and a JetBrains plugin."},
+  {q:"A key thing the IDE integration adds is…",o:["A new model","Side-by-side diff review in the editor","Free tokens","Offline mode"],c:1,e:"You review Claude's changes as native editor diffs, and your selection becomes context."},
+  {q:"Your current editor selection can be…",o:["Ignored","Sent to Claude as context","Only copied","Auto-deleted"],c:1,e:"Selection-as-context lets Claude act on exactly what you've highlighted."}],
+ plugins:[
+  {q:"A plugin can bundle all of these EXCEPT…",o:["commands, agents, skills","hooks and MCP servers","a new Claude model","bin/ executables and themes"],c:2,e:"Plugins package your own commands/agents/skills/hooks/MCP — not the model itself."},
+  {q:"You install a plugin with…",o:["npm i plugin","/plugin install name@marketplace","claude add-plugin","pip install"],c:1,e:"e.g. /plugin install github@claude-plugins-official."},
+  {q:"A plugin's manifest lives at…",o:[".claude-plugin/plugin.json","package.json","plugin.yaml","manifest.txt"],c:0,e:"The .claude-plugin/plugin.json manifest describes the bundle."}],
+ "writing-code":[
+  {q:"The recommended first step of the core coding loop is…",o:["Start editing immediately","Ask for a plan first","Commit everything","Delete tests"],c:1,e:"Plan first, then implement in small, testable changes."},
+  {q:"Which practice most improves reliability?",o:["Bigger diffs","Small, testable changes","No tests","One giant commit"],c:1,e:"Small, testable changes are easy to verify and revert."},
+  {q:"Before trusting Claude's work you should…",o:["Merge blindly","Review the diff","Delete CLAUDE.md","Disable tests"],c:1,e:"Always review the diff — run /code-review or read it yourself."}],
+ documents:[
+  {q:"The five-part writing prompt is Role, Audience, Goal, Constraints, and…",o:["Source + voice","Budget","Deadline","Font"],c:0,e:"Naming the source material and desired voice locks the output."},
+  {q:"To get an editable diagram from Claude, ask for…",o:["A screenshot","Mermaid","A PDF only","ASCII art"],c:1,e:"Mermaid renders in GitHub and many tools and stays editable as text."},
+  {q:"In the app, the durable way to keep a consistent voice is…",o:["Re-paste rules each chat","A Project + custom instructions (or a Style)","Raise temperature","Nothing"],c:1,e:"Project instructions and Styles apply your voice automatically."}],
+ organize:[
+  {q:"The guiding principle for organizing work is…",o:["Orchestrate the goal, not the prompt","Type faster","Use one giant prompt","Avoid memory"],c:0,e:"Set up durable context and let each session start grounded."},
+  {q:"In Claude Code, durable project context lives in…",o:["CLAUDE.md","README","cookies","the model"],c:0,e:"CLAUDE.md (plus auto memory MEMORY.md) carries context across sessions."},
+  {q:"'Which mechanism do I reach for?' is answered by…",o:["Always a plugin","Matching the surface to the situation","Always CLAUDE.md","Random choice"],c:1,e:"Each surface (memory, command, skill, subagent, hook, MCP, plugin) fits a different need."}],
+ "boris-tips":[
+  {q:"Boris Cherny frames Claude Code as…",o:["Line-completion autocomplete","A fully agentic assistant that uses all your tools","A chatbot only","An IDE replacement"],c:1,e:"It's agentic and intentionally un-opinionated — it fits your existing workflow."},
+  {q:"A recommended first-time setup step is…",o:["Skip CLAUDE.md","Create a CLAUDE.md so Claude knows the project","Disable permissions","Only use Opus"],c:1,e:"Grounding Claude in a CLAUDE.md is a core first-run tip."},
+  {q:"'Un-opinionated power tool' means Claude Code…",o:["Forces a new workflow","Works with the tools and workflow you already have","Only works in VS Code","Needs no setup"],c:1,e:"No workflow change required — it adapts to you."}],
+ troubleshoot:[
+  {q:"When context is full, the first move is usually…",o:["Buy more RAM","/compact or /clear, then re-anchor","Restart your computer","Switch OS"],c:1,e:"Free the window, then re-establish the key context."},
+  {q:"When output drifts off-track, a good fix is…",o:["Keep going","Re-anchor with a fresh, scoped instruction (or rewind)","Raise temperature","Delete the repo"],c:1,e:"Re-anchoring or rewinding removes the dead-end from context."},
+  {q:"A high-leverage pro habit is…",o:["Many tasks per session","One scope per session","Never use /clear","Always bypass permissions"],c:1,e:"Keeping one scope per session keeps context clean and answers sharp."}],
+ "ai-what":[
+  {q:"The one-sentence definition of AI is…",o:["Robots with feelings","Software doing tasks we assumed needed a human brain","Only chatbots","A type of database"],c:1,e:"No glowing red eyes required — it's software doing brain-like tasks."},
+  {q:"The two ways software can be 'smart' are…",o:["Fast vs slow","Rules-based (hand-written) vs learned (from examples)","Online vs offline","Free vs paid"],c:1,e:"Modern AI is the 'learned from examples' kind."},
+  {q:"In the nesting-dolls model, the outermost is AI and inside it sits…",o:["Machine Learning","Databases","The internet","Hardware"],c:0,e:"AI ⊃ Machine Learning ⊃ Deep Learning ⊃ Generative AI / LLMs."}],
+ "ai-ml":[
+  {q:"Machine learning means the computer…",o:["Follows hand-coded rules","Learns patterns straight from data","Searches the web","Guesses randomly"],c:1,e:"You show it examples instead of coding every rule."},
+  {q:"In ML vocabulary, the 'labels' are…",o:["The inputs","The correct answers you're teaching","The model size","The hardware"],c:1,e:"Features are inputs; labels are the answers; parameters/weights are what it tunes."},
+  {q:"The two phases of a model's life are…",o:["Buy and sell","Training and inference","Upload and download","Read and write"],c:1,e:"Training learns the weights; inference uses the frozen model to predict."}],
+ "ai-neural":[
+  {q:"A neural network is built by stacking many…",o:["Databases","Simple artificial neurons into layers","GPUs","Web pages"],c:1,e:"Input layer → hidden layers → output layer."},
+  {q:"During learning, what actually changes inside the network?",o:["The screen","The weights","The filenames","The user"],c:1,e:"Weights are everything — the network tunes them to reduce errors."},
+  {q:"'Deep' learning refers to…",o:["Deep philosophy","Many stacked layers","Deep-sea data","Slow training"],c:1,e:"Depth (many layers) lets it learn features instead of hand-crafting them."}],
+ "ai-training":[
+  {q:"The three-stage training pipeline is…",o:["Pretraining → SFT → RLHF","Compile → Link → Run","Draft → Edit → Publish","Buy → Build → Ship"],c:0,e:"Read the library, take a class, then get coached."},
+  {q:"Pretraining works by…",o:["Human labeling every sentence","Self-supervised next-token prediction on huge text","Playing games","Copying Wikipedia once"],c:1,e:"It learns language by predicting the next token across a huge corpus."},
+  {q:"RLHF's job is to…",o:["Make it bigger","Teach it to answer helpfully via human preference feedback","Speed up inference","Add web search"],c:1,e:"Human thumbs-up/down shapes helpful, honest, harmless behavior."}],
+ "ai-inference":[
+  {q:"Inference is…",o:["Training the model","Using the frozen, trained model to get an answer","Deleting weights","Labeling data"],c:1,e:"The weights are fixed; the model just runs forward to predict."},
+  {q:"Temperature controls…",o:["Model size","How random/creative the output is","Token price","Context length"],c:1,e:"Low = focused and predictable; high = loose and creative."},
+  {q:"The most effective fix for hallucinations is…",o:["Ask louder","Give the model real source context to work from","Raise temperature","Use a bigger screen"],c:1,e:"Grounding it in provided facts dramatically cuts made-up answers."}],
+ "ai-safety":[
+  {q:"Which is a real, known limitation of today's LLMs?",o:["They feel emotions","They can hallucinate, carry bias, and have a knowledge cutoff","They never make mistakes","They understand like humans"],c:1,e:"Useful but fallible — verify important outputs."},
+  {q:"'Alignment' means…",o:["Formatting text neatly","Making AI do what we actually want, safely","Aligning GPUs","Centering a webpage"],c:1,e:"It's the work of keeping capable models helpful and safe."},
+  {q:"The sensible user rule for AI output is…",o:["Trust everything","Trust, but verify what matters","Never use it","Only use it offline"],c:1,e:"Treat it like a brilliant, fast intern — review the important stuff."}]
+
 };
 var EXAM=[
  {q:"For bulk, simple, high-volume edits, the cheapest sensible model is…",o:["Haiku 4.5","Sonnet 5","Opus 4.8","Fable 5"],c:0,sec:"models"},

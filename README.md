@@ -8,7 +8,7 @@ An interactive, single‑file guide to getting the **maximum** out of Claude —
 - **39 deep‑dive sections** across 5 tracks — Foundations → Claude Code Core → Power Features → Mastery → AI Foundations 101
 - **24 animated "Why it matters" architecture diagrams** (inline SVG, no dependencies), each with a step‑by‑step **"Animation, explained"** panel
 - **150+ copy‑paste examples**, callouts, comparison tables, how‑to recipes, CLI hacks, and a master cheat sheet
-- **Test yourself** — 60 active‑recall quiz questions across 20 sections, a scored 20‑question **final exam** with ranks, and a spaced‑repetition review nudge (all saved locally)
+- **Test yourself** — 100+ active‑recall quiz questions on every teachable section, a scored 20‑question **final exam** with ranks, and a spaced‑repetition review nudge (all saved locally)
 - **Up to date for mid‑2026 models** — Claude Fable 5, Opus 4.8, Sonnet 5, Haiku 4.5
 - **Progress tracker** — mark sections "Mastered" (saved in your browser) and hit 100% 🎉
 - Live search, smooth in‑page navigation, mobile‑friendly, respects reduced‑motion
