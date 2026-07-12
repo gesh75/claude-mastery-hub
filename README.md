@@ -10,7 +10,7 @@ An interactive, single‑file guide to getting the **maximum** out of Claude —
 - **150+ copy‑paste examples**, callouts, comparison tables, how‑to recipes, CLI hacks, and a master cheat sheet
 - **Test yourself** — 100+ active‑recall quiz questions on every teachable section, a scored 20‑question **final exam** with ranks, and a spaced‑repetition review nudge (all saved locally)
 - **Practice Lab** — 12 hands‑on scenario challenges: you're dropped into a real situation, type the command (or pick the move), get instant feedback + on‑demand hints, and unlock a solution walk‑through with the *why* and *when*
-- **Up to date for mid‑2026 models** — Claude Fable 5, Opus 4.8, Sonnet 5, Haiku 4.5
+- **Up to date for mid‑2026** — Claude Fable 5, Opus 4.8, Sonnet 5, Haiku 4.5, plus the summer Claude Code releases: Claude in Chrome (GA), Sonnet 5 as the new default, background‑by‑default subagents, experimental agent teams, `/doctor` auto‑fix, and more
 - **Progress tracker** — mark sections "Mastered" (saved in your browser) and hit 100% 🎉
 - Live search, smooth in‑page navigation, mobile‑friendly, respects reduced‑motion
 - **Fully offline & self‑contained** — one `index.html`, zero external requests
