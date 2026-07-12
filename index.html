@@ -223,6 +223,50 @@ a:hover{text-decoration:underline}
 .exam-rank{font-size:22px;font-weight:800;color:var(--ink);margin:8px 0 4px}
 .exam-blurb{color:var(--mut);font-size:14px;max-width:520px;margin:0 auto 14px}
 .exam-prog{font-size:12.5px;color:var(--mut);margin-top:10px}
+/* practice lab */
+.lab-intro-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:16px 0}
+.lab-stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-align:center}
+.lab-stat b{display:block;font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lab-stat span{font-size:11px;color:var(--mut);letter-spacing:.05em}
+.lab-q{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#120f1f,#171226);padding:18px 20px;margin:16px 0;transition:border-color .18s}
+.lab-q.solved{border-color:rgba(95,211,154,.5)}
+.lab-qhead{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.lab-tag{font-size:10.5px;font-weight:800;letter-spacing:.07em;color:#1a1326;background:var(--grad);padding:3px 10px;border-radius:999px;white-space:nowrap}
+.lab-tag.done{background:var(--green)}
+.lab-topic{font-size:11.5px;color:var(--mut);margin-left:auto}
+.lab-topic a{color:var(--violet)}
+.lab-scenario{color:#e7e3f5;font-size:14.5px;margin:2px 0 6px;line-height:1.5}
+.lab-task{color:#fff;font-weight:600;font-size:14.5px;margin:8px 0 12px}
+.lab-task b,.lab-task code{color:var(--cyan)}
+.lab-task code{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:.86em}
+.lab-inrow{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.lab-input{flex:1 1 260px;min-width:0;background:#0b0913;border:1px solid var(--line);border-radius:10px;padding:11px 13px;color:#e8eef7;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:13.5px}
+.lab-input:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(155,140,255,.16)}
+.lab-input.ok{border-color:var(--green)}
+.lab-input.no{border-color:var(--red)}
+.lab-choices{display:flex;flex-direction:column;gap:0;margin:2px 0}
+.lab-btns{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
+.lab-btns .btn-ghost{padding:9px 15px;font-size:13px}
+.lab-btns .btn-primary{padding:9px 18px;font-size:13.5px}
+.lab-btns .btn-ghost:disabled{opacity:.4;cursor:not-allowed;border-color:var(--line)}
+.lab-fb{margin-top:12px;padding:11px 14px;border-radius:11px;font-size:13.8px;display:none;line-height:1.5}
+.lab-fb.show{display:block}
+.lab-fb.good{background:rgba(95,211,154,.12);border:1px solid rgba(95,211,154,.4);color:#c9f4de}
+.lab-fb.bad{background:rgba(255,209,102,.10);border:1px solid rgba(255,209,102,.4);color:#f6e6bd}
+.lab-reveal{margin-top:12px;border-radius:12px;border:1px solid var(--line);background:#0e0b19;padding:14px 16px;display:none}
+.lab-reveal.show{display:block;animation:labfade .3s ease}
+@keyframes labfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.lab-reveal h5{margin:0 0 7px;color:#fff;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.lab-reveal p{margin:0 0 9px;color:#d7d3ea;font-size:13.8px;line-height:1.55}
+.lab-reveal p:last-child{margin-bottom:0}
+.lab-reveal code{color:var(--cyan);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:.86em}
+.lab-solcmd{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:var(--cyan);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 11px;display:inline-block;margin:0 0 9px}
+.lab-why{color:#cfc7f5;font-size:13.6px}
+.lab-why b{color:var(--violet)}
+.lab-final{margin-top:22px;padding:24px;border-radius:16px;border:1px solid rgba(95,211,154,.45);background:linear-gradient(180deg,#151022,#1c1430);text-align:center;display:none}
+.lab-final.show{display:block}
+.lab-final b{font-size:22px;color:#fff;display:block;margin-bottom:6px}
+.lab-final span{color:var(--mut);font-size:14px}
 
 /* search + anchors + print */
 .nores{display:none;padding:8px 12px;color:var(--mut);font-size:12.5px}
@@ -312,7 +356,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
     <input class="search" id="search" type="search" placeholder="🔍 Filter topics…">
     <div class="ring-wrap">
       <div class="ring" id="ring"><b>0%</b></div>
-      <div class="ring-meta" id="ringmeta"><b>0 / 40</b> sections mastered</div>
+      <div class="ring-meta" id="ringmeta"><b>0 / 41</b> sections mastered</div>
       <div class="quiz-meta" id="quizmeta"></div>
       <button class="review-chip" id="reviewchip" type="button"></button>
     </div>
@@ -332,6 +376,10 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
     <div class="nav-track">
       <div class="nav-track-h"><span>🎯</span> Mastery</div>
       <a class="nav-link" href="#prompting" data-id="prompting"><span class="nav-ic">🎯</span><span>Prompting for Best Results</span></a><a class="nav-link" href="#webapp" data-id="webapp"><span class="nav-ic">💬</span><span>Claude.ai: Chat, Projects & Artifacts</span></a><a class="nav-link" href="#cost" data-id="cost"><span class="nav-ic">💰</span><span>Cost & Speed Optimization</span></a><a class="nav-link" href="#security" data-id="security"><span class="nav-ic">🔒</span><span>Security Hardening</span></a><a class="nav-link" href="#writing-code" data-id="writing-code"><span class="nav-ic">💻</span><span>Best Practices: Writing Code</span></a><a class="nav-link" href="#documents" data-id="documents"><span class="nav-ic">📝</span><span>Best Practices: Docs & Writing</span></a><a class="nav-link" href="#organize" data-id="organize"><span class="nav-ic">🗂️</span><span>Organizing Your Workflow</span></a><a class="nav-link" href="#boris-tips" data-id="boris-tips"><span class="nav-ic">🎤</span><span>From the Source: Boris Cherny</span></a><a class="nav-link" href="#howto" data-id="howto"><span class="nav-ic">🧭</span><span>How-To Recipes</span></a><a class="nav-link" href="#hacks" data-id="hacks"><span class="nav-ic">🥷</span><span>CLI Hacks &amp; Power Moves</span></a><a class="nav-link" href="#troubleshoot" data-id="troubleshoot"><span class="nav-ic">🛟</span><span>Troubleshooting & Pro Tips</span></a><a class="nav-link" href="#cheatsheet" data-id="cheatsheet"><span class="nav-ic">📋</span><span>Master Cheat Sheet</span></a>
+    </div>
+    <div class="nav-track">
+      <div class="nav-track-h"><span>🧪</span> Practice</div>
+      <a class="nav-link" href="#lab" data-id="lab"><span class="nav-ic">🧪</span><span>Practice Lab — Try It</span></a>
     </div>
     <div class="nav-track">
       <div class="nav-track-h"><span>🧬</span> AI Foundations</div>
@@ -358,7 +406,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
       <div class="diagram"><div class="diagram-head"><span class="diagram-badge">⚡ WHY IT MATTERS</span><span class="diagram-why">Learn one mental model and it transfers everywhere — chat, terminal, and your own apps all run on the same Claude brains.</span></div><div class="diagram-svg"><svg viewBox="0 0 880 380" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Claude models at the center powering three surfaces: the Claude.ai app, Claude Code, and the API and Agent SDK"><defs><marker id="arr-starthere" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9b8cff"/></marker></defs><rect x="10" y="10" width="860" height="360" rx="18" fill="#171327" opacity="0.35"/><path id="p-top" d="M340,150 C470,110 560,98 640,90" fill="none" stroke="#ff7a59" stroke-width="2" stroke-dasharray="5 6" marker-end="url(#arr-starthere)"/><path id="p-mid" d="M348,190 C470,190 560,190 640,190" fill="none" stroke="#54e6e0" stroke-width="2" stroke-dasharray="5 6" marker-end="url(#arr-starthere)"/><path id="p-bot" d="M340,230 C470,270 560,282 640,290" fill="none" stroke="#5fd39a" stroke-width="2" stroke-dasharray="5 6" marker-end="url(#arr-starthere)"/><g><rect x="60" y="128" width="280" height="124" rx="16" fill="#1d1830" stroke="#9b8cff" stroke-width="1.5"/><animate attributeName="opacity" values="1;.6;1" dur="3s" repeatCount="indefinite"/></g><text x="200" y="170" text-anchor="middle" fill="#ece9f5" font-size="16" font-weight="600" font-family="-apple-system,Segoe UI,Inter,sans-serif">Claude models</text><text x="200" y="195" text-anchor="middle" fill="#a59fc0" font-size="13" font-family="-apple-system,Segoe UI,Inter,sans-serif">one shared brain</text><g font-family="-apple-system,Segoe UI,Inter,sans-serif"><rect x="72" y="212" width="48" height="24" rx="12" fill="#171327" stroke="#ff7a59" stroke-width="1.5"/><text x="96" y="228" text-anchor="middle" fill="#ff7a59" font-size="11" font-weight="600">Opus</text><rect x="128" y="212" width="62" height="24" rx="12" fill="#171327" stroke="#54e6e0" stroke-width="1.5"/><text x="159" y="228" text-anchor="middle" fill="#54e6e0" font-size="11" font-weight="600">Sonnet</text><rect x="198" y="212" width="48" height="24" rx="12" fill="#171327" stroke="#5fd39a" stroke-width="1.5"/><text x="222" y="228" text-anchor="middle" fill="#5fd39a" font-size="11" font-weight="600">Haiku</text><rect x="254" y="212" width="68" height="24" rx="12" fill="#171327" stroke="#ffd166" stroke-width="1.5"><animate attributeName="stroke-opacity" values="1;.5;1" dur="2.4s" repeatCount="indefinite"/></rect><text x="288" y="228" text-anchor="middle" fill="#ffd166" font-size="11" font-weight="600">Fable 5</text></g><g font-family="-apple-system,Segoe UI,Inter,sans-serif"><rect x="642" y="56" width="216" height="72" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="1.5"/><text x="750" y="86" text-anchor="middle" fill="#ece9f5" font-size="15" font-weight="600">Claude.ai app</text><text x="750" y="108" text-anchor="middle" fill="#a59fc0" font-size="12">chat · Projects · Artifacts</text></g><g font-family="-apple-system,Segoe UI,Inter,sans-serif"><rect x="642" y="156" width="216" height="72" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="1.5"/><text x="750" y="186" text-anchor="middle" fill="#ece9f5" font-size="15" font-weight="600">Claude Code</text><text x="750" y="208" text-anchor="middle" fill="#a59fc0" font-size="12">terminal + IDE agent</text></g><g font-family="-apple-system,Segoe UI,Inter,sans-serif"><rect x="642" y="256" width="216" height="72" rx="14" fill="#1d1830" stroke="#2b2542" stroke-width="1.5"/><text x="750" y="286" text-anchor="middle" fill="#ece9f5" font-size="15" font-weight="600">API &amp; Agent SDK</text><text x="750" y="308" text-anchor="middle" fill="#a59fc0" font-size="12">build your own</text></g><circle r="5" fill="#ff7a59"><animateMotion dur="3s" repeatCount="indefinite"><mpath href="#p-top"/></animateMotion></circle><circle r="5" fill="#54e6e0"><animateMotion dur="3s" begin="0.6s" repeatCount="indefinite"><mpath href="#p-mid"/></animateMotion></circle><circle r="5" fill="#5fd39a"><animateMotion dur="3s" begin="1.2s" repeatCount="indefinite"><mpath href="#p-bot"/></animateMotion></circle><text x="490" y="346" text-anchor="middle" fill="#a59fc0" font-size="12" font-family="-apple-system,Segoe UI,Inter,sans-serif">same models power every surface — only the interface differs</text></svg></div><div class="diagram-cap">A central Claude models core (Fable 5 / Opus / Sonnet / Haiku) powering three surfaces that fan out: the Claude.ai app, Claude Code, and the API & Agent SDK.</div><details class="anim-x"><summary>🎬 Animation, explained</summary><ol><li>The pulsing core is the <b>model family</b> — Fable 5, Opus, Sonnet, and Haiku — the one brain behind everything.</li><li>The three animated beams fan out to the three <b>surfaces</b> you'll use it from: the Claude.ai app, Claude Code in your terminal, and the raw API / Agent SDK.</li><li>The dots travel <b>outward from the core</b>, not between surfaces — each surface is a different doorway into the same intelligence, not a different AI.</li><li>Takeaway: skills you build on one surface (prompting, context, tool thinking) transfer to all the others for free.</li></ol></details></div><p class="lead">Claude is one family of models you reach three ways — a chat app, a coding agent, and an API — and mastery is just knowing which one to grab.</p>
 <p>Most people only ever open the chat box and stop there. The real wins come from picking the right surface for the job, then giving Claude the context it needs to nail it on the first try.</p>
 <p>This hub builds you up in four layers: <span class="pill">Foundations</span> <span class="pill">Core</span> <span class="pill">Power Features</span> <span class="pill">Mastery</span>. Start here, then go in order or jump to what you need.</p>
-<details class="anim-x" id="changelog" style="margin:14px 0 0"><summary>🆕 Recently updated</summary><ol><li><b>Jul 2026</b> — Self-test <b>quizzes on every teachable section</b> (100+ questions), upgraded full-text search, deep-link heading anchors, and a print-friendly stylesheet.</li><li><b>Jul 2026</b> — <b>Learning engine</b>: per-section quizzes, a scored 20-question final exam with ranks, and a spaced-repetition review nudge.</li><li><b>Jul 2026</b> — <b>Mid-2026 currency pass</b>: dynamic workflows &amp; ultracode, fast mode, background agents, and Claude Cowork (web + mobile).</li><li><b>Jun 2026</b> — <b>Claude Sonnet 5</b> &amp; <b>Fable 5</b> across the model tables, “Animation, explained” panels on all 24 diagrams, plus How-To Recipes and CLI Hacks.</li></ol></details>
+<details class="anim-x" id="changelog" style="margin:14px 0 0"><summary>🆕 Recently updated</summary><ol><li><b>Jul 2026</b> — New <b>Practice Lab</b>: 12 hands-on scenario challenges — type the command or pick the move, get instant feedback, hints, and solution walk-throughs with the <em>why</em>.</li><li><b>Jul 2026</b> — Self-test <b>quizzes on every teachable section</b> (100+ questions), upgraded full-text search, deep-link heading anchors, and a print-friendly stylesheet.</li><li><b>Jul 2026</b> — <b>Learning engine</b>: per-section quizzes, a scored 20-question final exam with ranks, and a spaced-repetition review nudge.</li><li><b>Jul 2026</b> — <b>Mid-2026 currency pass</b>: dynamic workflows &amp; ultracode, fast mode, background agents, and Claude Cowork (web + mobile).</li><li><b>Jun 2026</b> — <b>Claude Sonnet 5</b> &amp; <b>Fable 5</b> across the model tables, “Animation, explained” panels on all 24 diagrams, plus How-To Recipes and CLI Hacks.</li></ol></details>
 
 <h3>The three surfaces</h3>
 <p>Each surface runs the same underlying models (Opus, Sonnet, Haiku) but is tuned for a different kind of work.</p>
@@ -4252,6 +4300,31 @@ Current diff:
 <div class="cal pro">Front-load context in plan mode, then execute. A stable prefix gets cached once, so every later turn reads from cache (90%+ hit rates) instead of recomputing. Fresh context is free, so <code>/clear</code> between unrelated tasks.</div>
     </div>
   </section>
+  <section class="sec" id="lab" data-id="lab">
+    <div class="sec-head">
+      <div class="sec-icon">🧪</div>
+      <div class="sec-titles">
+        <div class="sec-num">PRACTICE LAB</div>
+        <h2>Try It — Hands-On Challenges</h2>
+        <p class="sec-tag">Reading builds recognition; doing builds skill. Solve real situations, get instant feedback.</p>
+      </div>
+      <label class="mastered" title="Mark as mastered">
+        <input type="checkbox" class="master-cb" data-id="lab">
+        <span class="master-txt">Mastered</span>
+      </label>
+    </div>
+    <div class="sec-body">
+      <p class="lead">You've learned the tools — now use them. Each challenge drops you into a real situation. Type the command (or pick the move), check your answer, and unlock a full walk-through with the <em>why</em> behind it.</p>
+      <div class="cal info">Everything runs in your browser — nothing is sent anywhere, and your progress is saved locally. Stuck? Hit <b>Hint</b> anytime, or reveal the solution after a try.</div>
+      <div class="lab-intro-grid">
+        <div class="lab-stat"><b id="lab-solved">0</b><span>SOLVED</span></div>
+        <div class="lab-stat"><b id="lab-total">0</b><span>CHALLENGES</span></div>
+        <div class="lab-stat"><b id="lab-streak">0</b><span>BEST STREAK</span></div>
+      </div>
+      <div id="lab-host"><!-- challenges render here --></div>
+      <div class="lab-final" id="lab-final"><b>🎉 Lab complete — every challenge solved!</b><span>You didn't just read about Claude — you drove it. Take the <a href="#exam" style="color:var(--violet);font-weight:700">Mastery Exam</a> next to prove it.</span></div>
+    </div>
+  </section>
   <section class="sec" id="ai-what" data-id="ai-what">
     <div class="sec-head">
       <div class="sec-icon">🌍</div>
@@ -6279,6 +6352,180 @@ updateLearningMeta();
     if(score>=17)party();
   }
   render();
+})();
+
+/* ============ PRACTICE LAB: hands-on scenario challenges ============ */
+var LAB=[
+ {id:"lab-compact",n:1,topic:"Context management",sec:"slash",
+  scenario:"You're deep into a long refactor. Claude warns the context window is nearly full — but you're not done and want to keep this same thread going.",
+  task:"Type the slash command that <b>summarizes</b> the conversation so far and keeps working.",
+  type:"cmd",placeholder:"/…",startsWith:["/compact"],hint:"It condenses history at a breakpoint instead of wiping it — a slash command, seven letters.",sol:"/compact",
+  solText:"<code>/compact</code> distills the conversation into a summary and continues — you keep the important context without the token bloat. You can even steer it: <code>/compact focus on the auth changes</code>.",
+  why:"<b>When:</b> the thread is long but still relevant. <b>Not:</b> <code>/clear</code> — that throws everything away, which you don't want mid-task."},
+ {id:"lab-clear",n:2,topic:"Context management",sec:"slash",
+  scenario:"You've finished the bug fix. Now you're starting a completely unrelated feature and want Claude to forget the old conversation entirely.",
+  task:"Type the slash command that <b>wipes</b> the conversation and starts fresh.",
+  type:"cmd",placeholder:"/…",accept:["/clear"],hint:"Think 'blank slate.' One slash command, five letters.",sol:"/clear",
+  solText:"<code>/clear</code> resets the context window to empty — perfect when the next task shares nothing with the last one. A clean window means sharper, cheaper answers.",
+  why:"<b>When:</b> switching to a brand-new task. <b>Not:</b> <code>/compact</code> — that keeps a summary you don't need here."},
+ {id:"lab-file",n:3,topic:"Shortcuts",sec:"shortcuts",
+  scenario:"You want Claude to work on one specific file, <code>src/auth/login.ts</code>, and pull it into context precisely — not guess which file you mean.",
+  task:"Show how you'd <b>reference that file</b> as context in your prompt (type the reference, path and all).",
+  type:"cmd",placeholder:"@…",startsWith:["@"],hint:"One symbol turns a path into context — and Tab auto-completes it.",sol:"@src/auth/login.ts",
+  solText:"Prefixing a path with <code>@</code> (e.g. <code>@src/auth/login.ts</code>) pulls that exact file into context. <kbd>Tab</kbd> auto-completes the path so you don't fat-finger it.",
+  why:"<b>When:</b> you know exactly which file(s) matter — scoping context this way is faster and cheaper than letting Claude search."},
+ {id:"lab-bash",n:4,topic:"Shortcuts",sec:"shortcuts",
+  scenario:"Mid-conversation, you want to run <code>npm test</code> and let Claude see the output — without leaving the Claude prompt.",
+  task:"Type how you'd <b>run that shell command inline</b> from the prompt.",
+  type:"cmd",placeholder:"!…",startsWith:["!"],hint:"One leading symbol runs a shell line without ever leaving Claude.",sol:"!npm test",
+  solText:"Starting a line with <code>!</code> runs a bash command inline (e.g. <code>!npm test</code>) and drops the output straight into context — no context-switch to another terminal.",
+  why:"<b>When:</b> you want Claude to react to real command output (tests, git status, a build error) in the same breath."},
+ {id:"lab-memory",n:5,topic:"Memory",sec:"memory",
+  scenario:"You keep reminding Claude “use tabs, not spaces.” You want it to remember that permanently, without opening a file.",
+  task:"Type how you'd <b>add a quick memory</b> so this rule sticks across the session.",
+  type:"cmd",placeholder:"#…",startsWith:["#"],hint:"One leading symbol saves a note straight to CLAUDE.md.",sol:"# use tabs, not spaces",
+  solText:"Starting a line with <code>#</code> saves a quick memory to <code>CLAUDE.md</code> — e.g. <code># use tabs, not spaces</code>. It's the fastest way to make a preference durable.",
+  why:"<b>When:</b> a one-off correction should become a standing rule. For bigger project context, edit <code>CLAUDE.md</code> directly."},
+ {id:"lab-headless",n:6,topic:"CLI",sec:"cli",
+  scenario:"You're wiring Claude Code into a CI job. It must run once, print a single answer, and exit — no interactive REPL.",
+  task:"Write a <b>headless one-shot</b> invocation that asks Claude to <code>summarize the diff</code>.",
+  type:"cmd",placeholder:'claude -p "…"',startsWith:["claude -p","claude --print"],hint:"It's the 'print' flag — one letter after claude, then your prompt in quotes.",sol:'claude -p "summarize the diff"',
+  solText:"The <code>-p</code> (a.k.a. <code>--print</code>) flag runs Claude non-interactively: <code>claude -p \"summarize the diff\"</code> prints one answer and exits — exactly what a CI step or script needs.",
+  why:"<b>When:</b> automation, pipelines, git hooks — anywhere a human isn't sitting at the prompt."},
+ {id:"lab-cost",n:7,topic:"Cost & speed",sec:"cost",
+  scenario:"A long session is running and you want to check how many tokens you've burned and roughly what it cost.",
+  task:"Type the slash command that reports <b>token usage and spend</b> for the session.",
+  type:"cmd",placeholder:"/…",accept:["/cost"],hint:"One slash command, four letters — think spend.",sol:"/cost",
+  solText:"<code>/cost</code> shows the session's token usage and an estimated dollar spend — your quick gut-check before a big run.",
+  why:"<b>When:</b> you want a spend sanity-check. Pair it with <code>/compact</code> to keep long sessions lean."},
+ {id:"lab-plan",n:8,topic:"Plan mode",sec:"plan-think",
+  scenario:"You're about to ask for a risky, wide-reaching change. You want Claude to lay out a plan and get your approval before it touches any files.",
+  task:"Which move puts Claude into <b>plan mode</b>?",
+  type:"choice",options:["Press Shift+Tab to toggle plan mode","Just type faster so it can't make mistakes","Run /clear first","Raise the temperature"],correct:0,sol:"Shift+Tab",
+  solText:"<kbd>Shift</kbd>+<kbd>Tab</kbd> toggles plan mode. Claude researches and proposes a step-by-step plan, and waits for your OK before editing — no surprise changes.",
+  why:"<b>When:</b> the change is big, risky, or you're unsure of the approach. Plan first, approve, then let it execute."},
+ {id:"lab-subagent",n:9,topic:"Subagents",sec:"subagents",
+  scenario:"You need to find every place a deprecated API is used across a 200-file codebase. Doing it in the main thread would flood your context with file dumps.",
+  task:"What's the cleanest move?",
+  type:"choice",options:["Spin up a subagent to do the search and report back just the findings","Paste all 200 files into the prompt","Raise the temperature and hope","Run /clear repeatedly"],correct:0,sol:"Delegate to a subagent",
+  solText:"A subagent runs the search in its own separate context and returns only the conclusion — your main thread stays clean and focused. This is delegation, not dumping.",
+  why:"<b>When:</b> a task is large or exploratory and you only need the <em>result</em>, not all the intermediate reading. Subagents can even nest up to 5 levels deep."},
+ {id:"lab-mcp",n:10,topic:"MCP",sec:"mcp",
+  scenario:"You want Claude to open GitHub pull requests and read issues directly — giving it real, first-class access to GitHub inside the session.",
+  task:"What do you set up?",
+  type:"choice",options:["Connect a GitHub MCP server","Copy-paste from the browser each time","Write a fresh bash script every time","Upgrade to a bigger model"],correct:0,sol:"An MCP server",
+  solText:"An <b>MCP server</b> gives Claude new tools inside the session — connect the GitHub MCP and Claude can list issues, open PRs, and comment natively, no copy-paste.",
+  why:"<b>When:</b> you want Claude to <em>act</em> in an external system (GitHub, a database, Slack). MCP adds tools; it doesn't change the model or context size."},
+ {id:"lab-hook",n:11,topic:"Hooks",sec:"hooks",
+  scenario:"Every time Claude edits a file, you want Prettier to run automatically — deterministically, without you or Claude having to remember.",
+  task:"What mechanism guarantees that?",
+  type:"choice",options:["A PostToolUse hook that runs Prettier after edits","Ask Claude nicely to remember each time","A longer CLAUDE.md","A second subagent"],correct:0,sol:"A PostToolUse hook",
+  solText:"A <b>PostToolUse hook</b> fires shell commands after a tool runs — wire it to <code>prettier --write</code> and formatting happens every single edit, guaranteed. Hooks are deterministic; prompts are not.",
+  why:"<b>When:</b> you need a rule enforced <em>every</em> time (formatting, linting, tests, notifications). Don't rely on a prompt for guarantees — use a hook."},
+ {id:"lab-claudemd",n:12,topic:"Memory",sec:"memory",
+  scenario:"Every new session, Claude forgets your project's conventions — the test command, the folder layout, the house style — and you retype them.",
+  task:"Where do these belong so every session starts grounded?",
+  type:"choice",options:["In CLAUDE.md at the project root","Retyped at the start of each session","Kept only in your head","Set via a higher temperature"],correct:0,sol:"CLAUDE.md",
+  solText:"<code>CLAUDE.md</code> is durable project memory — Claude reads it at the start of every session, so conventions, commands, and constraints carry over automatically.",
+  why:"<b>When:</b> context should persist across sessions. Use <code>#</code> for quick one-liners; edit <code>CLAUDE.md</code> for the project's standing brief."}
+];
+(function(){
+  var LK='claude_hub_lab_v1';
+  var host=document.getElementById('lab-host'); if(!host)return;
+  var state={}; try{state=JSON.parse(localStorage.getItem(LK)||'{}');}catch(e){state={};}
+  if(!state.solved)state.solved={}; if(state.best==null)state.best=0;
+  function save(){try{localStorage.setItem(LK,JSON.stringify(state));}catch(e){}}
+  function norm(x){return (x||'').trim().toLowerCase().replace(/\s+/g,' ');}
+  function ok(item,raw){
+    var v=norm(raw); if(!v)return false;
+    if(item.accept&&item.accept.some(function(a){return v===norm(a);}))return true;
+    if(item.startsWith&&item.startsWith.some(function(p){p=norm(p);return v.indexOf(p)===0 && v.length>=p.length && (v.length===p.length? true : v.length>p.length);}))return true;
+    return false;
+  }
+  var streak=0, finalEl=document.getElementById('lab-final');
+  function stats(){
+    var n=0; LAB.forEach(function(it){if(state.solved[it.id])n++;});
+    var se=document.getElementById('lab-solved'); if(se)se.textContent=n;
+    var te=document.getElementById('lab-total'); if(te)te.textContent=LAB.length;
+    var be=document.getElementById('lab-streak'); if(be)be.textContent=state.best;
+    if(finalEl)finalEl.classList.toggle('show', n===LAB.length);
+  }
+  function markSolved(item,card,reveal,fb,silent){
+    var first=!state.solved[item.id];
+    state.solved[item.id]=true; save();
+    card.classList.add('solved');
+    card.querySelector('.lab-tag').classList.add('done');
+    reveal.classList.add('show');
+    if(!silent){
+      fb.className='lab-fb good show'; fb.innerHTML='✅ Nailed it.';
+      if(first){streak++; if(streak>state.best){state.best=streak; save();} party6();}
+    }
+    stats();
+  }
+  function party6(){ if(typeof party==='function' && false){} } // reserved; keep confetti for full-lab only
+  LAB.forEach(function(item){
+    var solvedAlready=!!state.solved[item.id];
+    var card=document.createElement('div'); card.className='lab-q'+(solvedAlready?' solved':''); card.id=item.id;
+    var head=document.createElement('div'); head.className='lab-qhead';
+    head.innerHTML='<span class="lab-tag'+(solvedAlready?' done':'')+'">CHALLENGE '+item.n+'</span>'+
+      '<span class="lab-topic">'+item.topic+' · <a href="#'+item.sec+'">jump to section</a></span>';
+    card.appendChild(head);
+    var sc=document.createElement('p'); sc.className='lab-scenario'; sc.innerHTML=item.scenario; card.appendChild(sc);
+    var tk=document.createElement('p'); tk.className='lab-task'; tk.innerHTML=item.task; card.appendChild(tk);
+    var fb=document.createElement('div'); fb.className='lab-fb';
+    var reveal=document.createElement('div'); reveal.className='lab-reveal';
+    reveal.innerHTML='<h5>Solution</h5>'+(item.type==='cmd'?'<div class="lab-solcmd">'+item.sol+'</div>':'')+
+      '<p>'+item.solText+'</p><p class="lab-why">'+item.why+'</p>';
+    var attempted=false, solBtn;
+    function enableSol(){attempted=true; if(solBtn)solBtn.disabled=false;}
+    if(item.type==='cmd'){
+      var row=document.createElement('div'); row.className='lab-inrow';
+      var inp=document.createElement('input'); inp.className='lab-input'; inp.type='text'; inp.placeholder=item.placeholder||'Type your answer…'; inp.setAttribute('spellcheck','false'); inp.setAttribute('autocomplete','off');
+      row.appendChild(inp); card.appendChild(row);
+      var btns=document.createElement('div'); btns.className='lab-btns';
+      var check=document.createElement('button'); check.className='btn-primary'; check.type='button'; check.textContent='Check';
+      var hintB=document.createElement('button'); hintB.className='btn-ghost'; hintB.type='button'; hintB.textContent='💡 Hint';
+      solBtn=document.createElement('button'); solBtn.className='btn-ghost'; solBtn.type='button'; solBtn.textContent='Show solution'; solBtn.disabled=!solvedAlready; solBtn.title='Unlocks after you try';
+      btns.appendChild(check); btns.appendChild(hintB); btns.appendChild(solBtn);
+      card.appendChild(btns); card.appendChild(fb); card.appendChild(reveal);
+      function doCheck(){
+        if(state.solved[item.id]){return;}
+        if(ok(item,inp.value)){ inp.classList.remove('no'); inp.classList.add('ok'); markSolved(item,card,reveal,fb,false); }
+        else{ inp.classList.add('no'); streak=0; fb.className='lab-fb bad show';
+          fb.innerHTML='Not quite — give it another go, or tap <b>Hint</b>. '+(item.hint?'':''); enableSol(); }
+      }
+      check.onclick=doCheck;
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();doCheck();}});
+      hintB.onclick=function(){ fb.className='lab-fb bad show'; fb.innerHTML='💡 '+(item.hint||item.solText); enableSol(); };
+      solBtn.onclick=function(){ if(solBtn.disabled)return; reveal.classList.add('show'); fb.className='lab-fb'; };
+      if(solvedAlready){ inp.value=item.sol; inp.classList.add('ok'); inp.disabled=false; }
+    } else {
+      var ch=document.createElement('div'); ch.className='lab-choices';
+      var opts=[];
+      item.options.forEach(function(opt,oi){
+        var b=document.createElement('button'); b.className='opt'; b.type='button';
+        b.appendChild(document.createTextNode(opt));
+        var mk=document.createElement('span'); mk.className='mk'; b.appendChild(mk);
+        b.onclick=function(){
+          if(state.solved[item.id])return;
+          if(oi===item.correct){ b.classList.add('correct'); b.querySelector('.mk').textContent='✓';
+            opts.forEach(function(o){o.disabled=true;}); markSolved(item,card,reveal,fb,false); }
+          else{ b.classList.add('wrong'); b.querySelector('.mk').textContent='✗'; streak=0;
+            fb.className='lab-fb bad show'; fb.innerHTML='Not the best move — try again, or reveal the solution.'; enableSol(); }
+        };
+        opts.push(b); ch.appendChild(b);
+      });
+      card.appendChild(ch);
+      var btns2=document.createElement('div'); btns2.className='lab-btns';
+      solBtn=document.createElement('button'); solBtn.className='btn-ghost'; solBtn.type='button'; solBtn.textContent='Show solution'; solBtn.disabled=!solvedAlready; solBtn.title='Unlocks after you try';
+      btns2.appendChild(solBtn); card.appendChild(btns2); card.appendChild(fb); card.appendChild(reveal);
+      solBtn.onclick=function(){ if(solBtn.disabled)return; reveal.classList.add('show'); fb.className='lab-fb'; };
+      if(solvedAlready){ opts[item.correct].classList.add('correct'); opts[item.correct].querySelector('.mk').textContent='✓'; opts.forEach(function(o){o.disabled=true;}); }
+    }
+    if(solvedAlready){ reveal.classList.add('show'); }
+    host.appendChild(card);
+  });
+  stats();
 })();
 
 </script>
