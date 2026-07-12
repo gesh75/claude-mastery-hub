@@ -5918,9 +5918,11 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
   });
 });
 
-// back to top
-var top=document.getElementById('totop');
-if(top)top.onclick=function(){window.scrollTo(0,0);};
+// back to top  (NB: never name this var `top` — it collides with the read-only
+// window.top global, the assignment silently no-ops, and `top.onclick=...` then
+// installs a window-wide click handler that scrolls to top on EVERY click.)
+var topBtn=document.getElementById('totop');
+if(topBtn)topBtn.onclick=function(){window.scrollTo(0,0);};
 
 // mascot reactions
 var faces=['\uD83E\uDD16','\uD83D\uDE0E','\uD83D\uDE80','\uD83E\uDDE0','\u26A1','\uD83C\uDF89','\uD83D\uDC68\u200D\uD83D\uDCBB'];
