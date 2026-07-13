@@ -82,7 +82,8 @@ default and nest up to 5 levels. Agent teams are experimental
 #3 learning engine (quizzes/exam/spaced-rep) · #4 full quiz coverage + search +
 anchors + print · #5 collapsible sidebar · #6 fix global click-to-top bug ·
 #7 **Practice Lab** (12 challenges) · #8 currency pass (Chrome, agent teams,
-Sonnet-5 default) · #9 og.png featuring the Practice Lab.
+Sonnet-5 default) · #9 og.png featuring the Practice Lab · #10 this CLAUDE.md
+(Omega memory) · #11 Fable 5 added to the "Pick the right model" quick table.
 
 ## Known loose ends / ideas
 - **Section-count drift:** hero says "37", README/og say "39/40". Reconcile to
