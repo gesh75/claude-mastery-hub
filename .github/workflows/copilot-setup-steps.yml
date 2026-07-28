@@ -1,0 +1,35 @@
+# Environment preparation for the GitHub Copilot coding agent.
+#
+# The agent runs ONLY the job named `copilot-setup-steps` from this file before it
+# starts work, so dependencies are already installed when it opens a PR.
+# https://docs.github.com/copilot/customizing-copilot/customizing-the-development-environment-for-copilot-coding-agent
+name: Copilot Setup Steps
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
