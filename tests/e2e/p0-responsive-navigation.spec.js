@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 const VIEWPORTS = [
   { width: 320, height: 568 },
@@ -214,6 +215,23 @@ test.describe('mobile navigation accessibility', () => {
     await page.goForward();
     await expect(sidebar).toBeHidden();
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('open and closed navigation have no detectable WCAG 2.2 AA violations', async ({ page }) => {
+    const trigger = page.locator('#menu');
+    const scanNavigation = () => new AxeBuilder({ page })
+      .include('#menu')
+      .include('#side')
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+      .analyze();
+
+    const closedResults = await scanNavigation();
+    expect(closedResults.violations).toEqual([]);
+
+    await trigger.focus();
+    await page.keyboard.press('Enter');
+    const openResults = await scanNavigation();
+    expect(openResults.violations).toEqual([]);
   });
 });
 
