@@ -10,13 +10,13 @@ An interactive, single‑file guide to getting the **maximum** out of Claude —
 - **150+ copy‑paste examples**, callouts, comparison tables, how‑to recipes, CLI hacks, and a master cheat sheet
 - **Test yourself** — 100+ active‑recall quiz questions on every teachable section, a scored 20‑question **final exam** with ranks, and a spaced‑repetition review nudge (all saved locally)
 - **Practice Lab** — 12 hands‑on scenario challenges: you're dropped into a real situation, type the command (or pick the move), get instant feedback + on‑demand hints, and unlock a solution walk‑through with the *why* and *when*
-- **Up to date for mid‑2026** — Claude Fable 5, Opus 4.8, Sonnet 5, Haiku 4.5, plus the summer Claude Code releases: Claude in Chrome (GA), Sonnet 5 as the new default, background‑by‑default subagents, experimental agent teams, `/doctor` auto‑fix, and more
+- **Model facts verified July 28, 2026** — Claude Fable 5, Opus 5, Sonnet 5, Haiku 4.5, limited-access Mythos 5, plus source-labeled benchmark and Opus 4.8 migration guidance
 - **Progress tracker** — mark sections "Mastered" (saved in your browser) and hit 100% 🎉
 - Live search, smooth in‑page navigation, mobile‑friendly, respects reduced‑motion
 - **Fully offline & self‑contained** — one `index.html`, zero external requests
 
 ## Topics
-Models & routing (Fable 5 · Opus 4.8 · Sonnet 5 · Haiku 4.5) · CLI commands & flags · Slash commands · `@files` & `!bash` · Plan mode & extended thinking · CLAUDE.md & memory · Skills · Subagents · MCP servers · Hooks · Plugins · Multi‑agent workflows · API & Agent SDK · IDE integration · Security hardening · How‑to recipes · CLI hacks & power moves · Best practices for code & docs · Organizing your workflow · AI Foundations 101.
+Models & routing (Fable 5 · Opus 5 · Sonnet 5 · Haiku 4.5 · Mythos 5) · CLI commands & flags · Slash commands · `@files` & `!bash` · Plan mode & extended thinking · CLAUDE.md & memory · Skills · Subagents · MCP servers · Hooks · Plugins · Multi‑agent workflows · API & Agent SDK · IDE integration · Security hardening · How‑to recipes · CLI hacks & power moves · Best practices for code & docs · Organizing your workflow · AI Foundations 101.
 
 ## Use it
 Just open the live link, or download `index.html` and double‑click — it runs anywhere, no install.

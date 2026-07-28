@@ -53,13 +53,14 @@ multi-agent workflows) plus an "AI Foundations 101" track.
   Code / models, check the official docs/changelog (code.claude.com) — don't
   write from memory. Models are fast-moving.
 
-## Current model lineup (mid-2026 — re-verify before editing)
+## Current model lineup (verified 2026-07-28 — re-verify before editing)
 | Model | ID | Role |
 |---|---|---|
-| Fable 5 | `claude-fable-5` | Most capable, premium ($10/$50) |
-| Opus 4.8 | `claude-opus-4-8` | Deep reasoning; default on Max/Team Premium, Bedrock/Vertex |
-| Sonnet 5 | `claude-sonnet-5` | Everyday default on Pro/Team Standard/Enterprise |
+| Fable 5 | `claude-fable-5` | Highest-capability widely released model ($10/$50) |
+| Opus 5 | `claude-opus-5` | Complex agentic coding and enterprise work; Claude Max default ($5/$25) |
+| Sonnet 5 | `claude-sonnet-5` | Speed/intelligence balance; introductory $2/$10 through Aug 31, then $3/$15 |
 | Haiku 4.5 | `claude-haiku-4-5` | Fastest/cheapest ($1/$5) |
+| Mythos 5 | `claude-mythos-5` | Invitation-only Project Glasswing model; not general-purpose routing |
 
 `/model default` is **plan-dependent**. Subagents run in the background by
 default and nest up to 5 levels. Agent teams are experimental
