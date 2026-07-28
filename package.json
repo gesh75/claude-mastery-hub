@@ -2,6 +2,7 @@
   "name": "claude-mastery-hub",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "test": "playwright test",
     "test:e2e": "playwright test"
