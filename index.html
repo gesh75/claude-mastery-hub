@@ -1853,7 +1853,8 @@ claude mcp logout github              # sign it back out (--no-browser works ove
           <tr><td>Thinking and effort</td><td>Adaptive thinking is on by default; <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, and <code>max</code></td></tr>
           <tr><td>Knowledge</td><td>May 2026 knowledge and training cutoff</td></tr>
           <tr><td>Availability</td><td>Claude API, Amazon Bedrock, Google Cloud, and Microsoft Foundry; Opus 4.8 remains available</td></tr>
-          <tr><td>Fast mode</td><td>Claude API research preview, up to about 2.5× output speed; $10 input / $50 output per MTok</td></tr>
+          <tr><td>Feature exceptions</td><td>Opus 5 carries the Opus feature set forward with <strong>two exceptions</strong>: the API <strong>Web Fetch</strong> tool is not available on Opus 5, and <strong>Priority Tier</strong> is not supported. <strong>Web Search is a separate tool and remains available.</strong></td></tr>
+          <tr><td>Fast mode</td><td>Research preview on the Claude API (including Managed Agents) and in Claude Code via usage credits; <strong>not</strong> on Amazon Bedrock, Google Cloud, or Microsoft Foundry. Up to about 2.5× output tokens per second; $10 input / $50 output per MTok.</td></tr>
         </tbody>
       </table>
       <p><small>Model specifications and prices verified July 28, 2026 against Anthropic's model overview, pricing page, release notes, and Opus 5 System Card.</small></p>
@@ -1878,6 +1879,8 @@ model = "claude-opus-5"
         <li>Increase <code>max_tokens</code> where needed because thinking and visible output share the hard output limit.</li>
         <li>You should remove inherited verification instructions such as “always add a final verification subagent”; Opus 5 already self-checks and those prompts can cause unnecessary over-verification.</li>
         <li>Specify concise progress updates or delegation limits if the model's longer narration or broader subagent use does not fit your workflow.</li>
+        <li>Plan an alternative if you call the API <strong>Web Fetch</strong> tool — it is not currently available on Opus 5. <strong>Web Search is a different tool and still works</strong>, so “Opus 5 cannot reach the web” is the wrong conclusion.</li>
+        <li>Check your API service tier: <strong>Priority Tier does not support Opus 5</strong>. This affects only organizations holding an existing capacity commitment — Anthropic no longer sells new ones — and it does <em>not</em> limit ordinary Opus 5 availability on the API or the cloud platforms.</li>
       </ol>
 
       <h3>Choose by workload, not by rank</h3>
@@ -1890,13 +1893,13 @@ model = "claude-opus-5"
 
       <div id="opus-5-benchmarks">
         <h3>Benchmark evidence, with provenance</h3>
-        <p>Benchmarks are task-specific evidence, not a universal leaderboard. The figures below come from original benchmark owners or are explicitly labeled as Anthropic-reported launch evaluations.</p>
+        <p>Benchmarks are task-specific evidence, not a universal leaderboard. The owner-reported figures below were re-checked against the benchmark owners' own published result pages on July 28, 2026; the Frontier-Bench row stays an Anthropic-reported launch evaluation because no benchmark-owner Opus 5 score is published. Leaderboards move, so re-verify before you cite them.</p>
         <table>
           <thead><tr><th>Evaluation</th><th>What it measures</th><th>Reported result</th><th>Provenance and limitation</th></tr></thead>
           <tbody>
             <tr><td>Frontier-Bench v0.1</td><td>Difficult coding and non-coding work in rich terminal environments</td><td>Anthropic reports Opus 5 led its internal run and more than doubled Opus 4.8 at lower cost per task.</td><td><strong>Anthropic-run.</strong> Mini-SWE-agent harness, GKE backend, mean reward over five attempts; this is a model-plus-harness result.</td></tr>
             <tr><td>CursorBench 3.2</td><td>Ambiguous, multi-file tasks drawn from real Cursor sessions</td><td>Opus 5 Max: <strong>70.0%</strong>; Fable 5 Max: 70.5%, with lower reported task cost for Opus.</td><td><strong>Cursor-reported.</strong> Cursor warns that small score differences may not be statistically meaningful.</td></tr>
-            <tr><td>ARC-AGI-3</td><td>Interactive novel-problem solving and action efficiency</td><td>Opus 5 High: <strong>30.16%</strong>, the highest result ARC Prize reported on July 24.</td><td><strong>ARC Prize-verified.</strong> Tested only at high effort because of the short evaluation window; one benchmark does not establish general intelligence.</td></tr>
+            <tr><td>ARC-AGI-3</td><td>Interactive novel-problem solving and action efficiency</td><td>Opus 5 High: <strong>30.2%</strong>, as published on ARC Prize's verified-results page for July 24, 2026.</td><td><strong>ARC Prize-verified.</strong> Tested only at high effort because of the short evaluation window; one benchmark does not establish general intelligence.</td></tr>
             <tr><td>AutomationBench</td><td>Strict end-to-end completion of multi-app business workflows</td><td>Opus 5 Max: <strong>26.2%</strong> on Zapier's current private held-out leaderboard.</td><td><strong>Zapier-reported.</strong> Simulated tools, strict all-assertions pass/fail, and typical run-to-run variance within one point.</td></tr>
           </tbody>
         </table>
@@ -2399,7 +2402,7 @@ while True:
 for r in client.messages.batches.results(batch.id):
     print(r.custom_id, r.result)</code></pre>
 
-<div class="cal info">Batches support up to 300k output tokens on Opus 5, Opus 4.8/4.7/4.6, Sonnet 5, and Sonnet 4.6 with the <code>output-300k-2026-03-24</code> beta header.</div>
+<div class="cal info">The <code>output-300k-2026-03-24</code> beta header raises <code>max_tokens</code> to 300k on Opus 5, Opus 4.8/4.7/4.6, Sonnet 5, and Sonnet 4.6 — <b>on the Message Batches API only</b>, not the synchronous Messages API, where Opus 5 stays at 128k. Extended output is not available on Amazon Bedrock, Google Cloud, or Microsoft Foundry.</div>
 
 <h4>Extended thinking &amp; structured outputs</h4>
 
@@ -2855,7 +2858,7 @@ claude -p "Now check for type errors" --resume "$session_id"</code></pre>
 
 <h3>Fast mode: pay for speed when latency is the bottleneck</h3>
 
-<p>Cost isn't the only axis — sometimes you just want the answer <em>now</em>. <strong>Fast mode</strong> (research preview) runs Claude Opus up to <strong>2.5&times; faster</strong> at a higher price per token. It's the same model with the same quality, just a config that trades cost efficiency for speed. Toggle it in the CLI with <code>/fast</code>.</p>
+<p>Cost isn't the only axis — sometimes you just want the answer <em>now</em>. <strong>Fast mode</strong> (research preview) runs Claude Opus at <strong>up to 2.5&times; higher output tokens per second</strong>. That is Anthropic's reported figure for <em>throughput</em> — not time-to-first-token, and not a guaranteed latency SLA. It's the same model with the same quality, just a config that trades cost efficiency for speed. Toggle it in the CLI with <code>/fast</code>.</p>
 
 <pre><code>/fast          # toggle fast mode on/off (Claude Code CLI; not in VS Code)
 claude --version   # verify your client supports the current Opus 5 fast tier</code></pre>
@@ -2863,7 +2866,7 @@ claude --version   # verify your client supports the current Opus 5 fast tier</c
 <table>
 <thead><tr><th>Model</th><th>Fast-mode price (in / out per MTok)</th><th>Notes</th></tr></thead>
 <tbody>
-<tr><td>Opus 5</td><td>$10 / $50</td><td>Claude API research preview; about 2× base price for up to 2.5× output speed</td></tr>
+<tr><td>Opus 5</td><td>$10 / $50</td><td>Research preview; about 2× base price for up to 2.5× output tokens/sec</td></tr>
 <tr><td>Opus 4.8</td><td>$10 / $50</td><td>Still supported for fast-mode workloads that have not migrated</td></tr>
 <tr><td>Opus 4.7</td><td>Removed</td><td>Fast mode removed July 24, 2026; migrate to Opus 5 or Opus 4.8</td></tr>
 </tbody>
@@ -2871,7 +2874,7 @@ claude --version   # verify your client supports the current Opus 5 fast tier</c
 
 <div class="cal tip">Reach for it during <b>interactive, latency-sensitive work</b>: rapid iteration, live debugging, a tight deadline. Toggle it back off for batch or background jobs where cost matters more than the wait.</div>
 
-<div class="cal warn">Fast mode is a research preview and Opus-only (not Sonnet/Haiku). On subscription plans (Pro/Max/Team/Enterprise) it bills via <b>usage credits</b> only, outside your included limits, and Team/Enterprise Owners must enable it first. Not available on Bedrock, Vertex, Foundry, or Claude Platform on AWS.</div>
+<div class="cal warn">Fast mode is a research preview and Opus-only — Opus 5 and Opus 4.8, not Sonnet/Haiku. On subscription plans (Pro/Max/Team/Enterprise) it bills via <b>usage credits</b> only, outside your included limits, and Team/Enterprise Owners must enable it first. Not available on Amazon Bedrock, Google Cloud, Microsoft Foundry, or Claude Platform on AWS — but <b>that restriction is on fast mode, not on Opus 5 itself</b>, which runs normally on all of those platforms.</div>
 
 <h4>Trim CLAUDE.md ruthlessly</h4>
 
@@ -5929,6 +5932,10 @@ var MODEL_SOURCES={
   opusWhatsNew:{label:"What's new in Claude Opus 5",url:'https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5'},
   migration:{label:'Model migration guide',url:'https://platform.claude.com/docs/en/about-claude/models/migration-guide'},
   prompting:{label:'Prompting Claude Opus 5',url:'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5'},
+  fastMode:{label:'Fast mode (research preview)',url:'https://platform.claude.com/docs/en/build-with-claude/fast-mode'},
+  fastModeClaudeCode:{label:'Fast mode in Claude Code',url:'https://code.claude.com/docs/en/fast-mode'},
+  serviceTiers:{label:'API service tiers',url:'https://platform.claude.com/docs/en/api/service-tiers'},
+  batchProcessing:{label:'Message Batches and extended output',url:'https://platform.claude.com/docs/en/build-with-claude/batch-processing'},
   pricing:{label:'Claude Platform pricing',url:'https://platform.claude.com/docs/en/about-claude/pricing'},
   releaseNotes:{label:'Claude Platform release notes',url:'https://platform.claude.com/docs/en/release-notes/overview'},
   opusSystemCard:{label:'Claude Opus 5 System Card',url:'https://www.anthropic.com/claude-opus-5-system-card'},
@@ -5953,7 +5960,9 @@ var MODEL_FACTS={
     speed:'Moderate',inputPrice:5,outputPrice:25,context:'1M tokens',maxOutput:'128k tokens',
     thinking:'Adaptive; on by default',reliableKnowledgeCutoff:'May 2026',trainingDataCutoff:'May 2026',
     availability:'Claude API, Amazon Bedrock, Google Cloud, and Microsoft Foundry',
-    sources:['opusLaunch','modelsOverview','opusWhatsNew','pricing','opusSystemCard'],
+    featureExceptions:['API Web Fetch tool is not available on Opus 5; Web Search is unaffected','Priority Tier does not support Opus 5'],
+    fastMode:{inputPrice:10,outputPrice:50,availableOn:'Claude API (including Managed Agents) and Claude Code via usage credits',unavailableOn:['Amazon Bedrock','Google Cloud','Microsoft Foundry','Claude Platform on AWS'],speedClaim:'Anthropic-reported up to 2.5x higher output tokens per second; throughput, not time-to-first-token, and not a latency SLA'},
+    sources:['opusLaunch','modelsOverview','opusWhatsNew','migration','serviceTiers','fastMode','fastModeClaudeCode','batchProcessing','pricing','opusSystemCard'],
     use:'Complex coding, large refactors, deep analysis, vision-heavy and long-horizon work'
   },
   sonnet:{
@@ -5990,7 +5999,7 @@ var MODEL_ALL_ORDER=['haiku','sonnet','opus','fable','mythos'];
 var BENCHMARK_EVIDENCE={
   frontierBench:{result:'Anthropic reports that Opus 5 more than doubled Opus 4.8 and led its internal run.',provenance:'Anthropic-run',limitation:'Internal mini-SWE-agent run, mean reward over five attempts; model and harness results should not be generalized.'},
   cursorBench:{result:'70.0% at max effort, 0.5 points behind Fable 5 at 70.5%.',provenance:'Cursor-reported',limitation:'Small differences may not be statistically meaningful; cost and score vary with effort and harness.'},
-  arcAgi:{result:'30.16% on ARC-AGI-3 at high effort.',provenance:'ARC Prize-verified',limitation:'Evaluated only at high effort because of the short testing window; public-demo environments are a narrow slice of reasoning.'},
+  arcAgi:{result:'30.2% on ARC-AGI-3 at high effort.',provenance:'ARC Prize-verified',limitation:'Evaluated only at high effort because of the short testing window; public-demo environments are a narrow slice of reasoning.'},
   automationBench:{result:'26.2% at max effort on the current private held-out leaderboard.',provenance:'Zapier-reported',limitation:'Strict end-state pass/fail on simulated business tools; run-to-run variance is typically within one point.'}
 };
 function money(n){return '$'+Number(n).toFixed(n%1?2:0);}
@@ -6306,7 +6315,7 @@ var QUIZ={
   {q:"Web search in the app is…",o:["Always on","Off by default — you must enable it","Paid only","Automatic on mobile"],c:1,e:"A 'knowledge cutoff' answer to a current-events question means the toggle is off."}],
  cost:[
   {q:"A prompt-cache HIT costs roughly…",o:["The same as fresh input","~0.1× base input (90% off)","2× input","Nothing, ever"],c:1,e:"Cache reads are ~90% cheaper; caching is automatic in Claude Code."},
-  {q:"Fast mode trades…",o:["Quality for speed","Cost for ~2.5× speed on Opus","Context for tokens","Nothing at all"],c:1,e:"Same model & quality, higher price per token; toggle with /fast."},
+  {q:"Fast mode trades…",o:["Quality for speed","Cost for ~2.5× speed on Opus","Context for tokens","Nothing at all"],c:1,e:"Same model & quality, higher price per token. The up-to-2.5× figure is Anthropic-reported output tokens per second — throughput, not time-to-first-token, and not an SLA. Toggle with /fast."},
   {q:"Between two unrelated tasks you should…",o:["/compact","/clear to start fresh","Switch models","Do nothing"],c:1,e:"Fresh context is free; /clear stops old tokens riding along on every turn."}],
  security:[
   {q:"In Claude Code, what can widen what Claude is allowed to do?",o:["A clever prompt","A CLAUDE.md instruction","Only your settings, permission modes, and hooks","Any web page"],c:2,e:"The harness enforces permissions — a prompt can never widen them. That separation is the whole game."},
@@ -6414,7 +6423,7 @@ var EXAM=[
  {q:"Which hook can veto a tool before it runs?",o:["Stop","PreToolUse (exit 2)","PostToolUse","SessionStart"],c:1,sec:"hooks"},
  {q:"The keyword that lets Claude decide to spin up a big workflow is…",o:["ultrathink","ultracode","hypermode","autoplan"],c:1,sec:"workflows"},
  {q:"A prompt-cache read costs about…",o:["the same as fresh input","~0.1× base input","2× input","nothing"],c:1,sec:"cost"},
- {q:"Fast mode gives you…",o:["a smarter model","~2.5× speed on Opus for a higher price","more context","free tokens"],c:1,sec:"cost"},
+ {q:"Fast mode gives you…",o:["a smarter model","up to ~2.5× output throughput on Opus for a higher price","more context","free tokens"],c:1,sec:"cost"},
  {q:"In Claude Code, permissions can be widened by…",o:["a clever prompt","CLAUDE.md","only settings, modes, and hooks","a web page"],c:2,sec:"security"},
  {q:"Permission rules are evaluated…",o:["allow first","ask first","deny first","at random"],c:2,sec:"security"},
  {q:"When Claude wants to use a tool, the API returns…",o:["an error","a tool_use block","a refusal","an empty message"],c:1,sec:"api-sdk"},

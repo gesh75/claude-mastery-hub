@@ -62,6 +62,16 @@ multi-agent workflows) plus an "AI Foundations 101" track.
 | Haiku 4.5 | `claude-haiku-4-5` | Fastest/cheapest ($1/$5) |
 | Mythos 5 | `claude-mythos-5` | Invitation-only Project Glasswing model; not general-purpose routing |
 
+**Two Opus 5 migration exceptions** (verified 2026-07-28): the API **Web Fetch**
+tool is not available on Opus 5 (Web Search is a *different* tool and is fine),
+and **Priority Tier** does not support Opus 5 (nor Sonnet 5) — and new Priority
+Tier commitments are no longer sold, so only existing commitments are affected.
+Neither limits ordinary Opus 5 availability on the API, Bedrock, Google Cloud, or
+Foundry. **Fast mode** is Claude API (incl. Managed Agents) + Claude Code via
+usage credits only — never Bedrock/Google Cloud/Foundry/Claude Platform on AWS —
+and its "up to 2.5×" is *output tokens per second*, not TTFT and not an SLA.
+**300k output** is a Message Batches-only cap; synchronous Opus 5 stays at 128k.
+
 `/model default` is **plan-dependent**. Subagents run in the background by
 default and nest up to 5 levels. Agent teams are experimental
 (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`).

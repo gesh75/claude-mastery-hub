@@ -86,6 +86,94 @@ test.describe('Opus 5 content currency', () => {
     await expect(lesson).toContainText('remove inherited verification instructions');
   });
 
+  test('Opus 5 migration exceptions are taught without overstating them', async ({
+    page
+  }) => {
+    const lesson = page.locator('#whats-new');
+
+    // The two documented feature exceptions must be visible to a learner.
+    await expect(lesson).toContainText('Web Fetch');
+    await expect(lesson).toContainText('not currently available on Opus 5');
+    await expect(lesson).toContainText(
+      'Web Search is a separate tool and remains available'
+    );
+    await expect(lesson).toContainText('Priority Tier does not support Opus 5');
+
+    // Web Fetch must never be conflated with Web Search, and the tier limit
+    // must never be presented as a limit on ordinary Opus 5 availability.
+    await expect(lesson).not.toContainText('Web Search is not available');
+    await expect(lesson).toContainText(
+      'does not limit ordinary Opus 5 availability'
+    );
+
+    // Normal platform availability stays intact alongside the exceptions.
+    const glance = lesson.locator('table').first();
+    await expect(glance).toContainText('Amazon Bedrock');
+    await expect(glance).toContainText('Google Cloud');
+    await expect(glance).toContainText('Microsoft Foundry');
+  });
+
+  test('Fast mode scope is distinct from Opus 5 platform availability', async ({
+    page
+  }) => {
+    const lesson = page.locator('#whats-new');
+    const cost = page.locator('#cost');
+
+    // Fast mode is API + Claude Code (usage credits), not the cloud platforms.
+    await expect(lesson).toContainText('Claude Code via usage credits');
+    await expect(cost).toContainText('usage credits');
+    await expect(cost).toContainText(
+      'Team/Enterprise Owners must enable it first'
+    );
+    await expect(cost).toContainText(
+      'Not available on Amazon Bedrock, Google Cloud, Microsoft Foundry, or Claude Platform on AWS'
+    );
+
+    // The restriction must be scoped to fast mode, not to the model.
+    await expect(cost).toContainText(
+      'that restriction is on fast mode, not on Opus 5 itself'
+    );
+
+    // Throughput claim must not read as a latency guarantee.
+    await expect(cost).toContainText('higher output tokens per second');
+    await expect(cost).toContainText('not a guaranteed latency SLA');
+    await expect(cost).not.toContainText('2.5× faster');
+    await expect(cost).toContainText('$10 / $50');
+  });
+
+  test('extended output is scoped to the Message Batches API', async ({ page }) => {
+    const api = page.locator('#api-sdk');
+    await expect(api).toContainText('output-300k-2026-03-24');
+    await expect(api).toContainText('on the Message Batches API only');
+    await expect(api).toContainText('not the synchronous Messages API');
+    await expect(api).toContainText('Opus 5 stays at 128k');
+  });
+
+  test('registry records the Opus 5 exceptions and fast-mode scope', async ({
+    page
+  }) => {
+    const opus = await page.evaluate(() => window.MODEL_FACTS.opus);
+
+    expect(opus.featureExceptions.join(' | ')).toContain('Web Fetch');
+    expect(opus.featureExceptions.join(' | ')).toContain('Priority Tier');
+    expect(opus.fastMode.inputPrice).toBe(10);
+    expect(opus.fastMode.outputPrice).toBe(50);
+    expect(opus.fastMode.unavailableOn).toEqual(
+      expect.arrayContaining([
+        'Amazon Bedrock',
+        'Google Cloud',
+        'Microsoft Foundry'
+      ])
+    );
+    // Fast-mode exclusions must not leak into normal model availability.
+    expect(opus.availability).toContain('Amazon Bedrock');
+    expect(opus.availability).toContain('Google Cloud');
+    expect(opus.availability).toContain('Microsoft Foundry');
+    expect(opus.sources).toContain('migration');
+    expect(opus.sources).toContain('serviceTiers');
+    expect(opus.sources).toContain('fastMode');
+  });
+
   test('benchmark claims expose provenance and limitations', async ({ page }) => {
     const benchmarks = page.locator('#opus-5-benchmarks');
     await expect(benchmarks).toContainText('Frontier-Bench v0.1');
@@ -94,7 +182,8 @@ test.describe('Opus 5 content currency', () => {
     await expect(benchmarks).toContainText('Cursor-reported');
     await expect(benchmarks).toContainText('ARC-AGI-3');
     await expect(benchmarks).toContainText('ARC Prize-verified');
-    await expect(benchmarks).toContainText('30.16%');
+    await expect(benchmarks).toContainText('30.2%');
+    await expect(benchmarks).not.toContainText('30.16%');
     await expect(benchmarks).toContainText('AutomationBench');
     await expect(benchmarks).toContainText('Zapier-reported');
     await expect(benchmarks).toContainText('26.2%');

@@ -40,8 +40,12 @@ All sources were checked on 2026-07-28.
 | --- | --- |
 | [Introducing Claude Opus 5](https://www.anthropic.com/news/claude-opus-5) | Release date, positioning, product availability, qualitative launch comparisons, Fast mode |
 | [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview) | Model hierarchy, IDs, pricing, limits, thinking, cutoffs, platform availability |
-| [What's new in Claude Opus 5](https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5) | Default thinking, effort ladder, cache minimum, breaking restriction, migration behavior |
-| [Migration guide](https://platform.claude.com/docs/en/about-claude/models/migration-guide) | Model-ID change and compatibility review |
+| [What's new in Claude Opus 5](https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5) | Default thinking, effort ladder, cache minimum, breaking restriction, migration behavior, Fast-mode platform exclusions |
+| [Migration guide](https://platform.claude.com/docs/en/about-claude/models/migration-guide) | Model-ID change, compatibility review, and the two feature exceptions (Web Fetch, Priority Tier) |
+| [API service tiers](https://platform.claude.com/docs/en/api/service-tiers) | Priority Tier supported-model list and the fact that new capacity commitments are no longer sold |
+| [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode) | Supported models, Claude API/Managed Agents scope, cloud exclusions, OTPS-not-TTFT framing, $10/$50 |
+| [Fast mode in Claude Code](https://code.claude.com/docs/en/fast-mode) | `/fast`, usage-credits billing on subscription plans, Owner enablement, VS Code exclusion |
+| [Message Batches](https://platform.claude.com/docs/en/build-with-claude/batch-processing) | 300k extended output as a Batches-only cap, supported models, beta header, platform exclusions |
 | [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5) | Narration, verbosity, self-verification, delegation, prompt-tuning advice |
 | [Pricing](https://platform.claude.com/docs/en/about-claude/pricing) | Base, cache, batch, Fast mode, and temporary Sonnet pricing |
 | [Release notes](https://platform.claude.com/docs/en/release-notes/overview) | July 24 launch record and API behavior |
@@ -50,6 +54,26 @@ All sources were checked on 2026-07-28.
 | [CursorBench 3.2](https://cursor.com/evals) | 70.0% Opus 5 Max, 70.5% Fable 5 Max, cost and variance caveat |
 | [ARC Prize verified results](https://arcprize.org/results/anthropic-claude-opus-5) | 30.16% ARC-AGI-3 High and short-window caveat |
 | [Zapier AutomationBench](https://zapier.com/benchmarks) | Current 26.2% Max result, held-out scoring, variance, and benchmark limitations |
+
+## Follow-up verification pass — 2026-07-28
+
+A second review checked two proposed additions and one benchmark figure against primary sources.
+
+| Claim under review | Verdict | Primary source |
+| --- | --- | --- |
+| The API Web Fetch tool is not available on Opus 5 | **Confirmed.** Migration guide: "web fetch is not available on Claude Opus 5". Web Search is a distinct tool and is unaffected. | Migration guide |
+| Priority Tier does not support Opus 5 | **Confirmed, with scope.** Service tiers: "Priority Tier is supported on all available Claude models except Claude Mythos 5, Claude Mythos Preview, Claude Opus 5, and Claude Sonnet 5." The same page states new capacity commitments are no longer sold, so this affects only organizations with an existing commitment. | API service tiers; migration guide |
+| Fast mode is Claude API only | **Confirmed, and refined.** Fast mode docs scope it to the Claude API *including Managed Agents*, and the Claude Code doc adds subscription access billed through usage credits with Team/Enterprise Owner enablement. It is excluded on Amazon Bedrock, Google Cloud, Microsoft Foundry, and Claude Platform on AWS. | Fast mode; Fast mode in Claude Code |
+| "2.5×" is a speed guarantee | **Rejected.** Fast mode docs: "Speed benefits are focused on output tokens per second (OTPS), not time to first token (TTFT)." Wording now states throughput and explicitly denies a latency SLA. | Fast mode |
+| Fast-mode exclusions limit Opus 5 availability | **Rejected.** Opus 5 itself remains available on the Claude API, Amazon Bedrock, Google Cloud, and Microsoft Foundry. The lesson and the cost section now say so explicitly. | What's new in Claude Opus 5; release notes |
+| ARC-AGI-3 score of 30.16% | **Corrected to 30.2%.** ARC Prize's verified-results page publishes 30.2% at High effort for July 24, 2026; 30.16% could not be reproduced from the primary source. The unverifiable superlative "the highest result ARC Prize reported" was removed. | ARC Prize verified results |
+| 300k output applies to Opus 5 generally | **Corrected.** Extended output "is available on the Message Batches API only, not the synchronous Messages API." The synchronous Opus 5 cap remains 128k. | Message Batches; models overview |
+
+Owner-reported benchmark figures re-checked against the owners' own pages on 2026-07-28: CursorBench 3.2 (Opus 5 Max 70.0% at $8.23/task; Fable 5 Max 70.5% at $17.32/task; "small differences in scores may not be statistically meaningful"), Zapier AutomationBench (26.2%, held-out private set, "run-to-run variance is typically within 1%"), ARC-AGI-3 (30.2%, High effort only due to the short testing window). Frontier-Bench publishes **no** Opus 5 score, so that row remains labeled Anthropic-reported.
+
+## Known follow-up
+
+`MODEL_FACTS.availability`, `positioning`, `sources`, `featureExceptions`, `fastMode`, `MODEL_SOURCES`, `MODEL_FACTS_VERIFIED_AT`, and `BENCHMARK_EVIDENCE` are maintained as the declared fact registry but are not yet consumed by a renderer — only `modelRows()` reads the registry today. Tests therefore assert the learner-visible HTML as well as the registry, so the two cannot drift silently. Wiring the remaining fields into rendering is a separate change.
 
 ## Deliberately excluded benchmark facts
 
