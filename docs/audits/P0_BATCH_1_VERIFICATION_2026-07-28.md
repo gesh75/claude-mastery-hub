@@ -1,7 +1,7 @@
 # P0 Batch 1 Verification
 
-Verification date: 2026-07-28  
-Branch: `fix/p0-responsive-navigation`  
+Verification date: 2026-07-28
+Branch: `fix/p0-responsive-navigation`
 Scope: responsive containment, accessible mobile navigation, and Playwright regressions only
 
 ## Root causes
