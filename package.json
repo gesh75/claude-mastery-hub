@@ -1,0 +1,13 @@
+{
+  "name": "claude-mastery-hub",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.0"
+  }
+}
+
