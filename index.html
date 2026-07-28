@@ -29,7 +29,7 @@
 }
 *{box-sizing:border-box}
 html{scroll-padding-top:84px}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
 a{color:var(--cyan);text-decoration:none}
 a:hover{text-decoration:underline}
 .muted{color:var(--mut)}
@@ -50,6 +50,7 @@ a:hover{text-decoration:underline}
 /* layout */
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
 .layout{display:grid;grid-template-columns:288px 1fr;gap:34px;align-items:start;max-width:var(--maxw);margin:0 auto;padding:0 22px 90px}
+.layout>main{min-width:0;max-width:100%}
 
 /* sidebar */
 .side{position:sticky;top:84px;align-self:start;max-height:calc(100vh - 104px);overflow:auto;padding-right:6px}
@@ -67,6 +68,7 @@ a:hover{text-decoration:underline}
 .nav-link{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:10px;color:var(--mut);font-size:13.5px;border:1px solid transparent;transition:.15s}
 .nav-link:hover{background:var(--panel);color:var(--ink);text-decoration:none}
 .nav-link.active{background:linear-gradient(90deg,rgba(255,122,89,.16),rgba(155,140,255,.10));color:var(--ink);border-color:var(--line)}
+.nav-link:focus-visible,.menu-btn:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
 .nav-link.done .nav-ic{filter:none}
 .nav-link.done::after{content:"✓";margin-left:auto;color:var(--green);font-weight:800}
 .nav-ic{font-size:15px;width:20px;text-align:center}
@@ -99,7 +101,7 @@ a:hover{text-decoration:underline}
 .disc{max-width:760px;margin:22px auto 0;font-size:12.5px;color:var(--mut);background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:10px 16px}
 
 /* sections */
-.sec{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:22px;padding:30px 32px;margin:22px 0;opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease;scroll-margin-top:0}
+.sec{min-width:0;background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:22px;padding:30px 32px;margin:22px 0;opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease;scroll-margin-top:0}
 .sec.in{opacity:1;transform:none}
 .sec-head{display:flex;align-items:flex-start;gap:18px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:8px}
 .sec-icon{font-size:30px;width:62px;height:62px;flex:0 0 auto;display:grid;place-items:center;border-radius:16px;background:radial-gradient(circle at 30% 30%,rgba(255,122,89,.25),rgba(155,140,255,.18));border:1px solid var(--line);animation:bob 4s ease-in-out infinite}
@@ -113,7 +115,7 @@ a:hover{text-decoration:underline}
 .mastered.on{color:var(--green);border-color:var(--green);background:rgba(95,211,154,.1)}
 
 /* body content */
-.sec-body{padding-top:14px}
+.sec-body{min-width:0;padding-top:14px;overflow-wrap:anywhere}
 .sec-body h3{font-size:19px;margin:26px 0 8px;color:#fff;display:flex;align-items:center;gap:9px}
 .sec-body h3::before{content:"";width:9px;height:20px;border-radius:4px;background:var(--grad)}
 .sec-body h4{font-size:15.5px;margin:14px 0 6px;color:#fff}
@@ -149,14 +151,14 @@ a:hover{text-decoration:underline}
 .sec-body .cal.pro::before{content:"🚀"}
 
 /* grid + cards */
-.sec-body .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0}
+.sec-body .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:14px;margin:16px 0}
 .sec-body .card{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px;transition:.18s}
 .sec-body .card:hover{transform:translateY(-3px);border-color:var(--violet);box-shadow:0 10px 26px rgba(0,0,0,.3)}
 .sec-body .card h4{margin:0 0 6px}
 .sec-body .card p{margin:0;font-size:13.5px;color:var(--mut)}
 
 /* tables */
-.sec-body table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.8px;overflow:hidden;border-radius:12px;border:1px solid var(--line)}
+.sec-body table{display:block;width:100%;max-width:100%;border-collapse:collapse;margin:16px 0;font-size:13.8px;overflow-x:auto;border-radius:12px;border:1px solid var(--line)}
 .sec-body th{background:var(--panel2);text-align:left;padding:10px 13px;color:#fff;font-size:12.5px;letter-spacing:.03em}
 .sec-body td{padding:10px 13px;border-top:1px solid var(--line);color:#d7d3ea;vertical-align:top}
 .sec-body tr:hover td{background:rgba(155,140,255,.05)}
@@ -166,8 +168,9 @@ a:hover{text-decoration:underline}
 .diagram-head{display:flex;gap:11px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:rgba(155,140,255,.07)}
 .diagram-badge{flex:0 0 auto;font-size:10.5px;font-weight:800;letter-spacing:.07em;color:#1a1326;background:var(--grad);padding:4px 11px;border-radius:999px;white-space:nowrap}
 .diagram-why{color:#fff;font-size:14.5px;font-weight:600;line-height:1.4}
-.diagram-svg{padding:16px;min-height:300px}
+.diagram-svg{min-width:0;padding:16px;min-height:300px}
 .diagram-svg svg{display:block;width:100%;height:auto;aspect-ratio:880/380;max-height:440px}
+img,svg,canvas,video{max-width:100%}
 .diagram-cap{padding:0 18px 14px;color:var(--mut);font-size:12.5px;text-align:center;font-style:italic}
 .anim-x{margin:0 14px 16px;border:1px solid var(--line);border-radius:12px;background:rgba(155,140,255,.05)}
 .anim-x summary{cursor:pointer;padding:10px 14px;font-size:12.5px;font-weight:800;letter-spacing:.03em;color:var(--coral);user-select:none}
@@ -329,7 +332,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
 <div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 <canvas id="stars"></canvas>
 <div class="topbar"><i id="prog"></i></div>
-<button class="menu-btn" id="menu">☰</button>
+<button class="menu-btn" id="menu" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="side">☰</button>
 <button class="navshow" id="navshow" type="button" title="Show the sidebar" aria-label="Show the sidebar">☰</button>
 
 <header class="hero">
@@ -353,7 +356,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
 <div class="layout">
   <aside class="side" id="side">
     <button class="navcollapse" id="navcollapse" type="button" title="Hide the sidebar" aria-label="Hide the sidebar">⟨ Hide menu</button>
-    <input class="search" id="search" type="search" placeholder="🔍 Filter topics…">
+    <input class="search" id="search" type="search" placeholder="🔍 Filter topics…" aria-label="Filter navigation topics">
     <div class="ring-wrap">
       <div class="ring" id="ring"><b>0%</b></div>
       <div class="ring-meta" id="ringmeta"><b>0 / 41</b> sections mastered</div>
@@ -5994,7 +5997,58 @@ if(sb){
 // mobile menu
 var side=document.getElementById('side');
 var mb=document.getElementById('menu');
-if(mb)mb.onclick=function(){side.classList.toggle('open');};
+var mobileNavQuery=window.matchMedia('(max-width:920px)');
+var mobileNavOpen=false;
+function syncMobileNav(options){
+  options=options||{};
+  var mobile=mobileNavQuery.matches;
+  mobileNavOpen=mobile&&mobileNavOpen;
+  if(mb){
+    mb.setAttribute('aria-expanded',mobileNavOpen?'true':'false');
+    mb.setAttribute('aria-label',mobileNavOpen?'Close navigation':'Open navigation');
+  }
+  if(!side)return;
+  side.classList.toggle('open',mobileNavOpen);
+  if(mobile){
+    side.hidden=!mobileNavOpen;
+    side.inert=!mobileNavOpen;
+    side.setAttribute('aria-hidden',mobileNavOpen?'false':'true');
+  }else{
+    side.hidden=false;
+    side.inert=false;
+    side.removeAttribute('aria-hidden');
+  }
+  if(mobileNavOpen&&options.focusFirst){
+    var first=document.getElementById('search');
+    if(first)first.focus({preventScroll:true});
+  }else if(options.restoreFocus&&mb){
+    mb.focus({preventScroll:true});
+  }
+}
+function closeMobileNav(restoreFocus){
+  if(!mobileNavQuery.matches||!mobileNavOpen)return;
+  mobileNavOpen=false;
+  syncMobileNav({restoreFocus:!!restoreFocus});
+}
+if(mb)mb.onclick=function(){
+  mobileNavOpen=!mobileNavOpen;
+  syncMobileNav({focusFirst:mobileNavOpen,restoreFocus:!mobileNavOpen});
+};
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&mobileNavOpen){e.preventDefault();closeMobileNav(true);}
+});
+function handleMobileNavChange(e){
+  var focusWasInSide=!!(side&&side.contains(document.activeElement));
+  mobileNavOpen=false;
+  syncMobileNav({restoreFocus:e.matches&&focusWasInSide});
+}
+if(mobileNavQuery.addEventListener){
+  mobileNavQuery.addEventListener('change',handleMobileNavChange);
+}else{
+  mobileNavQuery.addListener(handleMobileNavChange);
+}
+window.addEventListener('popstate',function(){closeMobileNav(true);});
+syncMobileNav();
 // robust in-page navigation: instant scrollIntoView (uses CSS scroll-padding-top for the offset),
 // re-applied after a beat to absorb any reflow (diagrams/sections growing as they render).
 // This is deliberately simple — it lands on the exact section on the FIRST click, every time.
@@ -6010,7 +6064,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     if(t){ e.preventDefault();
       goToSection(t);
       history.replaceState(null,'','#'+id);
-      if(side) side.classList.remove('open');
+      closeMobileNav(true);
     }
   });
 });
