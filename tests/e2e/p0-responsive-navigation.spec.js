@@ -12,6 +12,7 @@ const VIEWPORTS = [
   { width: 1280, height: 800 },
   { width: 1440, height: 900 }
 ];
+const runtimeErrorsByPage = new WeakMap();
 
 async function loadApplication(page) {
   const runtimeErrors = [];
@@ -101,22 +102,26 @@ async function exerciseResponsiveViews(page, label) {
   await expectNoRootOverflow(page, `${label} exam interaction`);
 }
 
-async function collectTabSequence(page, count) {
+async function collectFullTabCycle(page, maxStops = 1200) {
+  await page.locator('#menu').focus();
   const sequence = [];
-  for (let index = 0; index < count; index += 1) {
+  for (let index = 0; index < maxStops; index += 1) {
     await page.keyboard.press('Tab');
-    sequence.push(await page.evaluate(() => {
+    const stop = await page.evaluate(() => {
       const active = document.activeElement;
       return {
         className: String(active?.className || ''),
         href: active?.getAttribute?.('href') || '',
         id: active?.id || '',
         insideSidebar: Boolean(active?.closest?.('#side')),
+        sectionId: active?.closest?.('.sec')?.id || '',
         tagName: active?.tagName?.toLowerCase() || ''
       };
-    }));
+    });
+    if (stop.id === 'menu') return sequence;
+    sequence.push(stop);
   }
-  return sequence;
+  throw new Error(`Keyboard focus did not cycle to the menu trigger within ${maxStops} stops`);
 }
 
 test.describe('responsive containment', () => {
@@ -136,10 +141,15 @@ test.describe('responsive containment', () => {
 test.describe('mobile navigation accessibility', () => {
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await loadApplication(page);
+    runtimeErrorsByPage.set(page, await loadApplication(page));
+  });
+
+  test.afterEach(async ({ page }) => {
+    expect(runtimeErrorsByPage.get(page), 'mobile navigation runtime errors').toEqual([]);
   });
 
   test('closed menu is absent from keyboard order and the accessibility tree', async ({ page }) => {
+    test.setTimeout(120_000);
     const trigger = page.locator('#menu');
     const sidebar = page.locator('#side');
 
@@ -149,12 +159,14 @@ test.describe('mobile navigation accessibility', () => {
     await expect(sidebar).toBeHidden();
     expect(await sidebar.ariaSnapshot()).toBe('');
 
-    const firstSequence = await collectTabSequence(page, 15);
+    const firstSequence = await collectFullTabCycle(page);
+    expect(firstSequence.length).toBeGreaterThan(10);
+    expect(firstSequence.length).toBeLessThan(1200);
     expect(firstSequence.some(item => item.insideSidebar)).toBe(false);
 
     await page.reload();
     await expect(page.locator('#lab-total')).toHaveText('12');
-    const secondSequence = await collectTabSequence(page, 15);
+    const secondSequence = await collectFullTabCycle(page);
     expect(secondSequence).toEqual(firstSequence);
   });
 
@@ -182,6 +194,28 @@ test.describe('mobile navigation accessibility', () => {
 
     await page.keyboard.press('Tab');
     expect(await page.evaluate(() => Boolean(document.activeElement?.closest?.('#side')))).toBe(false);
+  });
+
+  test('hash navigation only restores trigger focus when closing an open menu', async ({ page }) => {
+    const trigger = page.locator('#menu');
+    const sidebar = page.locator('#side');
+    const closedMenuCta = page.locator('header a[href="#start-here"]');
+
+    await closedMenuCta.focus();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/#start-here$/);
+    await expect(closedMenuCta).toBeFocused();
+
+    await trigger.focus();
+    await page.keyboard.press('Enter');
+    const menuLink = sidebar.locator('a[href="#models"]');
+    await menuLink.focus();
+    await page.keyboard.press('Enter');
+
+    await expect(page).toHaveURL(/#models$/);
+    await expect(sidebar).toBeHidden();
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect(trigger).toBeFocused();
   });
 
   test('resize and browser history leave mobile menu state consistent', async ({ page }) => {

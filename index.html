@@ -6026,7 +6026,7 @@ function syncMobileNav(options){
   }
 }
 function closeMobileNav(restoreFocus){
-  if(!mobileNavQuery.matches)return;
+  if(!mobileNavQuery.matches||!mobileNavOpen)return;
   mobileNavOpen=false;
   syncMobileNav({restoreFocus:!!restoreFocus});
 }
@@ -6037,11 +6037,16 @@ if(mb)mb.onclick=function(){
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'&&mobileNavOpen){e.preventDefault();closeMobileNav(true);}
 });
-mobileNavQuery.addEventListener('change',function(e){
+function handleMobileNavChange(e){
   var focusWasInSide=!!(side&&side.contains(document.activeElement));
   mobileNavOpen=false;
   syncMobileNav({restoreFocus:e.matches&&focusWasInSide});
-});
+}
+if(mobileNavQuery.addEventListener){
+  mobileNavQuery.addEventListener('change',handleMobileNavChange);
+}else{
+  mobileNavQuery.addListener(handleMobileNavChange);
+}
 window.addEventListener('popstate',function(){closeMobileNav(true);});
 syncMobileNav();
 // robust in-page navigation: instant scrollIntoView (uses CSS scroll-padding-top for the offset),

@@ -55,15 +55,17 @@ Regression-first evidence:
 
 Final Playwright result:
 
-- 14 passed, 0 failed
+- 15 passed, 0 failed
 - Nine exact viewport cases
 - Long code and table containment
 - Quiz, Practice Lab, and Final Exam interactions
-- Closed-menu keyboard order and ARIA snapshot
+- Full closed-menu keyboard cycle and ARIA snapshot, stable across reloads
 - Keyboard open/Enter/Escape/focus restoration
+- Hash navigation preserves focus when the menu is closed and restores the trigger only when closing an open menu
 - Desktop/mobile resize and browser back/forward state
 - Basic navigation/learning-engine smoke test
 - Scoped Axe WCAG 2.2 AA scan for open and closed navigation
+- Runtime console and page errors asserted throughout mobile interactions
 
 ## Manual Chromium verification
 
