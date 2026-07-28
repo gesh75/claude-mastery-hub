@@ -309,7 +309,18 @@ test.describe('Opus 5 content currency', () => {
       if (message.type() === 'error') errors.push(message.text());
     });
     page.on('pageerror', (error) => errors.push(error.message));
+    page.on('requestfailed', (request) =>
+      errors.push(`requestfailed: ${request.url()}`)
+    );
 
+    // The shared beforeEach already navigated, so a plain reload would only
+    // ever observe a warm load with localStorage already populated. Clear the
+    // persisted learning-engine state first so this covers a cold first visit,
+    // which is where first-run-only errors would surface.
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
     await page.reload();
     await expect(page.locator('#models')).toBeVisible();
     expect(externalRequests).toEqual([]);

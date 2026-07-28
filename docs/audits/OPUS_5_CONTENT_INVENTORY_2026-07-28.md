@@ -1,6 +1,6 @@
 # Opus 5 Content Inventory — 2026-07-28
 
-Working claim inventory created before the Opus 5 content update. It records the stale surface found on merged `main` and the action taken in this batch.
+This working claim inventory was created before the Opus 5 content update. It records the stale surface found on merged `main` and the action taken in this batch.
 
 | Location | Current claim on baseline | Accuracy | Required action | Primary source |
 | --- | --- | --- | --- | --- |
