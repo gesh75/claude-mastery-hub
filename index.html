@@ -1899,7 +1899,7 @@ model = "claude-opus-5"
           <tbody>
             <tr><td>Frontier-Bench v0.1</td><td>Difficult coding and non-coding work in rich terminal environments</td><td>Anthropic reports Opus 5 led its internal run and more than doubled Opus 4.8 at lower cost per task.</td><td><strong>Anthropic-run.</strong> Mini-SWE-agent harness, GKE backend, mean reward over five attempts; this is a model-plus-harness result.</td></tr>
             <tr><td>CursorBench 3.2</td><td>Ambiguous, multi-file tasks drawn from real Cursor sessions</td><td>Opus 5 Max: <strong>70.0%</strong>; Fable 5 Max: 70.5%, with lower reported task cost for Opus.</td><td><strong>Cursor-reported.</strong> Cursor warns that small score differences may not be statistically meaningful.</td></tr>
-            <tr><td>ARC-AGI-3</td><td>Interactive novel-problem solving and action efficiency</td><td>Opus 5 High: <strong>30.2%</strong>, as published on ARC Prize's verified-results page for July 24, 2026.</td><td><strong>ARC Prize-verified.</strong> Tested only at high effort because of the short evaluation window; one benchmark does not establish general intelligence.</td></tr>
+            <tr><td>ARC-AGI-3</td><td>Interactive novel-problem solving and action efficiency</td><td>Opus 5 at <strong>High</strong> effort: <strong>30.2%</strong> rounded, which is <strong>30.16%</strong> exact in ARC Prize's verified-score table. Same single result, two representations.</td><td><strong>ARC Prize-verified.</strong> Evaluated only at High effort because of the short testing window; one benchmark does not establish general intelligence.</td></tr>
             <tr><td>AutomationBench</td><td>Strict end-to-end completion of multi-app business workflows</td><td>Opus 5 Max: <strong>26.2%</strong> on Zapier's current private held-out leaderboard.</td><td><strong>Zapier-reported.</strong> Simulated tools, strict all-assertions pass/fail, and typical run-to-run variance within one point.</td></tr>
           </tbody>
         </table>
@@ -5999,7 +5999,7 @@ var MODEL_ALL_ORDER=['haiku','sonnet','opus','fable','mythos'];
 var BENCHMARK_EVIDENCE={
   frontierBench:{result:'Anthropic reports that Opus 5 more than doubled Opus 4.8 and led its internal run.',provenance:'Anthropic-run',limitation:'Internal mini-SWE-agent run, mean reward over five attempts; model and harness results should not be generalized.'},
   cursorBench:{result:'70.0% at max effort, 0.5 points behind Fable 5 at 70.5%.',provenance:'Cursor-reported',limitation:'Small differences may not be statistically meaningful; cost and score vary with effort and harness.'},
-  arcAgi:{result:'30.2% on ARC-AGI-3 at high effort.',provenance:'ARC Prize-verified',limitation:'Evaluated only at high effort because of the short testing window; public-demo environments are a narrow slice of reasoning.'},
+  arcAgi:{exactScore:30.16,roundedScore:30.2,effort:'High',result:'30.16% on ARC-AGI-3 at High effort, which ARC Prize rounds to 30.2% in its page headline.',provenance:'ARC Prize-verified',limitation:'Evaluated only at High effort because of the short testing window; public-demo environments are a narrow slice of reasoning.'},
   automationBench:{result:'26.2% at max effort on the current private held-out leaderboard.',provenance:'Zapier-reported',limitation:'Strict end-state pass/fail on simulated business tools; run-to-run variance is typically within one point.'}
 };
 function money(n){return '$'+Number(n).toFixed(n%1?2:0);}

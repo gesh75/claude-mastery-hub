@@ -52,7 +52,7 @@ All sources were checked on 2026-07-28.
 | [Claude Opus 5 System Card](https://www.anthropic.com/claude-opus-5-system-card) | Cutoff and evaluation methodology |
 | [Frontier-Bench](https://www.frontierbench.ai/announcement) | Benchmark purpose and continuous/versioned methodology |
 | [CursorBench 3.2](https://cursor.com/evals) | 70.0% Opus 5 Max, 70.5% Fable 5 Max, cost and variance caveat |
-| [ARC Prize verified results](https://arcprize.org/results/anthropic-claude-opus-5) | 30.16% ARC-AGI-3 High and short-window caveat |
+| [ARC Prize verified results](https://arcprize.org/results/anthropic-claude-opus-5) | ARC-AGI-3 High: 30.16% exact verified score, presented as 30.2% in the page's rounded headline; short-window caveat |
 | [Zapier AutomationBench](https://zapier.com/benchmarks) | Current 26.2% Max result, held-out scoring, variance, and benchmark limitations |
 
 ## Follow-up verification pass — 2026-07-28
@@ -66,10 +66,22 @@ A second review checked two proposed additions and one benchmark figure against 
 | Fast mode is Claude API only | **Confirmed, and refined.** Fast mode docs scope it to the Claude API *including Managed Agents*, and the Claude Code doc adds subscription access billed through usage credits with Team/Enterprise Owner enablement. It is excluded on Amazon Bedrock, Google Cloud, Microsoft Foundry, and Claude Platform on AWS. | Fast mode; Fast mode in Claude Code |
 | "2.5×" is a speed guarantee | **Rejected.** Fast mode docs: "Speed benefits are focused on output tokens per second (OTPS), not time to first token (TTFT)." Wording now states throughput and explicitly denies a latency SLA. | Fast mode |
 | Fast-mode exclusions limit Opus 5 availability | **Rejected.** Opus 5 itself remains available on the Claude API, Amazon Bedrock, Google Cloud, and Microsoft Foundry. The lesson and the cost section now say so explicitly. | What's new in Claude Opus 5; release notes |
-| ARC-AGI-3 score of 30.16% | **Corrected to 30.2%.** ARC Prize's verified-results page publishes 30.2% at High effort for July 24, 2026; 30.16% could not be reproduced from the primary source. The unverifiable superlative "the highest result ARC Prize reported" was removed. | ARC Prize verified results |
+| ARC-AGI-3 score presentation | **Both figures are valid; the page publishes each.** ARC Prize reports an exact verified ARC-AGI-3 score of **30.16%** for Opus 5 High, presented as **30.2%** in the page's rounded headline. The content now shows both and labels which is which. See the revision note below. | ARC Prize verified results |
 | 300k output applies to Opus 5 generally | **Corrected.** Extended output "is available on the Message Batches API only, not the synchronous Messages API." The synchronous Opus 5 cap remains 128k. | Message Batches; models overview |
 
-Owner-reported benchmark figures re-checked against the owners' own pages on 2026-07-28: CursorBench 3.2 (Opus 5 Max 70.0% at $8.23/task; Fable 5 Max 70.5% at $17.32/task; "small differences in scores may not be statistically meaningful"), Zapier AutomationBench (26.2%, held-out private set, "run-to-run variance is typically within 1%"), ARC-AGI-3 (30.2%, High effort only due to the short testing window). Frontier-Bench publishes **no** Opus 5 score, so that row remains labeled Anthropic-reported.
+Owner-reported benchmark figures re-checked against the owners' own pages on 2026-07-28: CursorBench 3.2 (Opus 5 Max 70.0% at $8.23/task; Fable 5 Max 70.5% at $17.32/task; "small differences in scores may not be statistically meaningful"), Zapier AutomationBench (26.2%, held-out private set, "run-to-run variance is typically within 1%"), ARC-AGI-3 (**30.16% exact verified, 30.2% rounded headline**, High effort only due to the short testing window). Frontier-Bench publishes **no** Opus 5 score, so that row remains labeled Anthropic-reported.
+
+### Revision note — ARC-AGI-3 figure
+
+An earlier pass in this batch replaced 30.16% with 30.2% and recorded that the exact figure "could not be reproduced from the primary source." **That conclusion was wrong and has been withdrawn.** The first check read only the ARC Prize page's rounded introductory headline and never reached the verified-score table further down the page. A follow-up check of the same URL confirmed the table entry `High | 30.16%` alongside the headline sentence "Claude Opus 5 (High) is the highest-performing model on ARC-AGI-3, scoring 30.2%".
+
+Both numbers are legitimate representations of one evaluation, so the guide now presents them together and labels which is exact and which is rounded. The exact value is the numeric field in `BENCHMARK_EVIDENCE.arcAgi.exactScore`; `roundedScore` carries 30.2 for display.
+
+The regression test that forbade the string `30.16%` anywhere in the benchmark section was the mechanism that locked the error in place. It has been replaced with assertions on the *relationship* between the two values, plus a static check of this document that allows the withdrawn claim to be quoted as history but fails if it is ever asserted again.
+
+The superlative "the highest result ARC Prize reported" remains out of the guide. ARC Prize does make a scoped claim on this page, but a leaderboard-position statement goes stale faster than a score does, and this batch's benchmark policy avoids ranking claims.
+
+This entry is kept rather than quietly rewritten, because the failure mode — trusting a page's summary over the page's own detail table — is the reusable lesson.
 
 ## Known follow-up
 

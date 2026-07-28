@@ -174,6 +174,70 @@ test.describe('Opus 5 content currency', () => {
     expect(opus.sources).toContain('fastMode');
   });
 
+  test('ARC-AGI-3 exact and rounded scores are shown as one labeled result', async ({
+    page
+  }) => {
+    const benchmarks = page.locator('#opus-5-benchmarks');
+    const row = benchmarks.locator('tr', { hasText: 'ARC-AGI-3' });
+
+    // Both representations appear, and neither is left unexplained.
+    await expect(row).toContainText('30.2%');
+    await expect(row).toContainText('30.16%');
+    await expect(row).toContainText('rounded');
+    await expect(row).toContainText('exact');
+
+    // They must read as one evaluation, not two competing results.
+    await expect(row).toContainText('Same single result, two representations');
+
+    // Effort and provenance stay attached to the number.
+    await expect(row).toContainText('High');
+    await expect(row).toContainText('ARC Prize-verified');
+    await expect(row).toContainText('short testing window');
+
+    // The registry keeps the exact value as the numeric field, and the
+    // rounded value must genuinely be the rounding of it.
+    const arc = await page.evaluate(() => window.BENCHMARK_EVIDENCE.arcAgi);
+    expect(arc.exactScore).toBe(30.16);
+    expect(arc.roundedScore).toBe(30.2);
+    expect(Number(arc.exactScore.toFixed(1))).toBe(arc.roundedScore);
+    expect(arc.effort).toBe('High');
+    expect(arc.provenance).toBe('ARC Prize-verified');
+    expect(arc.result).toContain('30.16%');
+  });
+
+  test('audit record does not claim the exact ARC score was unreproducible', async () => {
+    const audit = await readFile(
+      new URL('docs/audits/OPUS_5_CONTENT_INVENTORY_2026-07-28.md', ROOT),
+      'utf8'
+    );
+
+    // The "unreproducible" claim may be quoted as withdrawn history, but must
+    // never stand as an assertion. Every occurrence needs a nearby retraction
+    // marker - this catches a live claim without banning the historical record.
+    const claimPattern = /could not be reproduced|unreproducible|not reproducible/gi;
+    const unretracted = [...audit.matchAll(claimPattern)].filter((match) => {
+      const context = audit.slice(
+        Math.max(0, match.index - 400),
+        match.index + 400
+      );
+      return !/withdrawn|was wrong|revision note/i.test(context);
+    });
+    expect(
+      unretracted.map((m) => m[0]),
+      'every "unreproducible" mention must be marked as withdrawn'
+    ).toEqual([]);
+
+    // The document must record the corrected, sourced relationship...
+    expect(audit).toContain('30.16%');
+    expect(audit).toContain('30.2%');
+    expect(audit).toMatch(/exact verified/i);
+    expect(audit).toMatch(/rounded headline/i);
+
+    // ...and must retain the revision history rather than erase it.
+    expect(audit).toMatch(/withdrawn/i);
+    expect(audit).toMatch(/Revision note/i);
+  });
+
   test('benchmark claims expose provenance and limitations', async ({ page }) => {
     const benchmarks = page.locator('#opus-5-benchmarks');
     await expect(benchmarks).toContainText('Frontier-Bench v0.1');
@@ -183,7 +247,6 @@ test.describe('Opus 5 content currency', () => {
     await expect(benchmarks).toContainText('ARC-AGI-3');
     await expect(benchmarks).toContainText('ARC Prize-verified');
     await expect(benchmarks).toContainText('30.2%');
-    await expect(benchmarks).not.toContainText('30.16%');
     await expect(benchmarks).toContainText('AutomationBench');
     await expect(benchmarks).toContainText('Zapier-reported');
     await expect(benchmarks).toContainText('26.2%');
