@@ -68,6 +68,7 @@ a:hover{text-decoration:underline}
 .nav-link{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:10px;color:var(--mut);font-size:13.5px;border:1px solid transparent;transition:.15s}
 .nav-link:hover{background:var(--panel);color:var(--ink);text-decoration:none}
 .nav-link.active{background:linear-gradient(90deg,rgba(255,122,89,.16),rgba(155,140,255,.10));color:var(--ink);border-color:var(--line)}
+.nav-link:focus-visible,.menu-btn:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
 .nav-link.done .nav-ic{filter:none}
 .nav-link.done::after{content:"✓";margin-left:auto;color:var(--green);font-weight:800}
 .nav-ic{font-size:15px;width:20px;text-align:center}
@@ -331,7 +332,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
 <div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 <canvas id="stars"></canvas>
 <div class="topbar"><i id="prog"></i></div>
-<button class="menu-btn" id="menu">☰</button>
+<button class="menu-btn" id="menu" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="side">☰</button>
 <button class="navshow" id="navshow" type="button" title="Show the sidebar" aria-label="Show the sidebar">☰</button>
 
 <header class="hero">
@@ -355,7 +356,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;t
 <div class="layout">
   <aside class="side" id="side">
     <button class="navcollapse" id="navcollapse" type="button" title="Hide the sidebar" aria-label="Hide the sidebar">⟨ Hide menu</button>
-    <input class="search" id="search" type="search" placeholder="🔍 Filter topics…">
+    <input class="search" id="search" type="search" placeholder="🔍 Filter topics…" aria-label="Filter navigation topics">
     <div class="ring-wrap">
       <div class="ring" id="ring"><b>0%</b></div>
       <div class="ring-meta" id="ringmeta"><b>0 / 41</b> sections mastered</div>
@@ -5996,7 +5997,53 @@ if(sb){
 // mobile menu
 var side=document.getElementById('side');
 var mb=document.getElementById('menu');
-if(mb)mb.onclick=function(){side.classList.toggle('open');};
+var mobileNavQuery=window.matchMedia('(max-width:920px)');
+var mobileNavOpen=false;
+function syncMobileNav(options){
+  options=options||{};
+  var mobile=mobileNavQuery.matches;
+  mobileNavOpen=mobile&&mobileNavOpen;
+  if(mb){
+    mb.setAttribute('aria-expanded',mobileNavOpen?'true':'false');
+    mb.setAttribute('aria-label',mobileNavOpen?'Close navigation':'Open navigation');
+  }
+  if(!side)return;
+  side.classList.toggle('open',mobileNavOpen);
+  if(mobile){
+    side.hidden=!mobileNavOpen;
+    side.inert=!mobileNavOpen;
+    side.setAttribute('aria-hidden',mobileNavOpen?'false':'true');
+  }else{
+    side.hidden=false;
+    side.inert=false;
+    side.removeAttribute('aria-hidden');
+  }
+  if(mobileNavOpen&&options.focusFirst){
+    var first=document.getElementById('search');
+    if(first)first.focus({preventScroll:true});
+  }else if(options.restoreFocus&&mb){
+    mb.focus({preventScroll:true});
+  }
+}
+function closeMobileNav(restoreFocus){
+  if(!mobileNavQuery.matches)return;
+  mobileNavOpen=false;
+  syncMobileNav({restoreFocus:!!restoreFocus});
+}
+if(mb)mb.onclick=function(){
+  mobileNavOpen=!mobileNavOpen;
+  syncMobileNav({focusFirst:mobileNavOpen,restoreFocus:!mobileNavOpen});
+};
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&mobileNavOpen){e.preventDefault();closeMobileNav(true);}
+});
+mobileNavQuery.addEventListener('change',function(e){
+  var focusWasInSide=!!(side&&side.contains(document.activeElement));
+  mobileNavOpen=false;
+  syncMobileNav({restoreFocus:e.matches&&focusWasInSide});
+});
+window.addEventListener('popstate',function(){closeMobileNav(true);});
+syncMobileNav();
 // robust in-page navigation: instant scrollIntoView (uses CSS scroll-padding-top for the offset),
 // re-applied after a beat to absorb any reflow (diagrams/sections growing as they render).
 // This is deliberately simple — it lands on the exact section on the FIRST click, every time.
@@ -6012,7 +6059,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
     if(t){ e.preventDefault();
       goToSection(t);
       history.replaceState(null,'','#'+id);
-      if(side) side.classList.remove('open');
+      closeMobileNav(true);
     }
   });
 });

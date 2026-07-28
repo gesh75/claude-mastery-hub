@@ -145,7 +145,7 @@ test.describe('mobile navigation accessibility', () => {
     await expect(trigger).toHaveAccessibleName('Open navigation');
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
     await expect(trigger).toHaveAttribute('aria-controls', 'side');
-    await expect(side).toBeHidden();
+    await expect(sidebar).toBeHidden();
     expect(await sidebar.ariaSnapshot()).toBe('');
 
     const firstSequence = await collectTabSequence(page, 15);
