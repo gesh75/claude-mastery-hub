@@ -4,13 +4,18 @@ applyTo: "tests/**"
 
 # Tests
 
-- pytest only. No `unittest.TestCase` classes in new code.
-- Name tests `test_<unit>_<scenario>_<expected>` so failures read as sentences.
-- Prefer fixtures over setup/teardown methods; prefer `@pytest.mark.parametrize` over loops.
-- Every bug fix starts with a regression test that fails before the fix.
-- Cover the error paths, not just the happy path: bad input, network failure, empty result,
-  boundary values.
-- Never hit the live network. Mock at the client boundary with `respx`, `responses`,
-  or `monkeypatch`.
-- Tests must be order-independent and safe to run with `pytest -n auto`.
-- No secrets or real credentials in fixtures - use obviously fake values.
+This repo's tests are **Playwright specs in JavaScript** (`tests/e2e/*.spec.js` using
+`@playwright/test`). There is no Python here - do not suggest pytest, fixtures, or
+`unittest.mock`.
+
+- Run with `npx playwright test`. A single spec: `npx playwright test tests/e2e/<name>.spec.js`.
+- Use `test.describe()` / `test()` blocks and web-first assertions (`await expect(locator)`),
+  never bare `assert`.
+- Prefer role- and text-based locators (`getByRole`, `getByText`) over CSS or XPath - they
+  survive markup changes and assert accessibility at the same time.
+- Never use fixed `waitForTimeout` sleeps. Rely on auto-waiting locators and
+  `expect(...).toBeVisible()`.
+- Accessibility is enforced via `@axe-core/playwright`. A contrast or ARIA regression fails
+  CI, so check any markup change against the existing axe assertions.
+- The site is a single self-contained `index.html`; tests load it directly. Keep specs
+  independent - each must pass when run alone.
