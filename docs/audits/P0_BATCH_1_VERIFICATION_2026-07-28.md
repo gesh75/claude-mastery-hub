@@ -55,8 +55,8 @@ Regression-first evidence:
 
 Final Playwright result:
 
-- 15 passed, 0 failed
-- Nine exact viewport cases
+- 16 passed, 0 failed
+- Nine exact viewport cases plus the documented 512×384 reflow equivalent
 - Long code and table containment
 - Quiz, Practice Lab, and Final Exam interactions
 - Full closed-menu keyboard cycle and ARIA snapshot, stable across reloads

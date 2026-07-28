@@ -7,6 +7,7 @@ const VIEWPORTS = [
   { width: 375, height: 812 },
   { width: 390, height: 844 },
   { width: 414, height: 896 },
+  { width: 512, height: 384 },
   { width: 768, height: 1024 },
   { width: 1024, height: 768 },
   { width: 1280, height: 800 },
