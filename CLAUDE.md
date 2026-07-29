@@ -83,10 +83,17 @@ default and nest up to 5 levels. Agent teams are experimental
 3. Commit → push (`--force-with-lease` if the branch still carries a
    just-merged pre-squash commit).
 4. Open a **draft PR**, then squash-merge on the user's OK.
-5. Confirm the deploy: `mcp__github__actions_list` (event=`dynamic`), find the
-   "pages build and deployment" run whose `head_sha` matches the merge commit
-   and `conclusion=success`. Direct `github.io` fetch is blocked by the proxy —
-   use actions_list, and parse the saved file with `jq` (output overflows tokens).
+5. Confirm the deploy. Fastest check (verified 2026-07-29): `gh api
+   /repos/gesh75/claude-mastery-hub/pages/builds/latest` returns `status: built`
+   plus the deployed `commit` SHA directly — compare it to the squash commit.
+   The `actions_list`/`gh api .../actions/runs?event=dynamic` route still works
+   as a cross-check ("pages build and deployment", matching `head_sha`,
+   `conclusion=success`); parse large run JSON with `jq`/Python, not raw output.
+6. **Direct `github.io` fetch works** (corrected 2026-07-29 — the older "blocked
+   by the proxy" note was wrong). `curl` the live URL and diff its sha256 against
+   the repo's `index.html`; identical hashes prove the deploy served this commit.
+   First fetch can take ~25s. Playwright can also drive the live URL directly via
+   `test.use({baseURL})`, which is how production smoke tests are run.
 
 ## History (merged PRs)
 #1 Sonnet 5 + How-To/CLI Hacks + animation explainers · #2 mid-2026 currency ·
@@ -94,7 +101,16 @@ default and nest up to 5 levels. Agent teams are experimental
 anchors + print · #5 collapsible sidebar · #6 fix global click-to-top bug ·
 #7 **Practice Lab** (12 challenges) · #8 currency pass (Chrome, agent teams,
 Sonnet-5 default) · #9 og.png featuring the Practice Lab · #10 this CLAUDE.md
-(Omega memory) · #11 Fable 5 added to the "Pick the right model" quick table.
+(Omega memory) · #11 Fable 5 added to the "Pick the right model" quick table ·
+#12 CLAUDE.md checkpoint (PRs #10–#11) · #13 P0 responsive containment + mobile
+nav a11y · #15 Copilot custom instructions · #14 **Opus 5 currency**: current
+lineup, `MODEL_FACTS` registry, provenance-labeled benchmarks (ARC-AGI-3 as
+30.16% exact / 30.2% rounded), migration exceptions (Web Fetch, Priority Tier),
+Fast-mode scoping, content-currency policy, and Playwright currency regressions.
+
+**Merged branches are normally retained** here (`fix/p0-responsive-navigation`,
+`claude/product-gaps-improvements-h5gdn4`, `content/opus-5-currency` all still
+exist); only #15's branch was deleted. Don't delete one without being asked.
 
 ## Known loose ends / ideas
 - **Section-count drift:** hero says "37", README/og say "39/40". Reconcile to
