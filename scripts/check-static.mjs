@@ -16,6 +16,8 @@
  */
 import { readFile, readdir } from 'node:fs/promises';
 import { Script } from 'node:vm';
+import { parse as parseYaml } from 'yaml';
+import * as acorn from 'acorn';
 
 const failures = [];
 const ok = (m) => console.log(`  ok   ${m}`);
@@ -70,10 +72,85 @@ else ok('no leaked \\U0001... escape artifacts');
 // --- 4. the `top` footgun ----------------------------------------------------
 // `top` is a read-only window global; assigning to it silently no-ops and any
 // handler attached lands on the window instead (the PR #6 click-to-top bug).
+//
+// A regex over `(var|let|const)\s+top` only ever saw the first declarator, so
+// `var helper, top = 1`, `const { top } = x`, and `const [top] = x` all slipped
+// through. This walks the real binding patterns instead. Member expressions
+// (window.top), object *literal* keys ({ top: 1 }), strings, and comments are
+// not bindings and are left alone.
 console.log('reserved global shadowing');
-const topDecl = [...html.matchAll(/\b(?:var|let|const)\s+top\b/g)];
-if (topDecl.length) bad(`${topDecl.length} declaration(s) of a variable named \`top\` — use topBtn`);
-else ok('no JS variable named `top`');
+
+/** Collect every identifier a binding pattern introduces. */
+function bindingNames(node, out = []) {
+  if (!node || typeof node !== 'object') return out;
+  switch (node.type) {
+    case 'Identifier':
+      out.push(node);
+      break;
+    case 'ObjectPattern':
+      for (const prop of node.properties) {
+        // { x: top } binds the VALUE; { top } is shorthand for { top: top }.
+        if (prop.type === 'Property') bindingNames(prop.value, out);
+        else bindingNames(prop.argument, out); // RestElement
+      }
+      break;
+    case 'ArrayPattern':
+      for (const el of node.elements) if (el) bindingNames(el, out);
+      break;
+    case 'AssignmentPattern':
+      bindingNames(node.left, out);
+      break;
+    case 'RestElement':
+      bindingNames(node.argument, out);
+      break;
+    default:
+      break;
+  }
+  return out;
+}
+
+/** Recursively visit every node, collecting variable declarations. */
+function walkAst(node, visit) {
+  if (!node || typeof node !== 'object') return;
+  if (Array.isArray(node)) {
+    for (const n of node) walkAst(n, visit);
+    return;
+  }
+  if (typeof node.type === 'string') visit(node);
+  for (const key of Object.keys(node)) {
+    if (key === 'type' || key === 'loc' || key === 'start' || key === 'end') continue;
+    walkAst(node[key], visit);
+  }
+}
+
+let topBindings = 0;
+let astFailures = 0;
+scripts.forEach((m, i) => {
+  let ast;
+  try {
+    ast = acorn.parse(m[1], { ecmaVersion: 'latest', sourceType: 'script', locations: true });
+  } catch (err) {
+    bad(`inline script #${i + 1} could not be parsed for binding analysis: ${err.message}`);
+    astFailures++;
+    return;
+  }
+  walkAst(ast, (node) => {
+    if (node.type !== 'VariableDeclaration') return;
+    for (const decl of node.declarations) {
+      for (const id of bindingNames(decl.id)) {
+        if (id.name === 'top') {
+          const line = id.loc?.start?.line ?? '?';
+          bad(
+            `inline script #${i + 1} line ${line}: \`${node.kind} … top\` binds the read-only ` +
+              'window.top global — rename it (topBtn)'
+          );
+          topBindings++;
+        }
+      }
+    }
+  });
+});
+if (!topBindings && !astFailures) ok('no JS binding named `top` (checked via AST, not text match)');
 
 // --- 5. offline integrity ----------------------------------------------------
 // Anchors to external documentation are expected and allowed: they are never
@@ -121,6 +198,7 @@ function attrs(raw) {
 }
 
 let externalHits = 0;
+const styleAttrValues = [];
 const flagExternal = (what, url) => {
   bad(`external subresource ${what}: ${url.trim().slice(0, 80)} — the page must fetch nothing at load`);
   externalHits++;
@@ -128,8 +206,10 @@ const flagExternal = (what, url) => {
 
 for (const m of html.matchAll(/<([a-zA-Z][a-zA-Z0-9-]*)\b([^>]*)>/g)) {
   const tag = m[1].toLowerCase();
-  if (tag === 'a') continue; // documentation links are allowed
   const a = attrs(m[2]);
+  // Every element may carry a style attribute, including <a>.
+  if (typeof a.style === 'string' && a.style.length) styleAttrValues.push(a.style);
+  if (tag === 'a') continue; // documentation links are allowed
 
   if (tag === 'link') {
     const rels = (a.rel ?? '').toLowerCase().trim();
@@ -147,10 +227,12 @@ for (const m of html.matchAll(/<([a-zA-Z][a-zA-Z0-9-]*)\b([^>]*)>/g)) {
   }
 }
 
-// CSS, in <style> blocks and style="" attributes
+// CSS corpus: <style> blocks plus every style attribute collected during the
+// tag walk above via attrs(), which handles double-quoted, single-quoted,
+// unquoted, and uppercase STYLE uniformly.
 const css = [
   ...[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]),
-  ...[...html.matchAll(/\bstyle\s*=\s*"([^"]*)"/gi)].map((m) => m[1])
+  ...styleAttrValues
 ].join('\n');
 for (const m of css.matchAll(/@import\s+(?:url\(\s*)?["']?((?:https?:)?\/\/[^"')\s]+)/gi)) {
   flagExternal('CSS @import', m[1]);
@@ -211,76 +293,117 @@ if (!wfFailures && wfFiles.length === 0) {
 }
 
 const PINNED = /^[0-9a-fA-F]{40}$/;
-for (const f of wfFiles) {
-  const wf = await readFile(`${wfDir}/${f}`, 'utf8');
-  // Strip comments so prose about these patterns does not trip the check.
-  const code = wf
-    .split('\n')
-    .filter((l) => !/^\s*#/.test(l))
-    .join('\n');
+const DIGEST = /@sha256:[0-9a-f]{64}$/i;
+const UNTRUSTED = /\$\{\{\s*(github\.event\.[A-Za-z0-9_.*[\]]*|github\.head_ref)\s*\}\}/;
 
+/**
+ * Security-critical workflow semantics are read from the parsed YAML, not from
+ * indentation-sensitive regexes. `uses : x`, `uses: "x"`, a job-level reusable
+ * workflow, `continue-on-error : true`, and a nested `continue-on-error` are
+ * all the same structure once parsed, so none of them can slip past on
+ * formatting alone.
+ */
+function walkYaml(node, visit, path = []) {
+  if (node === null || typeof node !== 'object') return;
+  if (Array.isArray(node)) {
+    node.forEach((v, i) => walkYaml(v, visit, path.concat(`[${i}]`)));
+    return;
+  }
+  for (const [key, value] of Object.entries(node)) {
+    visit(key, value, path.concat(key));
+    walkYaml(value, visit, path.concat(key));
+  }
+}
+
+for (const f of wfFiles) {
+  const raw = await readFile(`${wfDir}/${f}`, 'utf8');
   const wfBad = (m) => {
     bad(`${f}: ${m}`);
     wfFailures++;
   };
 
-  if (/continue-on-error:\s*true/.test(code)) wfBad('continue-on-error: true makes the gate advisory');
-  if (/\|\|\s*true\b/.test(code)) wfBad('`|| true` swallows a failing command');
-  if (/\bpull_request_target\b/.test(code)) wfBad('pull_request_target runs untrusted PR code with write scope');
-
-  // Every non-local action must be pinned to an exact 40-hex commit SHA.
-  // Tags (@v4, @v4.2.2), branches (@main), and shortened SHAs are all mutable
-  // or ambiguous, so a retag can silently change what executes here.
-  for (const m of code.matchAll(/^\s*-?\s*uses:\s*(\S+)/gm)) {
-    const ref = m[1].replace(/^["']|["']$/g, '');
-    if (ref.startsWith('./') || ref.startsWith('../')) continue; // local action
-    const at = ref.lastIndexOf('@');
-    const rev = at === -1 ? '' : ref.slice(at + 1);
-    if (!PINNED.test(rev)) {
-      wfBad(`action \`${ref}\` is not pinned to an exact 40-character commit SHA`);
-    }
+  let doc;
+  try {
+    doc = parseYaml(raw);
+  } catch (err) {
+    wfBad(`is not valid YAML: ${err.message.split('\n')[0]}`);
+    continue;
+  }
+  if (doc === null || typeof doc !== 'object' || Array.isArray(doc)) {
+    wfBad('does not parse to a YAML mapping');
+    continue;
   }
 
-  // Container and service images execute code just like actions do, so a
-  // mutable tag is the same supply-chain hole. Require a digest.
-  for (const m of code.matchAll(/^\s*image:\s*["']?([^"'\s]+)/gm)) {
-    const image = m[1];
-    if (!/@sha256:[0-9a-f]{64}$/i.test(image)) {
-      wfBad(`container/service image \`${image}\` is not pinned to an @sha256: digest`);
-    }
+  // `on:` is a YAML 1.1 boolean; the 1.2 core schema keeps it a string, so
+  // accept either shape rather than assuming one.
+  const triggers = doc.on ?? doc[true] ?? doc['on'];
+  const triggerNames = new Set();
+  if (typeof triggers === 'string') triggerNames.add(triggers);
+  else if (Array.isArray(triggers)) for (const t of triggers) triggerNames.add(String(t));
+  else if (triggers && typeof triggers === 'object') for (const k of Object.keys(triggers)) triggerNames.add(k);
+  if (triggerNames.has('pull_request_target')) {
+    wfBad('pull_request_target runs untrusted PR code with write scope');
   }
 
-  // A blanket write token defeats least privilege.
-  if (/permissions:\s*write-all/.test(code)) {
-    wfBad('`permissions: write-all` grants every scope; declare only what the job needs');
-  }
+  walkYaml(doc, (key, value, path) => {
+    const where = path.join('.');
 
-  // Script injection: attacker-controlled event data interpolated straight into
-  // a shell. These strings are author-supplied and can contain shell syntax.
-  const UNTRUSTED = /\$\{\{\s*(github\.event\.[A-Za-z0-9_.*\[\]]*|github\.head_ref)\s*\}\}/;
-  const lines = code.split('\n');
-  let inRun = false;
-  let runIndent = 0;
-  for (const line of lines) {
-    const runStart = line.match(/^(\s*)-?\s*run:\s*(.*)$/);
-    if (runStart) {
-      inRun = true;
-      runIndent = runStart[1].length;
-      if (UNTRUSTED.test(runStart[2])) {
-        wfBad(`untrusted event data interpolated into a \`run:\` command: ${runStart[2].trim().slice(0, 60)}`);
+    if (key === 'uses') {
+      if (typeof value !== 'string' || value.trim() === '') {
+        wfBad(`${where}: \`uses\` must be a non-empty string, got ${JSON.stringify(value)}`);
+        return;
       }
-      continue;
-    }
-    if (inRun) {
-      const indent = line.search(/\S/);
-      if (indent !== -1 && indent <= runIndent) {
-        inRun = false;
-      } else if (UNTRUSTED.test(line)) {
-        wfBad(`untrusted event data interpolated into a \`run:\` block: ${line.trim().slice(0, 60)}`);
+      const ref = value.trim();
+      if (ref.startsWith('./') || ref.startsWith('../')) return; // local action
+      const at = ref.lastIndexOf('@');
+      const rev = at === -1 ? '' : ref.slice(at + 1);
+      if (!PINNED.test(rev)) {
+        wfBad(`${where}: action \`${ref}\` is not pinned to an exact 40-character commit SHA`);
       }
+      return;
     }
-  }
+
+    if (key === 'continue-on-error') {
+      if (value === true || String(value).toLowerCase() === 'true') {
+        wfBad(`${where}: continue-on-error makes the gate advisory`);
+      }
+      return;
+    }
+
+    if (key === 'run') {
+      if (typeof value !== 'string') {
+        wfBad(`${where}: \`run\` must be a string, got ${JSON.stringify(value)}`);
+        return;
+      }
+      if (/\|\|\s*true\b/.test(value)) wfBad(`${where}: \`|| true\` swallows a failing command`);
+      if (UNTRUSTED.test(value)) {
+        const hit = value.match(UNTRUSTED)[0];
+        wfBad(`${where}: untrusted event data interpolated into a run block: ${hit}`);
+      }
+      return;
+    }
+
+    if (key === 'permissions' && String(value).trim() === 'write-all') {
+      wfBad(`${where}: \`permissions: write-all\` grants every scope; declare only what the job needs`);
+      return;
+    }
+
+    // Container and service images execute code like actions do, so a mutable
+    // tag is the same supply-chain hole.
+    if (key === 'image') {
+      if (typeof value !== 'string') {
+        wfBad(`${where}: \`image\` must be a string, got ${JSON.stringify(value)}`);
+      } else if (!DIGEST.test(value)) {
+        wfBad(`${where}: image \`${value}\` is not pinned to an @sha256: digest`);
+      }
+      return;
+    }
+    if (key === 'container' && typeof value === 'string' && !DIGEST.test(value)) {
+      wfBad(`${where}: container \`${value}\` is not pinned to an @sha256: digest`);
+    }
+  });
 }
+
 if (!wfFailures) ok(`${wfFiles.length} workflow file(s): SHA-pinned and free of gate-weakening patterns`);
 
 // --- result ------------------------------------------------------------------
