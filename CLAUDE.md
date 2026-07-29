@@ -53,13 +53,24 @@ multi-agent workflows) plus an "AI Foundations 101" track.
   Code / models, check the official docs/changelog (code.claude.com) — don't
   write from memory. Models are fast-moving.
 
-## Current model lineup (mid-2026 — re-verify before editing)
+## Current model lineup (verified 2026-07-28 — re-verify before editing)
 | Model | ID | Role |
 |---|---|---|
-| Fable 5 | `claude-fable-5` | Most capable, premium ($10/$50) |
-| Opus 4.8 | `claude-opus-4-8` | Deep reasoning; default on Max/Team Premium, Bedrock/Vertex |
-| Sonnet 5 | `claude-sonnet-5` | Everyday default on Pro/Team Standard/Enterprise |
+| Fable 5 | `claude-fable-5` | Highest-capability widely released model ($10/$50) |
+| Opus 5 | `claude-opus-5` | Complex agentic coding and enterprise work; Claude Max default ($5/$25) |
+| Sonnet 5 | `claude-sonnet-5` | Speed/intelligence balance; introductory $2/$10 through Aug 31, then $3/$15 |
 | Haiku 4.5 | `claude-haiku-4-5` | Fastest/cheapest ($1/$5) |
+| Mythos 5 | `claude-mythos-5` | Invitation-only Project Glasswing model; not general-purpose routing |
+
+**Two Opus 5 migration exceptions** (verified 2026-07-28): the API **Web Fetch**
+tool is not available on Opus 5 (Web Search is a *different* tool and is fine),
+and **Priority Tier** does not support Opus 5 (nor Sonnet 5) — and new Priority
+Tier commitments are no longer sold, so only existing commitments are affected.
+Neither limits ordinary Opus 5 availability on the API, Bedrock, Google Cloud, or
+Foundry. **Fast mode** is Claude API (incl. Managed Agents) + Claude Code via
+usage credits only — never Bedrock/Google Cloud/Foundry/Claude Platform on AWS —
+and its "up to 2.5×" is *output tokens per second*, not TTFT and not an SLA.
+**300k output** is a Message Batches-only cap; synchronous Opus 5 stays at 128k.
 
 `/model default` is **plan-dependent**. Subagents run in the background by
 default and nest up to 5 levels. Agent teams are experimental
