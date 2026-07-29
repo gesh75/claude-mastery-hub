@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "test": "playwright test",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check:static": "node scripts/check-static.mjs",
+    "check:results": "node scripts/check-test-results.mjs test-results/results.json",
+    "verify": "npm run check:static && npm test && npm run check:results"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",

@@ -1,0 +1,8 @@
+{
+  "_comment": "Anti-vacuity baseline. A suite that silently stops running tests must fail the build, so CI asserts the observed counts are at least these numbers. Raise a value when you add tests; lowering one requires justification in the PR body, because it is indistinguishable from tests quietly disappearing.",
+  "totalMinimum": 29,
+  "perFileMinimum": {
+    "content-currency.spec.js": 13,
+    "p0-responsive-navigation.spec.js": 16
+  }
+}

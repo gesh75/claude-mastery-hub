@@ -6,7 +6,14 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 1 : 2,
-  reporter: [['line'], ['html', { open: 'never' }]],
+  // The JSON report is what scripts/check-test-results.mjs reads to prove the
+  // suite actually ran the tests it claims to. Keep it in every environment so
+  // the guard is runnable locally, not just in CI.
+  reporter: [
+    ['line'],
+    ['html', { open: 'never' }],
+    ['json', { outputFile: 'test-results/results.json' }]
+  ],
   use: {
     baseURL: 'http://127.0.0.1:4173',
     trace: 'on-first-retry',

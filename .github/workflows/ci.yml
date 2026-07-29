@@ -1,0 +1,94 @@
+# Enforced quality gate for the guide.
+#
+# Security posture:
+#   - `pull_request`, never `pull_request_target`: fork PRs run with a read-only
+#     token and no access to secrets, so untrusted code cannot exfiltrate or push.
+#   - top-level `permissions: contents: read`, the minimum this job needs.
+#   - every third-party action pinned to an immutable commit SHA, not a tag, so a
+#     retagged release cannot silently change what executes here.
+#   - `persist-credentials: false` keeps the checkout token out of .git/config.
+#   - no secrets are referenced, and no untrusted event data (PR title, branch
+#     name, author) is ever interpolated into a `run:` block.
+#
+# The gate is deliberately non-negotiable: no `continue-on-error`, no `|| true`.
+# `scripts/check-static.mjs` re-checks this file for those patterns, so weakening
+# the gate fails the gate.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# A fork PR cannot escalate beyond reading the repository.
+permissions:
+  contents: read
+
+# Superseded runs on the same ref are pointless; cancel them.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gate:
+    name: Quality gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Fails the build on a known high or critical advisory. This repo ships no
+      # runtime dependencies, so the only exposure is the dev toolchain.
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+      # Syntax, structure, encoding artifacts, offline integrity, and a
+      # meta-check that no workflow here has been made advisory.
+      - name: Static integrity checks
+        run: node scripts/check-static.mjs
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      # CI=true turns on forbidOnly, so a stray `test.only` fails the run rather
+      # than silently narrowing the suite to one test.
+      - name: Run Playwright suite
+        env:
+          CI: "true"
+        run: npx playwright test
+
+      # A green suite proves nothing if it did not actually execute the tests.
+      # This asserts counts against a committed baseline and rejects skips and
+      # retries. It runs even when the suite fails, so a failing run still
+      # reports whether the suite had also quietly shrunk.
+      - name: Verify test-result integrity
+        if: ${{ !cancelled() }}
+        run: node scripts/check-test-results.mjs test-results/results.json
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+          if-no-files-found: warn
