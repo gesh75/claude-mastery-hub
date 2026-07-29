@@ -7,6 +7,7 @@
     "test": "playwright test",
     "test:e2e": "playwright test",
     "check:static": "node scripts/check-static.mjs",
+    "check:diff": "node scripts/check-diff.mjs",
     "check:results": "node scripts/check-test-results.mjs test-results/results.json",
     "verify": "npm run check:static && npm test && npm run check:results"
   },

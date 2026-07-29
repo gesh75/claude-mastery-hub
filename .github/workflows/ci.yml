@@ -4,15 +4,18 @@
 #   - `pull_request`, never `pull_request_target`: fork PRs run with a read-only
 #     token and no access to secrets, so untrusted code cannot exfiltrate or push.
 #   - top-level `permissions: contents: read`, the minimum this job needs.
-#   - every third-party action pinned to an immutable commit SHA, not a tag, so a
-#     retagged release cannot silently change what executes here.
+#   - every third-party action pinned to an immutable 40-character commit SHA,
+#     not a tag, so a retagged release cannot silently change what executes.
+#     scripts/check-static.mjs enforces this across every workflow in the repo.
 #   - `persist-credentials: false` keeps the checkout token out of .git/config.
-#   - no secrets are referenced, and no untrusted event data (PR title, branch
-#     name, author) is ever interpolated into a `run:` block.
+#   - no secrets are referenced, and no untrusted event data (PR title, body,
+#     branch name, author) is ever interpolated into a `run:` block. The diff
+#     checker reads the event payload as JSON and passes revisions to git as
+#     argv with shell: false.
 #
 # The gate is deliberately non-negotiable: no `continue-on-error`, no `|| true`.
-# `scripts/check-static.mjs` re-checks this file for those patterns, so weakening
-# the gate fails the gate.
+# scripts/check-static.mjs re-checks these files for those patterns, so
+# weakening the gate fails the gate.
 
 name: CI
 
@@ -21,6 +24,7 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
 
 # A fork PR cannot escalate beyond reading the repository.
 permissions:
@@ -40,9 +44,12 @@ jobs:
       contents: read
 
     steps:
+      # fetch-depth: 0 gives the diff checker the base commit it needs; a
+      # shallow clone would leave the range unresolvable.
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Node
@@ -54,41 +61,48 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Checks an explicit commit range for whitespace and conflict-marker
+      # errors. A bare `git diff --check` on a clean tree would inspect nothing.
+      - name: Diff integrity
+        run: node scripts/check-diff.mjs
+
       # Fails the build on a known high or critical advisory. This repo ships no
       # runtime dependencies, so the only exposure is the dev toolchain.
       - name: Audit dependencies
         run: npm audit --audit-level=high
 
       # Syntax, structure, encoding artifacts, offline integrity, and a
-      # meta-check that no workflow here has been made advisory.
+      # meta-check that no workflow here has been made advisory or unpinned.
       - name: Static integrity checks
-        run: node scripts/check-static.mjs
+        run: npm run check:static
 
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
+      # The canonical command, so CI and local runs cannot drift.
       # CI=true turns on forbidOnly, so a stray `test.only` fails the run rather
       # than silently narrowing the suite to one test.
       - name: Run Playwright suite
         env:
           CI: "true"
-        run: npx playwright test
+        run: npm test
 
       # A green suite proves nothing if it did not actually execute the tests.
-      # This asserts counts against a committed baseline and rejects skips and
-      # retries. It runs even when the suite fails, so a failing run still
-      # reports whether the suite had also quietly shrunk.
+      # Runs even when the suite fails, so a failing run still reports whether
+      # the suite had also quietly shrunk.
       - name: Verify test-result integrity
         if: ${{ !cancelled() }}
-        run: node scripts/check-test-results.mjs test-results/results.json
+        run: npm run check:results
 
-      - name: Upload Playwright report
-        if: ${{ !cancelled() }}
+      # Diagnostics are only useful when something broke. Uploading on success
+      # would burn storage on artifacts nobody opens.
+      - name: Upload Playwright diagnostics
+        if: ${{ failure() && !cancelled() }}
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
-          name: playwright-report-${{ github.run_id }}
+          name: playwright-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             playwright-report/
             test-results/
-          retention-days: 14
-          if-no-files-found: warn
+          retention-days: 7
+          if-no-files-found: ignore
