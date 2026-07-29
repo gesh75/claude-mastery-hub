@@ -158,6 +158,39 @@ for (const m of css.matchAll(/@import\s+(?:url\(\s*)?["']?((?:https?:)?\/\/[^"')
 for (const m of css.matchAll(/url\(\s*["']?((?:https?:)?\/\/[^"')\s]+)/gi)) {
   flagExternal('CSS url()', m[1]);
 }
+// image-set()/-webkit-image-set() take bare URL strings that url() matching misses.
+for (const m of css.matchAll(/(?:-webkit-)?image-set\(([^)]*)\)/gi)) {
+  for (const u of m[1].matchAll(/["']((?:https?:)?\/\/[^"']+)["']/g)) {
+    flagExternal('CSS image-set()', u[1]);
+  }
+}
+
+// --- 5b. runtime network calls in inline JS ---------------------------------
+// The attribute and CSS scans above only cover markup. Inline JS can still
+// reach the network at load time, which would break the same offline
+// guarantee. Only URL literals passed to a network *sink* are flagged, so the
+// MODEL_SOURCES documentation URLs (plain data) stay legal.
+const jsSinks = [
+  [/\bfetch\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'fetch()'],
+  [/\bimport\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'dynamic import()'],
+  [/\bimportScripts\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'importScripts()'],
+  [/\bnavigator\s*\.\s*sendBeacon\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'sendBeacon()'],
+  [/\bnew\s+(?:Shared)?Worker\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'new Worker()'],
+  [/\bnew\s+EventSource\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'new EventSource()'],
+  [/\bnew\s+WebSocket\s*\(\s*["'`]((?:wss?:)?\/\/[^"'`]+)/gi, 'new WebSocket()'],
+  [/\.\s*open\s*\(\s*["'][A-Za-z]+["']\s*,\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'XMLHttpRequest.open()'],
+  [/\.\s*(?:src|href)\s*=\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'element.src/href assignment'],
+  [/\bimport\s+[^;'"]*from\s*["']((?:https?:)?\/\/[^"']+)/gi, 'static import from URL']
+];
+const inlineJs = scripts.map((m) => m[1]).join('\n');
+let jsHits = 0;
+for (const [re, label] of jsSinks) {
+  for (const m of inlineJs.matchAll(re)) {
+    bad(`inline JS reaches the network via ${label}: ${m[1].slice(0, 70)} — the page must fetch nothing at load`);
+    jsHits++;
+  }
+}
+if (!jsHits) ok('inline JS makes no external network calls');
 
 if (!externalHits) ok('no external subresources; page stays fully offline');
 
@@ -205,6 +238,46 @@ for (const f of wfFiles) {
     const rev = at === -1 ? '' : ref.slice(at + 1);
     if (!PINNED.test(rev)) {
       wfBad(`action \`${ref}\` is not pinned to an exact 40-character commit SHA`);
+    }
+  }
+
+  // Container and service images execute code just like actions do, so a
+  // mutable tag is the same supply-chain hole. Require a digest.
+  for (const m of code.matchAll(/^\s*image:\s*["']?([^"'\s]+)/gm)) {
+    const image = m[1];
+    if (!/@sha256:[0-9a-f]{64}$/i.test(image)) {
+      wfBad(`container/service image \`${image}\` is not pinned to an @sha256: digest`);
+    }
+  }
+
+  // A blanket write token defeats least privilege.
+  if (/permissions:\s*write-all/.test(code)) {
+    wfBad('`permissions: write-all` grants every scope; declare only what the job needs');
+  }
+
+  // Script injection: attacker-controlled event data interpolated straight into
+  // a shell. These strings are author-supplied and can contain shell syntax.
+  const UNTRUSTED = /\$\{\{\s*(github\.event\.[A-Za-z0-9_.*\[\]]*|github\.head_ref)\s*\}\}/;
+  const lines = code.split('\n');
+  let inRun = false;
+  let runIndent = 0;
+  for (const line of lines) {
+    const runStart = line.match(/^(\s*)-?\s*run:\s*(.*)$/);
+    if (runStart) {
+      inRun = true;
+      runIndent = runStart[1].length;
+      if (UNTRUSTED.test(runStart[2])) {
+        wfBad(`untrusted event data interpolated into a \`run:\` command: ${runStart[2].trim().slice(0, 60)}`);
+      }
+      continue;
+    }
+    if (inRun) {
+      const indent = line.search(/\S/);
+      if (indent !== -1 && indent <= runIndent) {
+        inRun = false;
+      } else if (UNTRUSTED.test(line)) {
+        wfBad(`untrusted event data interpolated into a \`run:\` block: ${line.trim().slice(0, 60)}`);
+      }
     }
   }
 }

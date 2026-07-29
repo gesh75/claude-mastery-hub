@@ -2,23 +2,21 @@
 /**
  * Anti-vacuity guard for the Playwright run.
  *
- * A green suite is only meaningful if it actually executed the tests it claims
- * to. This reads the JSON report and fails on every way a run can look
- * successful while having verified nothing:
+ * A green suite is only meaningful if Playwright actually executed the tests it
+ * claims to, inside this repository. Declared metadata is not evidence, so this
+ * validates the report's structure, proves each test recorded a real passing
+ * attempt, and confines every spec path to the repository.
  *
- *   - the report is missing or unparseable (the run produced no results)
- *   - the baseline is missing, malformed, or internally incoherent
- *   - fewer tests ran than the committed baseline, in total or for any spec
- *   - the report mentions a spec file the baseline does not list (a new spec
- *     must not sit unprotected behind a healthy total)
- *   - any test was skipped (skips are invisible in a green summary)
- *   - any test needed a retry (retries exist to expose flakiness, not hide it;
- *     this app is a static single file with no network, so a flake is a bug)
- *   - any test did not finish in its expected state
+ * Fails closed on:
+ *   - a report or baseline that is missing, unparseable, or structurally wrong
+ *   - a spec path that escapes the repository (../outside.spec.js)
+ *   - a test declared `expected` with no execution results, more than one
+ *     attempt, or a non-passing attempt
+ *   - fewer tests than the committed baseline, in total or per spec
+ *   - a spec present in the report but absent from the baseline
+ *   - skipped, flaky, retried, failed, timed-out, or interrupted tests
  *
- * Spec identity is the repository-relative POSIX path, never the basename, so
- * two specs sharing a filename in different directories cannot mask each
- * other's disappearance.
+ * Spec identity is the repository-relative POSIX path, never the basename.
  *
  * Exit code 1 fails the job. There is deliberately no "warn only" mode.
  */
@@ -28,109 +26,234 @@ import path from 'node:path';
 const REPORT = process.argv[2] ?? 'test-results/results.json';
 const BASELINE = process.argv[3] ?? 'scripts/expected-tests.json';
 
+// Playwright's vocabularies. Anything outside them is unrecognised and fails.
+const TEST_STATUSES = new Set(['expected', 'unexpected', 'flaky', 'skipped']);
+const RESULT_STATUSES = new Set(['passed', 'failed', 'timedOut', 'skipped', 'interrupted']);
+
+const ROOT = process.cwd();
 const failures = [];
 const note = (m) => console.log(m);
-const die = (lines) => {
-  console.error(`\nFAIL: anti-vacuity check\n${lines.map((l) => `  - ${l}`).join('\n')}`);
+
+function die(title, lines) {
+  console.error(`\nFAIL: ${title}`);
+  for (const l of lines) console.error(`  - ${l}`);
   process.exit(1);
-};
-
-/** Repository-relative POSIX path, from a report entry that may be relative to rootDir or absolute. */
-function normalizeSpecPath(file, rootDir) {
-  if (!file) return 'unknown';
-  const abs = path.isAbsolute(file) ? file : path.resolve(rootDir ?? process.cwd(), file);
-  return path.relative(process.cwd(), abs).split(path.sep).join('/');
 }
 
-/** Playwright nests suites arbitrarily deep; flatten to a list of test records. */
-function collect(suites, rootDir, inherited, out = []) {
-  for (const suite of suites ?? []) {
-    const file = suite.file ?? inherited;
-    for (const spec of suite.specs ?? []) {
-      for (const t of spec.tests ?? []) {
-        out.push({
-          file: normalizeSpecPath(spec.file ?? file, rootDir),
-          title: spec.title,
-          status: t.status,
-          resultCount: (t.results ?? []).length
-        });
-      }
-    }
-    collect(suite.suites, rootDir, file, out);
+const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+const isPositiveInt = (v) => Number.isInteger(v) && v > 0;
+const isNonEmptyString = (v) => typeof v === 'string' && v.trim().length > 0;
+
+/**
+ * Repository-relative POSIX path. Rejects anything that escapes the repository,
+ * so a report cannot claim coverage from a spec outside the tree.
+ */
+function normalizeSpecPath(file, rootDir, where) {
+  if (!isNonEmptyString(file)) {
+    failures.push(`${where}: spec has no usable file path`);
+    return null;
   }
-  return out;
+  const abs = path.resolve(path.isAbsolute(file) ? '' : (rootDir ?? ROOT), file);
+  const rel = path.relative(ROOT, abs);
+  if (rel === '' || rel.startsWith('..') || path.isAbsolute(rel)) {
+    failures.push(
+      `${where}: spec path "${file}" resolves outside the repository (${abs}) — ` +
+        'coverage may only be claimed from specs inside this repo'
+    );
+    return null;
+  }
+  return rel.split(path.sep).join('/');
 }
 
-// --- baseline: must exist, parse, and be internally coherent -----------------
-let baseline;
+/** Same confinement rule for the committed baseline keys. */
+function normalizeBaselineKey(key) {
+  const abs = path.resolve(ROOT, key);
+  const rel = path.relative(ROOT, abs);
+  if (rel === '' || rel.startsWith('..') || path.isAbsolute(rel)) return null;
+  return rel.split(path.sep).join('/');
+}
+
+// --- baseline ----------------------------------------------------------------
+let baselineRaw;
 try {
-  baseline = JSON.parse(await readFile(BASELINE, 'utf8'));
+  baselineRaw = JSON.parse(await readFile(BASELINE, 'utf8'));
 } catch (err) {
-  die([
-    `anti-vacuity baseline ${BASELINE} is missing or unparseable: ${err.message}`,
+  die('anti-vacuity baseline unusable', [
+    `${BASELINE} is missing or unparseable: ${err.message}`,
     'Without a baseline this check cannot prove the suite did not shrink, so it fails closed.'
   ]);
 }
 
-const isPositiveInt = (v) => Number.isInteger(v) && v > 0;
 const baseErrors = [];
-if (!baseline || typeof baseline !== 'object' || Array.isArray(baseline)) {
+if (!isObject(baselineRaw)) {
   baseErrors.push(`${BASELINE} must contain a JSON object`);
 } else {
-  if (!isPositiveInt(baseline.totalMinimum)) {
-    baseErrors.push(`totalMinimum must be a positive integer, got ${JSON.stringify(baseline.totalMinimum)}`);
+  if (!isPositiveInt(baselineRaw.totalMinimum)) {
+    baseErrors.push(`totalMinimum must be a positive integer, got ${JSON.stringify(baselineRaw.totalMinimum)}`);
   }
-  const per = baseline.perFileMinimum;
-  if (!per || typeof per !== 'object' || Array.isArray(per) || Object.keys(per).length === 0) {
+  const per = baselineRaw.perFileMinimum;
+  if (!isObject(per) || Object.keys(per).length === 0) {
     baseErrors.push('perFileMinimum must be a non-empty object of "path": count');
   } else {
-    const seen = new Map();
+    const seen = new Set();
     for (const [file, count] of Object.entries(per)) {
       if (!isPositiveInt(count)) {
         baseErrors.push(`perFileMinimum["${file}"] must be a positive integer, got ${JSON.stringify(count)}`);
       }
-      const norm = file.split(path.sep).join('/').replace(/^\.\//, '');
+      const norm = normalizeBaselineKey(file);
+      if (norm === null) {
+        baseErrors.push(`perFileMinimum["${file}"] resolves outside the repository`);
+        continue;
+      }
       if (seen.has(norm)) baseErrors.push(`duplicate normalized path in perFileMinimum: ${norm}`);
-      seen.set(norm, count);
+      seen.add(norm);
     }
     const sum = Object.values(per).filter(isPositiveInt).reduce((a, b) => a + b, 0);
-    if (isPositiveInt(baseline.totalMinimum) && baseline.totalMinimum < sum) {
+    if (isPositiveInt(baselineRaw.totalMinimum) && baselineRaw.totalMinimum < sum) {
       baseErrors.push(
-        `incoherent baseline: totalMinimum ${baseline.totalMinimum} is below the sum of perFileMinimum (${sum})`
+        `incoherent baseline: totalMinimum ${baselineRaw.totalMinimum} is below the sum of perFileMinimum (${sum})`
       );
     }
   }
 }
-if (baseErrors.length) die(baseErrors);
+if (baseErrors.length) die('anti-vacuity baseline invalid', baseErrors);
 
-const expected = new Map(
-  Object.entries(baseline.perFileMinimum).map(([f, c]) => [f.split(path.sep).join('/').replace(/^\.\//, ''), c])
-);
+const expected = new Map();
+for (const [file, count] of Object.entries(baselineRaw.perFileMinimum)) {
+  expected.set(normalizeBaselineKey(file), count);
+}
 
-// --- report: must exist, parse, and contain tests ----------------------------
+// --- report ------------------------------------------------------------------
 let report;
 try {
   report = JSON.parse(await readFile(REPORT, 'utf8'));
 } catch (err) {
-  die([
-    `could not read the Playwright JSON report at ${REPORT}: ${err.message}`,
+  die('Playwright report unusable', [
+    `could not read ${REPORT}: ${err.message}`,
     'A run that produced no report has verified nothing.'
   ]);
 }
 
-const rootDir = report?.config?.rootDir;
-const tests = collect(report.suites, rootDir);
-if (tests.length === 0) die(['the report contains zero tests']);
+const structural = [];
+if (!isObject(report)) structural.push('the report root must be an object');
+if (!isObject(report?.config)) structural.push('report.config must be an object');
+if (!isNonEmptyString(report?.config?.rootDir)) structural.push('report.config.rootDir must be a non-empty path');
+if (!Array.isArray(report?.suites)) structural.push('report.suites must be an array');
+if (structural.length) die('Playwright report is structurally invalid', structural);
 
-// --- totals ------------------------------------------------------------------
-note(`tests executed: ${tests.length} (baseline minimum ${baseline.totalMinimum})`);
-if (tests.length < baseline.totalMinimum) {
+const rootDir = path.resolve(ROOT, report.config.rootDir);
+
+/** Walk the suite tree, validating every node, and flatten to test records. */
+function collect(suites, inheritedFile, trail, out = []) {
+  if (!Array.isArray(suites)) {
+    failures.push(`${trail}: "suites" must be an array`);
+    return out;
+  }
+  suites.forEach((suite, si) => {
+    const where = `${trail}.suites[${si}]`;
+    if (!isObject(suite)) {
+      failures.push(`${where}: suite must be an object`);
+      return;
+    }
+    const file = isNonEmptyString(suite.file) ? suite.file : inheritedFile;
+
+    if (suite.specs !== undefined) {
+      if (!Array.isArray(suite.specs)) {
+        failures.push(`${where}: "specs" must be an array`);
+      } else {
+        suite.specs.forEach((spec, pi) => {
+          const sw = `${where}.specs[${pi}]`;
+          if (!isObject(spec)) {
+            failures.push(`${sw}: spec must be an object`);
+            return;
+          }
+          if (!isNonEmptyString(spec.title)) failures.push(`${sw}: spec.title must be a non-empty string`);
+          if (!Array.isArray(spec.tests) || spec.tests.length === 0) {
+            failures.push(`${sw} ("${spec.title ?? '?'}"): spec.tests must be a non-empty array`);
+            return;
+          }
+          const specFile = normalizeSpecPath(isNonEmptyString(spec.file) ? spec.file : file, rootDir, sw);
+          if (specFile === null) return;
+
+          spec.tests.forEach((t, ti) => {
+            const tw = `${sw}.tests[${ti}] ("${spec.title ?? '?'}")`;
+            if (!isObject(t)) {
+              failures.push(`${tw}: test must be an object`);
+              return;
+            }
+            if (!TEST_STATUSES.has(t.status)) {
+              failures.push(`${tw}: unrecognised test status ${JSON.stringify(t.status)}`);
+              return;
+            }
+            if (!Array.isArray(t.results) || t.results.length === 0) {
+              failures.push(
+                `${tw}: status "${t.status}" but no execution results — ` +
+                  'a declared pass with no recorded attempt is not evidence that anything ran'
+              );
+              return;
+            }
+            for (const [ri, r] of t.results.entries()) {
+              if (!isObject(r)) {
+                failures.push(`${tw}.results[${ri}]: result must be an object`);
+                return;
+              }
+              if (!RESULT_STATUSES.has(r.status)) {
+                failures.push(`${tw}.results[${ri}]: unrecognised result status ${JSON.stringify(r.status)}`);
+                return;
+              }
+            }
+            out.push({
+              file: specFile,
+              title: spec.title,
+              status: t.status,
+              results: t.results.map((r) => r.status)
+            });
+          });
+        });
+      }
+    }
+    collect(suite.suites ?? [], file, where, out);
+  });
+  return out;
+}
+
+const tests = collect(report.suites, undefined, 'report');
+if (failures.length) die('Playwright report is structurally invalid', failures);
+if (tests.length === 0) die('anti-vacuity check', ['the report contains zero tests']);
+
+// --- every clean pass must be exactly one recorded passing attempt -----------
+for (const t of tests) {
+  if (t.status === 'skipped') {
+    failures.push(`skipped: "${t.title}" (${t.file}) — a skipped test asserts nothing`);
+    continue;
+  }
+  if (t.status === 'flaky' || t.results.length > 1) {
+    failures.push(
+      `retried: "${t.title}" (${t.file}) recorded ${t.results.length} attempt(s) [${t.results.join(', ')}] — ` +
+        'this suite is deterministic, so a retry indicates a real defect'
+    );
+    continue;
+  }
+  if (t.status !== 'expected') {
+    failures.push(`did not pass: "${t.title}" (${t.file}) status "${t.status}"`);
+    continue;
+  }
+  if (t.results[0] !== 'passed') {
+    failures.push(
+      `"${t.title}" (${t.file}) is declared "expected" but its only attempt is "${t.results[0]}" — ` +
+        'the declared status disagrees with the recorded execution'
+    );
+  }
+}
+
+// --- counts ------------------------------------------------------------------
+note(`tests executed: ${tests.length} (baseline minimum ${baselineRaw.totalMinimum})`);
+if (tests.length < baselineRaw.totalMinimum) {
   failures.push(
-    `only ${tests.length} tests ran, baseline minimum is ${baseline.totalMinimum} — tests stopped being collected`
+    `only ${tests.length} tests ran, baseline minimum is ${baselineRaw.totalMinimum} — tests stopped being collected`
   );
 }
 
-// --- per-spec counts, keyed by full path ------------------------------------
 const observed = new Map();
 for (const t of tests) observed.set(t.file, (observed.get(t.file) ?? 0) + 1);
 
@@ -140,8 +263,6 @@ for (const [file, min] of expected) {
   if (got < min) failures.push(`${file}: ${got} tests ran, expected at least ${min}`);
 }
 
-// A spec the baseline does not know about is unprotected: it could be deleted
-// later and the total alone might still pass. Reject it until it is listed.
 for (const [file, count] of observed) {
   if (!expected.has(file)) {
     failures.push(
@@ -151,24 +272,5 @@ for (const [file, count] of observed) {
   }
 }
 
-// --- per-test states ---------------------------------------------------------
-const skipped = tests.filter((t) => t.status === 'skipped');
-if (skipped.length) {
-  failures.push(`${skipped.length} test(s) skipped: ${skipped.map((t) => t.title).join('; ')}`);
-}
-
-const flaky = tests.filter((t) => t.status === 'flaky' || t.resultCount > 1);
-if (flaky.length) {
-  failures.push(
-    `${flaky.length} test(s) needed a retry: ${flaky.map((t) => t.title).join('; ')} — ` +
-      'this suite is deterministic, so a retry indicates a real defect'
-  );
-}
-
-const bad = tests.filter((t) => !['expected', 'skipped', 'flaky'].includes(t.status));
-if (bad.length) {
-  failures.push(`${bad.length} test(s) did not pass: ${bad.map((t) => `${t.title} [${t.status}]`).join('; ')}`);
-}
-
-if (failures.length) die(failures);
+if (failures.length) die('anti-vacuity check', failures);
 note('OK: test-result integrity check passed');
