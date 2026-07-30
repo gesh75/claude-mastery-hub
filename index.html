@@ -6857,7 +6857,10 @@ var LAB=[
   // Shell chaining in a *prompt* or *path* operand is not part of the answer.
   // Deliberately not applied to the `!` challenge, whose whole purpose is to
   // run a shell command, where `;` and `|` are legitimate syntax.
-  function labNoChaining(x){return !/[;`]|\|\||&&|\$\(|\|\s/.test(x);}
+  // Any pipe, semicolon, backtick, &&, or $( is chaining. An earlier version
+  // only matched a pipe followed by whitespace, so `a.ts|rm -rf /` slipped
+  // through -- the character itself is the signal, not the spacing.
+  function labNoChaining(x){return !/[;`|]|&&|\$\(/.test(x);}
   // Content must follow the prefix; returns null when the prefix is absent.
   function labAfter(v,prefix){return v.indexOf(prefix)===0?v.slice(prefix.length):null;}
 
