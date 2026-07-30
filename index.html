@@ -6836,13 +6836,80 @@ var LAB=[
   var host=document.getElementById('lab-host'); if(!host)return;
   var state=HUB.get('lab');
   function save(){HUB.set('lab',{v:HUB_STATE_VERSION,solved:state.solved,best:state.best,streak:state.streak,resetAt:state.resetAt});state=HUB.get('lab');}
-  function norm(x){return (x||'').trim().toLowerCase().replace(/\s+/g,' ');}
+  // ---- Practice Lab answer validation -----------------------------------
+  // The previous matcher lowercased everything and accepted any prefix, so a
+  // bare `@`, `!`, `#`, or `claude -p` counted as a complete answer, and
+  // unrelated text that merely started with a keyword passed too. Each
+  // free-text challenge now has an explicit validator that enforces the
+  // operand the task actually asks for.
+  //
+  // Case handling follows real semantics: slash commands and the `claude`
+  // binary are matched case-insensitively (they are fixed lowercase tokens and
+  // learners should not fail on `/CLEAR`), while file paths and prose operands
+  // keep their case, because those are case-sensitive in practice.
+  function norm(x){return String(x==null?'':x).replace(/\s+/g,' ').trim();}
+  function labUnquote(x){
+    var t=String(x==null?'':x).trim();
+    var m=/^(['"])([\s\S]*)\1$/.exec(t);
+    return m?m[2]:t;
+  }
+  function labFilled(x){return labUnquote(x).trim().length>0;}
+  // Shell chaining in a *prompt* or *path* operand is not part of the answer.
+  // Deliberately not applied to the `!` challenge, whose whole purpose is to
+  // run a shell command, where `;` and `|` are legitimate syntax.
+  // Any pipe, semicolon, backtick, &&, or $( is chaining. An earlier version
+  // only matched a pipe followed by whitespace, so `a.ts|rm -rf /` slipped
+  // through -- the character itself is the signal, not the spacing.
+  function labNoChaining(x){return !/[;`|]|&&|\$\(/.test(x);}
+  // Content must follow the prefix; returns null when the prefix is absent.
+  function labAfter(v,prefix){return v.indexOf(prefix)===0?v.slice(prefix.length):null;}
+
+  var LAB_VALIDATORS={
+    'lab-compact':function(v){
+      // `/compact` alone is complete; an optional focus argument needs a space.
+      return /^\/compact$/i.test(v)||/^\/compact\s+\S/i.test(v);
+    },
+    'lab-clear':function(v){return /^\/clear$/i.test(v);},
+    'lab-cost':function(v){return /^\/cost$/i.test(v);},
+    'lab-file':function(v){
+      var rest=labAfter(v,'@');
+      if(rest===null||!labFilled(rest))return false;      // bare `@` is not an answer
+      var path=labUnquote(rest);
+      if(/^[@!#]/.test(path))return false;                // `@@x`, `@!x`
+      if(!labNoChaining(path))return false;               // a path carries no shell chaining
+      return /^[A-Za-z0-9._~/\\-]/.test(path);
+    },
+    'lab-bash':function(v){
+      var rest=labAfter(v,'!');
+      if(rest===null||!labFilled(rest))return false;      // bare `!` is not an answer
+      return !/^[@!#]/.test(rest.trim());
+    },
+    'lab-memory':function(v){
+      var rest=labAfter(v,'#');
+      if(rest===null||!labFilled(rest))return false;      // bare `#` is not an answer
+      return !/^[@!#]/.test(rest.trim());
+    },
+    'lab-headless':function(v){
+      var eq=/^claude\s+--print=([\s\S]+)$/i.exec(v);
+      if(eq)return labFilled(eq[1])&&labNoChaining(eq[1]);
+      var m=/^claude\s+(?:-p|--print)\s+([\s\S]+)$/i.exec(v);
+      if(!m)return false;                                 // bare `claude -p` is incomplete
+      return labFilled(m[1])&&labNoChaining(m[1]);
+    }
+  };
+
   function ok(item,raw){
     var v=norm(raw); if(!v)return false;
-    if(item.accept&&item.accept.some(function(a){return v===norm(a);}))return true;
-    if(item.startsWith&&item.startsWith.some(function(p){p=norm(p);return v.indexOf(p)===0 && v.length>=p.length && (v.length===p.length? true : v.length>p.length);}))return true;
+    var fn=LAB_VALIDATORS[item&&item.id];
+    if(fn)return !!fn(v);
+    // No validator: only an exact accepted answer counts. Prefix and substring
+    // acceptance are gone deliberately.
+    if(item&&item.accept)return item.accept.some(function(a){return norm(a).toLowerCase()===v.toLowerCase();});
     return false;
   }
+  // Test surface: exercises the production validator, not a copy of it.
+  window.__labValidate=function(id,value){return ok({id:id,accept:null},value);};
+  window.__labHasValidator=function(id){return Object.prototype.hasOwnProperty.call(LAB_VALIDATORS,id);};
   var streak=0, finalEl=document.getElementById('lab-final');
   function stats(){
     var n=0; LAB.forEach(function(it){if(state.solved[it.id])n++;});
