@@ -5,10 +5,16 @@
   "type": "module",
   "scripts": {
     "test": "playwright test",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check:static": "node scripts/check-static.mjs",
+    "check:diff": "node scripts/check-diff.mjs",
+    "check:results": "node scripts/check-test-results.mjs test-results/results.json",
+    "verify": "npm run check:static && npm test && npm run check:results"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
-    "@playwright/test": "1.62.0"
+    "@playwright/test": "1.62.0",
+    "acorn": "8.14.0",
+    "yaml": "2.9.0"
   }
 }
