@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Mastery Hub — Project Roadmap</title>
+<style>
+  :root{
+    --bg:#0e0b19; --panel:#171327; --panel2:#1d1830; --line:#2b2542;
+    --ink:#ece9f5; --muted:#a59fc0;
+    --ok:#5fd39a; --live:#54e6e0; --warn:#ffd166; --next:#9b8cff; --idle:#6d6785;
+    --radius:14px;
+  }
+  @media (prefers-color-scheme:light){
+    :root{
+      --bg:#f7f6fb; --panel:#fff; --panel2:#f1eff8; --line:#ddd8ea;
+      --ink:#1b1730; --muted:#5d5878;
+      --ok:#127a4f; --live:#0d7b77; --warn:#8a6300; --next:#5b45c8; --idle:#6d6785;
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden}
+  body{
+    background:var(--bg); color:var(--ink);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    -webkit-text-size-adjust:100%;
+  }
+  a{color:var(--next)}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--live);outline-offset:3px;border-radius:4px}
+  .wrap{max-width:1080px;margin:0 auto;padding:24px 16px 56px}
+  header.top{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:24px}
+  .eyebrow{color:var(--muted);font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;margin:0 0 6px}
+  h1{margin:0 0 8px;font-size:clamp(1.4rem,4.4vw,2.1rem);line-height:1.2}
+  .sub{margin:0;color:var(--muted);font-size:.95rem}
+  h2{font-size:clamp(1.05rem,3vw,1.3rem);margin:34px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+  h3{font-size:1rem;margin:0 0 6px}
+  p{margin:0 0 10px}
+
+  .pulse{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+  .stat .k{display:block;color:var(--muted);font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
+  .stat .v{font-size:1.28rem;font-weight:650;word-break:break-word}
+  .stat .v small{display:block;font-size:.74rem;font-weight:400;color:var(--muted);margin-top:3px}
+  .green{color:var(--ok)} .cyan{color:var(--live)} .violet{color:var(--next)} .amber{color:var(--warn)}
+
+  .next{background:var(--panel2);border:1px solid var(--next);border-left-width:4px;border-radius:var(--radius);padding:15px 17px;margin:18px 0 0}
+  .next .k{color:var(--next);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;display:block;margin-bottom:5px}
+  .next p{margin:0;font-size:1.02rem;font-weight:600}
+
+  .cards{display:grid;gap:13px;grid-template-columns:repeat(auto-fit,minmax(258px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:15px;border-top:3px solid var(--idle)}
+  .card.done{border-top-color:var(--ok)} .card.active{border-top-color:var(--live)} .card.plan{border-top-color:var(--next)}
+  .tag{display:inline-block;font-size:.67rem;letter-spacing:.07em;text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:20px;border:1px solid currentColor;margin-bottom:8px}
+  .tag.done{color:var(--ok)} .tag.active{color:var(--live)} .tag.plan{color:var(--next)}
+  .card p{font-size:.9rem;color:var(--muted);margin:0 0 9px}
+  .meta{font:.76rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);word-break:break-all}
+  .meta b{color:var(--ink);font-weight:600}
+
+  .bar{height:7px;background:var(--panel2);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin:9px 0 7px}
+  .bar span{display:block;height:100%;background:var(--ok)}
+  .bar.p0 span{width:0} .bar.p100 span{width:100%}
+  .pct{font-size:.74rem;color:var(--muted)}
+
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+  table{border-collapse:collapse;width:100%;min-width:520px;font-size:.87rem}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+  tr:last-child td{border-bottom:0}
+  code{font:.85em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--panel2);padding:1px 5px;border-radius:4px;word-break:break-all}
+
+  ul.tight{margin:0;padding-left:20px} ul.tight li{margin-bottom:5px;font-size:.9rem}
+  details{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 15px;margin-bottom:10px}
+  summary{cursor:pointer;font-weight:600;font-size:.94rem}
+  details p,details ul{margin-top:9px}
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:.83rem}
+  @media (max-width:420px){ .wrap{padding:18px 12px 44px} .stat .v{font-size:1.12rem} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">Project Roadmap &amp; Status</p>
+  <h1>Claude Mastery Hub</h1>
+  <p class="sub">Interactive single-file guide to mastering Claude — one <code>index.html</code>, zero dependencies, fully offline. Updated 2026-07-30.</p>
+</header>
+
+<h2>Executive status</h2>
+<div class="pulse">
+  <div class="stat"><span class="k">Health</span><span class="v green">Stable<small>gate enforced on main</small></span></div>
+  <div class="stat"><span class="k">Tests</span><span class="v cyan">29 passing<small>0 skipped · 0 retried</small></span></div>
+  <div class="stat"><span class="k">CI</span><span class="v green">Green<small>Quality gate · push</small></span></div>
+  <div class="stat"><span class="k">Branch protection</span><span class="v green">Enforced<small>incl. admins</small></span></div>
+  <div class="stat"><span class="k">Deployment</span><span class="v green">Live<small>GitHub Pages</small></span></div>
+  <div class="stat"><span class="k">Open blockers</span><span class="v green">None<small>0 Critical / 0 Important</small></span></div>
+</div>
+
+<div class="next">
+  <span class="k">Current next action — exactly one</span>
+  <p>Merge the documentation PR, then start <code>fix/persisted-state-integrity</code>.</p>
+</div>
+
+<h2>Milestones</h2>
+<div class="cards">
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #13 — Responsive containment &amp; nav a11y</h3>
+    <p>Page-level overflow contained; mobile navigation made keyboard and screen-reader accessible, with axe regressions.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>8e6f8fb</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #14 — Opus 5 currency</h3>
+    <p>Current five-model lineup, centralized <code>MODEL_FACTS</code> registry, provenance-labelled benchmarks, migration exceptions.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>9924a6b</b> · Pages verified byte-for-byte</p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #15 — Copilot instructions</h3>
+    <p>Custom instructions and coding-agent setup for the repository.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>11cd194</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #16 — Enforced CI quality gate</h3>
+    <p>Diff-range integrity, structural static checks, anti-vacuity report validation, failure-only artifacts. Verified by 59 executable probes.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>7f7f24f</b> · push run <b>30520594773</b></p>
+  </article>
+
+  <article class="card active">
+    <span class="tag active">In progress</span>
+    <h3>Documentation system</h3>
+    <p>Roadmap, current state, decision log, execution changelog, and this offline dashboard, so any session starts grounded.</p>
+    <div class="bar p100"><span></span></div><div class="pct">In review</div>
+    <p class="meta">branch <b>docs/project-roadmap</b></p>
+  </article>
+
+  <article class="card plan">
+    <span class="tag plan">Planned</span>
+    <h3>Persisted-state integrity</h3>
+    <p>Safe parsing, schema version with idempotent migration, validation and clamping (mastery 0–100%), and deterministic cross-tab merge.</p>
+    <div class="bar p0"><span></span></div><div class="pct">Not started</div>
+    <p class="meta">branch <b>fix/persisted-state-integrity</b></p>
+  </article>
+
+  <article class="card plan">
+    <span class="tag plan">Planned</span>
+    <h3>Practice Lab validation</h3>
+    <p>Explicit per-challenge validators; a bare <code>@</code>, <code>!</code>, <code>#</code>, or incomplete <code>claude -p</code> must be rejected.</p>
+    <div class="bar p0"><span></span></div><div class="pct">Not started</div>
+    <p class="meta">branch <b>fix/practice-lab-validation</b></p>
+  </article>
+
+</div>
+
+<h2>Quality evidence</h2>
+<div class="scroll">
+  <table>
+    <thead><tr><th>Gate step</th><th>Enforces</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td><code>npm ci</code></td><td>lockfile integrity</td><td class="green">pass</td></tr>
+      <tr><td><code>check-diff.mjs</code></td><td>whitespace/conflict errors over an exact per-event commit range</td><td class="green">pass</td></tr>
+      <tr><td><code>npm audit</code></td><td>no advisories at any severity</td><td class="green">0 vulnerabilities</td></tr>
+      <tr><td><code>check-static.mjs</code></td><td>YAML + AST + CSS structural integrity, offline guarantee</td><td class="green">pass</td></tr>
+      <tr><td><code>npm test</code></td><td>Playwright suite, <code>forbidOnly</code> active</td><td class="green">29 passed</td></tr>
+      <tr><td><code>check-test-results.mjs</code></td><td>the suite actually ran what it claims</td><td class="green">pass</td></tr>
+      <tr><td>Artifacts</td><td>upload on failure only</td><td class="green">0 on success</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>Architecture</h2>
+<div class="cards">
+  <article class="card done"><h3>Content &amp; engines</h3><p><code>index.html</code> — sections plus the <code>QUIZ</code>, <code>EXAM</code>, and <code>LAB</code> data-driven engines.</p></article>
+  <article class="card done"><h3>Model fact registry</h3><p><code>MODEL_FACTS</code>, <code>MODEL_SOURCES</code>, <code>BENCHMARK_EVIDENCE</code> — one place for volatile facts with a verification date.</p></article>
+  <article class="card active"><h3>Persistence</h3><p><code>localStorage</code> keys <code>claude_hub_quiz/exam/mastery/nav/lab_v1</code>. Hardening is the next milestone.</p></article>
+  <article class="card done"><h3>Quality gate</h3><p><code>.github/workflows/ci.yml</code> plus <code>scripts/check-*.mjs</code> — structural parsing, not text matching.</p></article>
+</div>
+
+<h2>Product invariants</h2>
+<ul class="tight">
+  <li><b>One file, zero dependencies</b> — no build step, no network at load.</li>
+  <li><b>Fully offline</b> — external documentation links allowed; external subresources are not.</li>
+  <li><b>Progress is the user's</b> — <code>localStorage</code> only, no backend, no telemetry.</li>
+  <li><b>Contained layout</b> — no document-level horizontal overflow from 320&nbsp;px up.</li>
+  <li><b>Keyboard accessible</b> — a closed mobile menu exposes no focusable controls.</li>
+  <li><b>Facts verified, not remembered</b> — claims carry a verification date.</li>
+</ul>
+
+<h2>Decision history</h2>
+<details>
+  <summary><code>enforce_admins: true</code> on <code>main</code></summary>
+  <p>The gate exists so nothing reaches <code>main</code> unverified. An admin bypass would cover 100% of traffic here, since the maintainer is the only contributor. Cost: every change, including a one-line doc fix, is now a PR.</p>
+</details>
+<details>
+  <summary>Structural parsing over regex for security-critical checks</summary>
+  <p>Three formatting-sensitive bypasses were found: <code>uses :</code> with a space, <code>var helper, top = 1</code>, and single-quoted <code>style='…'</code>. Workflows are now parsed with <code>yaml</code> and inline scripts with <code>acorn</code>.</p>
+</details>
+<details>
+  <summary><code>yaml</code> pinned to 2.9.0, not 2.6.1</summary>
+  <p>2.6.1 carries a moderate stack-overflow advisory. <code>--audit-level=high</code> would have accepted it, but this parser reads workflow files from fork PRs — a vulnerable parser inside the security gate is the wrong trade.</p>
+</details>
+<details>
+  <summary>ARC-AGI-3 shows both the exact and rounded score</summary>
+  <p>ARC Prize publishes 30.16% in its verified table and 30.2% in the headline. An earlier pass read only the headline and added a test forbidding the exact value, locking in the error. Assertions now check the relationship between the two.</p>
+</details>
+
+<h2>Source documents</h2>
+<ul class="tight">
+  <li><a href="../CURRENT_STATE.md">CURRENT_STATE.md</a> — read first, update last</li>
+  <li><a href="../PROJECT_ROADMAP.md">PROJECT_ROADMAP.md</a></li>
+  <li><a href="../DECISION_LOG.md">DECISION_LOG.md</a></li>
+  <li><a href="../CHANGELOG_EXECUTION.md">CHANGELOG_EXECUTION.md</a></li>
+  <li><a href="../CONTENT_CURRENCY_POLICY.md">CONTENT_CURRENCY_POLICY.md</a></li>
+  <li><a href="https://github.com/gesh75/claude-mastery-hub">Repository</a> ·
+      <a href="https://github.com/gesh75/claude-mastery-hub/pull/16">PR&nbsp;#16</a> ·
+      <a href="https://github.com/gesh75/claude-mastery-hub/pull/14">PR&nbsp;#14</a> ·
+      <a href="https://github.com/gesh75/claude-mastery-hub/pull/13">PR&nbsp;#13</a></li>
+  <li><a href="https://gesh75.github.io/claude-mastery-hub/">Live application</a></li>
+</ul>
+
+<footer>
+  Claude Mastery Hub — project roadmap. Offline by design: this page loads no external
+  resources. Status reflects <code>main</code> @ <code>7f7f24f</code>.
+</footer>
+
+</div>
+</body>
+</html>
