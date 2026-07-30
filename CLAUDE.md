@@ -3,6 +3,21 @@
 > **Checkpoint: OMEGA** · last updated 2026-07-12
 > Read this first. It's the durable brief so any new session starts grounded.
 
+## Session protocol (read this first)
+
+**Every coding session must read `docs/CURRENT_STATE.md` first and update it last.**
+It is the single source of truth for branch, HEAD, active PR, CI run, test count,
+branch protection, and the one current next action. If it disagrees with memory or
+an older document, it wins. Supporting documents:
+`docs/PROJECT_ROADMAP.md` (plan and invariants) ·
+`docs/DECISION_LOG.md` (why, and what it rules out) ·
+`docs/CHANGELOG_EXECUTION.md` (what shipped, with evidence) ·
+`docs/roadmap/index.html` (offline visual dashboard).
+
+**`main` is protected** (`enforce_admins: true`). Every change — including a
+one-line documentation fix — goes through a PR with a green `Quality gate`.
+Direct pushes are rejected server-side.
+
 ## What this is
 An interactive, **single-file** educational guide to mastering Claude (the app,
 Claude Code, the API & Agent SDK, MCP, skills, subagents, hooks, plugins,
