@@ -128,7 +128,12 @@ test.describe('project roadmap dashboard', () => {
     const md = await readFile(new URL('docs/CURRENT_STATE.md', ROOT), 'utf8');
     expect(md).toMatch(/read this file first/i);
     expect(md).toMatch(/update it last/i);
-    expect(md).toContain('7f7f24fbd30f3f5c6fda9c44c70c55a936e8b0b8');
+    // Assert the *shape*, not a literal SHA: pinning one would make this test
+    // fail every time `main` advances, which is not a defect in the document.
+    expect(md, 'must record the current main commit as a full 40-hex SHA').toMatch(
+      /\|\s*`?main`?\s*\|\s*`[0-9a-f]{40}`/i
+    );
+    expect(md).toMatch(/run \[`\d+`\]/); // a real CI run id, linked
     expect(md).toContain('enforce_admins');
     expect(md).toMatch(/## Next action/);
     // Exactly one next-action heading, so the file cannot accumulate several.
