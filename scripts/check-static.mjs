@@ -248,31 +248,92 @@ for (const m of css.matchAll(/(?:-webkit-)?image-set\(([^)]*)\)/gi)) {
 }
 
 // --- 5b. runtime network calls in inline JS ---------------------------------
-// The attribute and CSS scans above only cover markup. Inline JS can still
-// reach the network at load time, which would break the same offline
-// guarantee. Only URL literals passed to a network *sink* are flagged, so the
-// MODEL_SOURCES documentation URLs (plain data) stay legal.
-const jsSinks = [
-  [/\bfetch\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'fetch()'],
-  [/\bimport\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'dynamic import()'],
-  [/\bimportScripts\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'importScripts()'],
-  [/\bnavigator\s*\.\s*sendBeacon\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'sendBeacon()'],
-  [/\bnew\s+(?:Shared)?Worker\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'new Worker()'],
-  [/\bnew\s+EventSource\s*\(\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'new EventSource()'],
-  [/\bnew\s+WebSocket\s*\(\s*["'`]((?:wss?:)?\/\/[^"'`]+)/gi, 'new WebSocket()'],
-  [/\.\s*open\s*\(\s*["'][A-Za-z]+["']\s*,\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'XMLHttpRequest.open()'],
-  [/\.\s*(?:src|href)\s*=\s*["'`]((?:https?:)?\/\/[^"'`]+)/gi, 'element.src/href assignment'],
-  [/\bimport\s+[^;'"]*from\s*["']((?:https?:)?\/\/[^"']+)/gi, 'static import from URL']
-];
-const inlineJs = scripts.map((m) => m[1]).join('\n');
+// Matching literal URLs at a call site was defeated by one indirection:
+// `const u='https://x'; fetch(u)`, `const f=fetch; f(u)`, `globalThis['fetch'](u)`,
+// or a URL built from parts all slipped past. This page legitimately uses ZERO
+// network APIs, so the identifier itself is banned rather than its argument --
+// which closes aliasing, computed access, and concatenation in one rule.
+// `navigator` itself stays legal -- navigator.clipboard powers the copy
+// buttons. Only the network-capable members are banned, so the rule targets
+// capability rather than a namespace the app legitimately uses.
+const BANNED_SINKS = new Set([
+  'fetch', 'XMLHttpRequest', 'importScripts', 'sendBeacon', 'Worker', 'SharedWorker',
+  'EventSource', 'WebSocket', 'Request'
+]);
 let jsHits = 0;
-for (const [re, label] of jsSinks) {
-  for (const m of inlineJs.matchAll(re)) {
-    bad(`inline JS reaches the network via ${label}: ${m[1].slice(0, 70)} — the page must fetch nothing at load`);
-    jsHits++;
+scripts.forEach((m, i) => {
+  let ast;
+  try {
+    ast = acorn.parse(m[1], { ecmaVersion: 'latest', sourceType: 'script', locations: true });
+  } catch (err) {
+    return; // the syntax gate above already reported this
   }
-}
-if (!jsHits) ok('inline JS makes no external network calls');
+  walkAst(ast, (node) => {
+    let name = null;
+    if (node.type === 'Identifier' && BANNED_SINKS.has(node.name)) name = node.name;
+    // obj.fetch(...) / obj['fetch'](...)
+    if (node.type === 'MemberExpression') {
+      const prop = node.computed
+        ? (node.property?.type === 'Literal' ? node.property.value : null)
+        : node.property?.name;
+      if (typeof prop === 'string' && BANNED_SINKS.has(prop)) name = `.${prop}`;
+    }
+    if (!name) return;
+    const line = node.loc?.start?.line ?? '?';
+    bad(
+      `inline script #${i + 1} line ${line}: network API \`${name}\` must not appear — ` +
+        'the page has to fetch nothing at load, and this app uses no network APIs at all'
+    );
+    jsHits++;
+  });
+});
+// Assigning a URL to an element is a fetch by another name, and the literal
+// matcher missed `el.src = base + path`. `src`/`srcset` are banned outright
+// (the app never assigns them). `href` is assigned legitimately for
+// same-document fragments ('#'+id), so it fails only when the assigned
+// expression contains an external-looking string literal anywhere.
+const BANNED_ASSIGN = new Set(['src', 'srcset']);
+const URL_ASSIGN = new Set(['src', 'srcset', 'href', 'action', 'data']);
+scripts.forEach((m, i) => {
+  let ast;
+  try {
+    ast = acorn.parse(m[1], { ecmaVersion: 'latest', sourceType: 'script', locations: true });
+  } catch (err) {
+    return;
+  }
+  walkAst(ast, (node) => {
+    if (node.type !== 'AssignmentExpression') return;
+    const left = node.left;
+    if (!left || left.type !== 'MemberExpression') return;
+    const prop = left.computed
+      ? (left.property?.type === 'Literal' ? left.property.value : null)
+      : left.property?.name;
+    if (typeof prop !== 'string' || !URL_ASSIGN.has(prop)) return;
+    const line = node.loc?.start?.line ?? '?';
+
+    if (BANNED_ASSIGN.has(prop)) {
+      bad(`inline script #${i + 1} line ${line}: assigning \`.${prop}\` would load a subresource — not permitted`);
+      jsHits++;
+      return;
+    }
+    // Any external-looking literal anywhere in the assigned expression.
+    let external = null;
+    walkAst(node.right, (n) => {
+      if (n.type === 'Literal' && typeof n.value === 'string' && EXTERNAL.test(n.value)) external = n.value;
+      if (n.type === 'TemplateElement' && typeof n.value?.cooked === 'string' && EXTERNAL.test(n.value.cooked)) {
+        external = n.value.cooked;
+      }
+    });
+    if (external) {
+      bad(
+        `inline script #${i + 1} line ${line}: \`.${prop}\` assigned an external URL ` +
+          `(${String(external).slice(0, 60)}) — the page must fetch nothing at load`
+      );
+      jsHits++;
+    }
+  });
+});
+if (!jsHits) ok('inline JS references no network APIs and assigns no external URLs (AST)');
 
 if (!externalHits) ok('no external subresources; page stays fully offline');
 
@@ -292,9 +353,13 @@ if (!wfFailures && wfFiles.length === 0) {
   wfFailures++;
 }
 
+const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const PINNED = /^[0-9a-fA-F]{40}$/;
 const DIGEST = /@sha256:[0-9a-f]{64}$/i;
-const UNTRUSTED = /\$\{\{\s*(github\.event\.[A-Za-z0-9_.*[\]]*|github\.head_ref)\s*\}\}/;
+// Match an untrusted reference ANYWHERE inside an expression block. An earlier
+// version required the ref to be the entire body, so `${{ github.event.x != 'y' }}`
+// and `${{ format('%s', github.event.x) }}` both slipped through.
+const UNTRUSTED = /\$\{\{[^}]*\b(github\.event\b[A-Za-z0-9_.*[\]]*|github\.head_ref)\b[^}]*\}\}/;
 
 /**
  * Security-critical workflow semantics are read from the parsed YAML, not from
@@ -370,6 +435,28 @@ for (const f of wfFiles) {
       return;
     }
 
+    // `if:` and `with:` also consume expressions. `with:` feeds action inputs,
+    // and some actions evaluate them (actions/github-script `script:`), so an
+    // interpolation there is as dangerous as one in a shell line.
+    //
+    // `env:` is deliberately NOT flagged: passing event data through an
+    // environment variable and referencing it as "$VAR" is GitHub's documented
+    // mitigation, because the value never becomes shell text. Flagging it would
+    // push authors away from the safe pattern.
+    if (key === 'with' || key === 'if') {
+      const scan = (v, path2) => {
+        if (typeof v === 'string') {
+          if (UNTRUSTED.test(v)) {
+            wfBad(`${path2}: untrusted event data interpolated into \`${key}:\`: ${v.match(UNTRUSTED)[0]}`);
+          }
+          return;
+        }
+        if (isPlainObject(v)) for (const [k2, v2] of Object.entries(v)) scan(v2, `${path2}.${k2}`);
+      };
+      scan(value, where);
+      return;
+    }
+
     if (key === 'run') {
       if (typeof value !== 'string') {
         wfBad(`${where}: \`run\` must be a string, got ${JSON.stringify(value)}`);
@@ -405,6 +492,22 @@ for (const f of wfFiles) {
 }
 
 if (!wfFailures) ok(`${wfFiles.length} workflow file(s): SHA-pinned and free of gate-weakening patterns`);
+
+// --- 7. the test entrypoint cannot be swapped --------------------------------
+// CI runs `npm test`. If that script were changed to copy a pre-baked report,
+// every downstream check would validate a fabricated run. Pin it.
+console.log('test entrypoint');
+try {
+  const pkg = JSON.parse(await readFile('package.json', 'utf8'));
+  const script = pkg?.scripts?.test;
+  if (script !== 'playwright test') {
+    bad(`package.json scripts.test must be exactly "playwright test", got ${JSON.stringify(script)}`);
+  } else {
+    ok('package.json scripts.test is the expected Playwright invocation');
+  }
+} catch (err) {
+  bad(`package.json could not be read or parsed: ${err.message}`);
+}
 
 // --- result ------------------------------------------------------------------
 if (failures.length) {
