@@ -9,11 +9,11 @@
 | Last updated | 2026-07-30 |
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
-| Branch | `fix/persisted-state-integrity` (working) |
-| `main` | `7be4ce3c2664f5b8ec8ec9b27d7d445661da6ac4` |
-| Active PR | persisted-state integrity (this branch) |
-| Latest CI on `main` | run [`30520594773`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30520594773) — workflow `CI`, check `Quality gate`, event `push`, **success** |
-| Tests | **57** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 19 |
+| Branch | `fix/practice-lab-validation` (working) |
+| `main` | `7049355ba53f354be144ade58d3998c4ded9cb64` |
+| Active PR | Practice Lab validation (this branch) |
+| Latest CI on `main` | run [`30523044535`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30523044535) — workflow `CI`, check `Quality gate`, event `push`, **success** |
+| Tests | **78** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main` |
 | Unresolved Critical/Important | none |
@@ -58,9 +58,9 @@ Artifacts upload **only on failure** (7-day retention).
 | PR #15 | Copilot custom instructions | merged |
 | PR #16 | Enforced CI quality gate | merged `7f7f24f` |
 | #17 | Documentation system + visual roadmap | merged `7be4ce3` |
-| — | Persisted-state integrity | in progress (this branch) |
-| — | Practice Lab validation | not started |
+| #18 | Persisted-state integrity | merged `7049355` |
+| — | Practice Lab validation | in progress (this branch) |
 
 ## Next action
 
-**Merge the persisted-state PR, then start `fix/practice-lab-validation`.**
+**Merge the Practice Lab PR, then run final production verification.**
