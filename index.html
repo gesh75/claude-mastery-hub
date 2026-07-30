@@ -6084,14 +6084,168 @@ document.querySelectorAll('.sec-body pre').forEach(function(pre){
   pre.appendChild(b);
 });
 
-// mastery tracking (localStorage)
-var KEY='claude_hub_mastery_v1';
-var done={};
-try{done=JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){done={};}
+
+// ---- persisted-state integrity -------------------------------------------
+// Every reader below treats localStorage as untrusted input. A malformed,
+// wrong-typed, oversized, or hostile value must never break startup, and no
+// stored number may produce an impossible UI (mastery is pinned to 0-100%).
+//
+// Cross-tab merge policy, applied on the `storage` event:
+//   sets (mastery.done, lab.solved)  union - work done in either tab survives
+//   scalars (best, streak, reps)     max   - a stale tab can never lower a value
+//   explicit reset (resetAt)         newest resetAt wins wholesale
+// This is deterministic and order-independent: merging in either direction
+// yields the same result, so two tabs converge without a server.
+var HUB_STATE_VERSION=2;
+// nav is deliberately absent: it is a single '0'/'1' flag with its own
+// guarded read/write, not JSON state, so it needs no normalise/merge entry.
+var HUB_KEYS={mastery:'claude_hub_mastery_v1',quiz:'claude_hub_quiz_v1',
+  exam:'claude_hub_exam_v1',lab:'claude_hub_lab_v1'};
+var HUB_MAX_RAW=131072;     // 128 KB: far above real use, bounds pathological input
+var HUB_MAX_KEYS=2000;      // bounds a maliciously wide map
+
+function hubIsObj(v){return v!==null&&typeof v==='object'&&!Array.isArray(v);}
+function hubInt(v,lo,hi,dflt){
+  var n=(typeof v==='number')?v:(typeof v==='string'?parseInt(v,10):NaN);
+  if(typeof n!=='number'||!isFinite(n))return dflt;
+  n=Math.round(n);
+  if(n<lo)return lo;
+  if(n>hi)return hi;
+  return n;
+}
+// Own enumerable string keys only, with prototype-pollution vectors removed.
+function hubSafeMap(o){
+  var out=Object.create(null),n=0,k;
+  if(!hubIsObj(o))return out;
+  for(k in o){
+    if(!Object.prototype.hasOwnProperty.call(o,k))continue;
+    if(k==='__proto__'||k==='constructor'||k==='prototype')continue;
+    if(n++>=HUB_MAX_KEYS)break;
+    out[k]=o[k];
+  }
+  return out;
+}
+function hubTrueSet(o){
+  var src=hubSafeMap(o),out=Object.create(null),k;
+  for(k in src){if(src[k]===true||src[k]===1)out[k]=true;}
+  return out;
+}
+function hubRead(key){
+  var raw=null;
+  try{raw=localStorage.getItem(key);}catch(e){return null;}
+  if(typeof raw!=='string'||raw.length===0||raw.length>HUB_MAX_RAW)return null;
+  try{return JSON.parse(raw);}catch(e){return null;}
+}
+function hubWrite(key,val){
+  try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}
+}
+function hubResetAt(v){return hubIsObj(v)?hubInt(v.resetAt,0,8.64e15,0):0;}
+
+// --- normalisers: any input shape in, a valid state object out --------------
+// A legacy value has no `v`. An unknown future `v` is not interpreted, but any
+// field that is still recognisable is kept rather than discarding progress.
+function hubNormMastery(v){
+  var base={v:HUB_STATE_VERSION,done:Object.create(null),resetAt:hubResetAt(v)};
+  if(!hubIsObj(v))return base;
+  base.done=hubTrueSet(('done' in v)?v.done:(v.v==null?v:null));
+  return base;
+}
+function hubNormQuiz(v){
+  var base={v:HUB_STATE_VERSION,sections:Object.create(null),resetAt:hubResetAt(v)};
+  if(!hubIsObj(v))return base;
+  var src=hubSafeMap(('sections' in v)?v.sections:(v.v==null?v:null)),k,rec;
+  for(k in src){
+    rec=src[k];
+    if(!hubIsObj(rec))continue;
+    base.sections[k]={best:hubInt(rec.best,0,9999,0),total:hubInt(rec.total,0,9999,0),
+      reps:hubInt(rec.reps,0,9999,0),ts:hubInt(rec.ts,0,8.64e15,0)};
+  }
+  return base;
+}
+function hubNormExam(v){
+  var base={v:HUB_STATE_VERSION,best:0,total:0,ts:0,resetAt:hubResetAt(v)};
+  if(!hubIsObj(v))return base;
+  base.best=hubInt(v.best,0,9999,0);
+  base.total=hubInt(v.total,0,9999,0);
+  base.ts=hubInt(v.ts,0,8.64e15,0);
+  return base;
+}
+function hubNormLab(v){
+  var base={v:HUB_STATE_VERSION,solved:Object.create(null),best:0,streak:0,resetAt:hubResetAt(v)};
+  if(!hubIsObj(v))return base;
+  base.solved=hubTrueSet(v.solved);
+  base.best=hubInt(v.best,0,9999,0);
+  base.streak=hubInt(v.streak,0,9999,0);
+  return base;
+}
+var HUB_NORM={mastery:hubNormMastery,quiz:hubNormQuiz,exam:hubNormExam,lab:hubNormLab};
+
+// --- deterministic merge ----------------------------------------------------
+function hubUnion(a,b){
+  var out=Object.create(null),k;
+  for(k in a)out[k]=true;
+  for(k in b)out[k]=true;
+  return out;
+}
+function hubMerge(kind,a,b){
+  if(b.resetAt>a.resetAt)return b;
+  if(a.resetAt>b.resetAt)return a;
+  if(kind==='mastery')return {v:HUB_STATE_VERSION,done:hubUnion(a.done,b.done),resetAt:a.resetAt};
+  if(kind==='lab')return {v:HUB_STATE_VERSION,solved:hubUnion(a.solved,b.solved),
+    best:Math.max(a.best,b.best),streak:Math.max(a.streak,b.streak),resetAt:a.resetAt};
+  if(kind==='exam')return {v:HUB_STATE_VERSION,best:Math.max(a.best,b.best),
+    total:Math.max(a.total,b.total),ts:Math.max(a.ts,b.ts),resetAt:a.resetAt};
+  var sections=Object.create(null),k,x,y;
+  for(k in a.sections)sections[k]=a.sections[k];
+  for(k in b.sections){
+    y=b.sections[k]; x=sections[k];
+    sections[k]=x?{best:Math.max(x.best,y.best),total:Math.max(x.total,y.total),
+      reps:Math.max(x.reps,y.reps),ts:Math.max(x.ts,y.ts)}:y;
+  }
+  return {v:HUB_STATE_VERSION,sections:sections,resetAt:a.resetAt};
+}
+
+var HUB=(function(){
+  var cur={},listeners=[],kind;
+  for(kind in HUB_NORM)cur[kind]=HUB_NORM[kind](hubRead(HUB_KEYS[kind]));
+  // Persist the migrated shape once so the next load is already current. This
+  // is idempotent: normalising an already-normal value is a fixed point.
+  for(kind in HUB_NORM)hubWrite(HUB_KEYS[kind],cur[kind]);
+
+  function get(k){return cur[k];}
+  function set(k,val){cur[k]=HUB_NORM[k](val);hubWrite(HUB_KEYS[k],cur[k]);}
+  function onChange(fn){listeners.push(fn);}
+  function notify(k){listeners.forEach(function(fn){try{fn(k);}catch(e){}});}
+
+  try{
+    window.addEventListener('storage',function(ev){
+      if(!ev||!ev.key)return;
+      var k=null,name;
+      for(name in HUB_KEYS){if(HUB_KEYS[name]===ev.key)k=name;}
+      if(!k||!HUB_NORM[k])return;
+      var incoming=HUB_NORM[k](hubRead(ev.key));
+      cur[k]=hubMerge(k,cur[k],incoming);
+      hubWrite(HUB_KEYS[k],cur[k]);
+      notify(k);
+    });
+  }catch(e){}
+
+  return {get:get,set:set,onChange:onChange,
+    snapshot:function(){return JSON.parse(JSON.stringify(cur));}};
+})();
+window.__hubState=HUB;
+
+// mastery tracking (validated state)
+var KEY=HUB_KEYS.mastery;
+var done=HUB.get('mastery').done;
 var total=document.querySelectorAll('.master-cb').length;
+var MASTER_IDS=(function(){var m=Object.create(null);document.querySelectorAll('.master-cb').forEach(function(c){var i=c.getAttribute('data-id');if(i)m[i]=true;});return m;})();
 function refresh(){
-  var n=Object.keys(done).filter(function(k){return done[k];}).length;
-  var pct=Math.round(n/total*100);
+  // Count only ids that correspond to a real checkbox: a stale or injected key
+  // must never inflate progress past 100%.
+  var n=Object.keys(done).filter(function(k){return done[k]&&MASTER_IDS[k];}).length;
+  if(n>total)n=total;
+  var pct=total>0?Math.max(0,Math.min(100,Math.round(n/total*100))):0;
   var ring=document.getElementById('ring');
   if(ring){ring.style.setProperty('--p',pct);ring.querySelector('b').textContent=pct+'%';}
   var rm=document.getElementById('ringmeta');
@@ -6103,9 +6257,18 @@ document.querySelectorAll('.master-cb').forEach(function(cb){
   var id=cb.getAttribute('data-id');
   cb.checked=!!done[id];
   cb.closest('.mastered').classList.toggle('on',!!done[id]);
-  cb.onchange=function(){done[id]=cb.checked;localStorage.setItem(KEY,JSON.stringify(done));cb.closest('.mastered').classList.toggle('on',cb.checked);if(cb.checked)burst(cb);refresh();};
+  cb.onchange=function(){if(cb.checked)done[id]=true;else delete done[id];HUB.set('mastery',{v:HUB_STATE_VERSION,done:done,resetAt:HUB.get('mastery').resetAt});done=HUB.get('mastery').done;cb.closest('.mastered').classList.toggle('on',cb.checked);if(cb.checked)burst(cb);refresh();};
 });
 refresh();
+HUB.onChange(function(k){
+  if(k!=='mastery')return;
+  done=HUB.get('mastery').done;
+  document.querySelectorAll('.master-cb').forEach(function(cb){
+    var id=cb.getAttribute('data-id'),on=!!done[id];
+    cb.checked=on; cb.closest('.mastered').classList.toggle('on',on);
+  });
+  refresh();
+});
 
 // search filter
 var sb=document.getElementById('search');
@@ -6434,9 +6597,7 @@ var EXAM=[
  {q:"An agent is a model plus…",o:["a bigger GPU","tools and a feedback loop","a longer prompt","a database"],c:1,sec:"ai-agents"}
 ];
 var SECNAME={models:"Pick the Right Brain",cli:"Terminal Commands","plan-think":"Plan Mode & Thinking",memory:"CLAUDE.md & Memory",skills:"Skills",subagents:"Subagents",mcp:"MCP Servers",hooks:"Hooks",workflows:"Multi-Agent Workflows","api-sdk":"API & Agent SDK",cost:"Cost & Speed",security:"Security Hardening",webapp:"Claude.ai App",prompting:"Prompting","ai-llm":"What Is an LLM?","ai-tokens":"Tokens & Embeddings","ai-agents":"Agents & the AI Loop"};
-var QK='claude_hub_quiz_v1', EK='claude_hub_exam_v1';
-function loadJSON(k){try{return JSON.parse(localStorage.getItem(k)||'{}');}catch(e){return {};}}
-var qstate=loadJSON(QK);
+var qstate=HUB.get('quiz').sections;
 var REVIEW_DAYS=[1,3,7,21,45], DAY=86400000;
 function nowTs(){return (new Date()).getTime();}
 function buildQuiz(id){
@@ -6487,7 +6648,7 @@ function buildQuiz(id){
     var prev=qstate[id]||{best:0,total:data.length,reps:0};
     var rec={best:Math.max(prev.best||0,correctCount),total:data.length,ts:nowTs(),reps:prev.reps||0};
     if(passed)rec.reps=(prev.reps||0)+1;
-    qstate[id]=rec; localStorage.setItem(QK,JSON.stringify(qstate));
+    qstate[id]=rec; HUB.set('quiz',{v:HUB_STATE_VERSION,sections:qstate,resetAt:HUB.get('quiz').resetAt}); qstate=HUB.get('quiz').sections;
     if(passed)burst(res);
     updateLearningMeta();
   }
@@ -6516,7 +6677,7 @@ Object.keys(QUIZ).forEach(buildQuiz);
 updateLearningMeta();
 (function(){
   var host=document.getElementById('exam-host'); if(!host)return;
-  var ebest=loadJSON(EK);
+  var ebest=HUB.get('exam');
   var picks=new Array(EXAM.length).fill(null), submitted=false;
   function render(){
     host.innerHTML=''; picks=new Array(EXAM.length).fill(null); submitted=false;
@@ -6567,7 +6728,7 @@ updateLearningMeta();
     });
     var rank=rankFor(score);
     var prevBest=(ebest.best!=null)?ebest.best:-1;
-    if(score>prevBest){ebest={best:score,total:EXAM.length,ts:nowTs()};localStorage.setItem(EK,JSON.stringify(ebest));}
+    if(score>prevBest){HUB.set('exam',{v:HUB_STATE_VERSION,best:score,total:EXAM.length,ts:nowTs(),resetAt:HUB.get('exam').resetAt});ebest=HUB.get('exam');}
     result.innerHTML='';
     var sc=document.createElement('div'); sc.className='exam-score'; sc.textContent=score+' / '+EXAM.length; result.appendChild(sc);
     var rk=document.createElement('div'); rk.className='exam-rank'; rk.textContent='Rank: '+rank[0]; result.appendChild(rk);
@@ -6673,9 +6834,8 @@ var LAB=[
 (function(){
   var LK='claude_hub_lab_v1';
   var host=document.getElementById('lab-host'); if(!host)return;
-  var state={}; try{state=JSON.parse(localStorage.getItem(LK)||'{}');}catch(e){state={};}
-  if(!state.solved)state.solved={}; if(state.best==null)state.best=0;
-  function save(){try{localStorage.setItem(LK,JSON.stringify(state));}catch(e){}}
+  var state=HUB.get('lab');
+  function save(){HUB.set('lab',{v:HUB_STATE_VERSION,solved:state.solved,best:state.best,streak:state.streak,resetAt:state.resetAt});state=HUB.get('lab');}
   function norm(x){return (x||'').trim().toLowerCase().replace(/\s+/g,' ');}
   function ok(item,raw){
     var v=norm(raw); if(!v)return false;

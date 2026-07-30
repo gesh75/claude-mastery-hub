@@ -9,11 +9,11 @@
 | Last updated | 2026-07-30 |
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
-| Branch | `docs/project-roadmap` (working) |
-| `main` | `7f7f24fbd30f3f5c6fda9c44c70c55a936e8b0b8` |
-| Active PR | documentation system (this branch) |
+| Branch | `fix/persisted-state-integrity` (working) |
+| `main` | `7be4ce3c2664f5b8ec8ec9b27d7d445661da6ac4` |
+| Active PR | persisted-state integrity (this branch) |
 | Latest CI on `main` | run [`30520594773`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30520594773) — workflow `CI`, check `Quality gate`, event `push`, **success** |
-| Tests | **29** — `tests/e2e/content-currency.spec.js` 13 · `tests/e2e/p0-responsive-navigation.spec.js` 16 |
+| Tests | **57** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 19 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main` |
 | Unresolved Critical/Important | none |
@@ -57,10 +57,10 @@ Artifacts upload **only on failure** (7-day retention).
 | PR #14 | Opus 5 currency + content-currency controls | merged |
 | PR #15 | Copilot custom instructions | merged |
 | PR #16 | Enforced CI quality gate | merged `7f7f24f` |
-| — | Documentation system + visual roadmap | in progress (this branch) |
-| — | Persisted-state integrity | not started |
+| #17 | Documentation system + visual roadmap | merged `7be4ce3` |
+| — | Persisted-state integrity | in progress (this branch) |
 | — | Practice Lab validation | not started |
 
 ## Next action
 
-**Merge the documentation PR, then start `fix/persisted-state-integrity`.**
+**Merge the persisted-state PR, then start `fix/practice-lab-validation`.**
