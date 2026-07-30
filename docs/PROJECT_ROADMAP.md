@@ -63,28 +63,26 @@ The gate is built so that a green run cannot be vacuous:
 | [#14](https://github.com/gesh75/claude-mastery-hub/pull/14) | Opus 5 currency, centralized model facts, benchmark provenance | `9924a6b` |
 | [#15](https://github.com/gesh75/claude-mastery-hub/pull/15) | Copilot custom instructions | `11cd194` |
 | [#16](https://github.com/gesh75/claude-mastery-hub/pull/16) | Enforced CI quality gate + branch protection | `7f7f24f` |
+| [#17](https://github.com/gesh75/claude-mastery-hub/pull/17) | Durable documentation + offline roadmap dashboard | `7be4ce3` |
+| [#18](https://github.com/gesh75/claude-mastery-hub/pull/18) | Persisted-state integrity | `7049355` |
+| [#19](https://github.com/gesh75/claude-mastery-hub/pull/19) | Practice Lab validation | `dc20627` |
 
 ### In progress
 
-**Documentation system.** This roadmap, `CURRENT_STATE.md`, `DECISION_LOG.md`,
-`CHANGELOG_EXECUTION.md`, and the offline visual dashboard, so any session can
-start grounded without re-deriving state.
+Nothing. All planned milestones are merged and production-verified.
 
-### Planned
+### Deferred
 
-**Persisted-state integrity.** The learning engines trust `localStorage`. Malformed
-JSON, wrong types, or out-of-range values can currently corrupt startup or produce
-impossible progress. Scope: safe parsing with defaults, an explicit schema version
-with deterministic idempotent migration, validation and clamping (mastery pinned to
-0–100 %, no negative counts, no duplicate solved IDs, no `NaN`/`Infinity`, no
-prototype-pollution keys), and deterministic cross-tab merge via the `storage`
-event so two tabs cannot overwrite each other's unrelated progress.
+**Model registry rendering.** `MODEL_FACTS.availability`, `positioning`,
+`sources`, `featureExceptions`, `fastMode`, and `BENCHMARK_EVIDENCE` are
+maintained but not all consumed by a renderer. Tests assert both the registry
+and the rendered HTML so they cannot drift silently.
 
-**Practice Lab validation.** Answer matching is currently permissive enough that a
-bare `@`, `!`, or `#`, or an incomplete `claude -p`, can be accepted. Scope: explicit
-per-challenge validators with a positive and negative matrix for every free-text
-challenge — required operands enforced, substring-only acceptance removed, valid
-whitespace and quoting variations still accepted.
+**Section-count drift.** The hero says "37" while README and `og.png` say
+"39/40". Reconcile to one honest number when the area is next touched.
+
+**Maintainability consolidation.** Keep the app single-file unless extraction
+produces a measurable maintenance benefit; never mix that with a behaviour fix.
 
 ## Working agreement
 
