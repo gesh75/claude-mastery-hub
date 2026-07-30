@@ -7,6 +7,45 @@ production was confirmed — so a claim here can always be re-checked.
 
 ---
 
+## 2026-07-30 — PR #19: Practice Lab validation
+
+**Merge** `dc206273eb92ee8ae9e4b95434357039dbf4b01c`
+**PR CI** `30524290477` · **Push CI** `30524608091`
+
+Prefix matching accepted a bare `@`, `!`, `#`, and `claude -p` as complete
+answers, and `/compacting nonsense` passed because it merely started with a
+keyword. Replaced with explicit per-challenge validators enforcing the required
+operand. Case handling follows real semantics: slash commands case-insensitive,
+file paths case-sensitive. Shell chaining rejected in path and prompt operands,
+deliberately still allowed after `!`.
+
+20 tests, RED-verified first (19 of 20 failed). Both automated reviewers caught a
+real bug in the first fix: the chaining guard matched a pipe only when followed
+by whitespace, so `@a.ts|rm -rf /` passed. Fixed to reject the character itself.
+
+---
+
+## 2026-07-30 — PR #18: Persisted-state integrity
+
+**Merge** `7049355ba53f354be144ade58d3998c4ded9cb64`
+**PR CI** `30522824115` · **Push CI** `30523044535`
+
+Two live defects, both found by a test written before the fix: a stored `null`
+parsed successfully and crashed startup at `Object.keys(null)` outside the
+try/catch, and mastery counted arbitrary stored keys against a fixed total,
+producing over 100%.
+
+Bounded safe parsing, schema version 2 with idempotent migration and a safe
+unknown-future-version fallback, validation and clamping, and deterministic
+cross-tab merge over the native `storage` event (sets union, scalars max,
+explicit reset by newest `resetAt`).
+
+20 tests. Copilot correctly identified that the original duplicate-key test was
+vacuous — `JSON.parse` already collapses duplicate keys — so it was rewritten to
+test the value filter that actually matters.
+
+---
+
 ## 2026-07-30 — Documentation system
 
 **Branch** `docs/project-roadmap`
