@@ -148,15 +148,34 @@ test.describe('persisted state integrity', () => {
     expect(await masteryPct(page)).toBe(100);
   });
 
-  test('duplicate solved ids collapse to a set', async ({ page }) => {
+  test('solved is a set of only truthy flags, whatever the input shape', async ({ page }) => {
+    // JSON.parse already collapses duplicate object keys (last wins), so
+    // asserting key uniqueness would be vacuous. What matters is the value
+    // filter: only true/1 becomes solved, and every other shape is dropped.
     const errors = await loadWith(page, {
-      [K.lab]: '{"v":2,"solved":{"lab1":true,"lab1":true,"lab2":1,"lab3":false},"best":0}'
+      [K.lab]:
+        '{"v":2,"solved":{"lab1":true,"lab2":1,"lab3":false,"lab4":0,"lab5":null,' +
+        '"lab6":"true","lab7":[],"lab8":{}},"best":0}'
     });
     expect(errors).toEqual([]);
-    const s = await page.evaluate(() => window.__hubState.snapshot());
-    const ids = Object.keys(s.lab.solved);
-    expect(new Set(ids).size).toBe(ids.length);
-    expect(s.lab.solved.lab3).toBeUndefined(); // falsey never becomes solved
+    const solved = await page.evaluate(() => window.__hubState.snapshot().lab.solved);
+    expect(solved).toEqual({ lab1: true, lab2: true });
+    // Every retained value is exactly boolean true, never a coerced truthy.
+    for (const v of Object.values(solved)) expect(v).toBe(true);
+  });
+
+  test('an excessive key count is bounded independently of value length', async ({ page }) => {
+    // Distinct from the oversized-value test: this payload is short enough to
+    // pass the length guard but wide enough to exercise the key-count cap.
+    const wide = { v: 2, solved: {} };
+    for (let i = 0; i < 6000; i++) wide.solved[`s${i}`] = true;
+    const raw = JSON.stringify(wide);
+    const errors = await loadWith(page, { [K.lab]: raw });
+    expect(errors).toEqual([]);
+    const solved = await page.evaluate(() => window.__hubState.snapshot().lab.solved);
+    const kept = Object.keys(solved).length;
+    expect(kept).toBeGreaterThan(0);
+    expect(kept, 'key count must be capped').toBeLessThanOrEqual(2000);
   });
 
   test('prototype-pollution keys are stripped', async ({ page }) => {
@@ -265,20 +284,39 @@ test.describe('persisted state integrity', () => {
     expect(merged[real[1]]).toBe(true);
   });
 
-  test('a stale tab cannot lower a newer value', async ({ page }) => {
-    await loadWith(page, { [K.exam]: JSON.stringify({ v: 2, best: 18, total: 20, ts: 500 }) });
-    const best = await page.evaluate(
-      ([key]) => {
-        const stale = { v: 2, best: 3, total: 20, ts: 1 };
-        localStorage.setItem(key, JSON.stringify(stale));
-        window.dispatchEvent(
-          new StorageEvent('storage', { key, newValue: JSON.stringify(stale), storageArea: localStorage })
-        );
-        return window.__hubState.snapshot().exam.best;
+  test('a stale tab cannot lower any max-merged field', async ({ page }) => {
+    await loadWith(page, {
+      [K.exam]: JSON.stringify({ v: 2, best: 18, total: 20, ts: 500 }),
+      [K.lab]: JSON.stringify({ v: 2, solved: { lab1: true }, best: 9, streak: 7 }),
+      [K.quiz]: JSON.stringify({ v: 2, sections: { models: { best: 3, total: 3, reps: 5, ts: 900 } } })
+    });
+    const after = await page.evaluate(
+      ([examKey, labKey, quizKey]) => {
+        const push = (key, value) => {
+          const raw = JSON.stringify(value);
+          localStorage.setItem(key, raw);
+          window.dispatchEvent(
+            new StorageEvent('storage', { key, newValue: raw, storageArea: localStorage })
+          );
+        };
+        push(examKey, { v: 2, best: 3, total: 5, ts: 1 });
+        push(labKey, { v: 2, solved: {}, best: 1, streak: 0 });
+        push(quizKey, { v: 2, sections: { models: { best: 1, total: 3, reps: 0, ts: 2 } } });
+        return window.__hubState.snapshot();
       },
-      [K.exam]
+      [K.exam, K.lab, K.quiz]
     );
-    expect(best).toBe(18);
+    // Every max-merged field holds its higher value.
+    expect(after.exam.best).toBe(18);
+    expect(after.exam.total).toBe(20);
+    expect(after.exam.ts).toBe(500);
+    expect(after.lab.best).toBe(9);
+    expect(after.lab.streak).toBe(7);
+    expect(after.quiz.sections.models.best).toBe(3);
+    expect(after.quiz.sections.models.reps).toBe(5);
+    expect(after.quiz.sections.models.ts).toBe(900);
+    // And a union field is not lost by the stale write either.
+    expect(after.lab.solved.lab1).toBe(true);
   });
 
   test('an explicit reset propagates across tabs', async ({ page }) => {
