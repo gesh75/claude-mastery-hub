@@ -444,11 +444,17 @@ for (const f of wfFiles) {
     // mitigation, because the value never becomes shell text. Flagging it would
     // push authors away from the safe pattern.
     if (key === 'with' || key === 'if') {
+      // Sequences must be traversed too: an action input expressed as a YAML
+      // list would otherwise carry an untrusted interpolation straight through.
       const scan = (v, path2) => {
         if (typeof v === 'string') {
           if (UNTRUSTED.test(v)) {
             wfBad(`${path2}: untrusted event data interpolated into \`${key}:\`: ${v.match(UNTRUSTED)[0]}`);
           }
+          return;
+        }
+        if (Array.isArray(v)) {
+          v.forEach((item, idx) => scan(item, `${path2}[${idx}]`));
           return;
         }
         if (isPlainObject(v)) for (const [k2, v2] of Object.entries(v)) scan(v2, `${path2}.${k2}`);

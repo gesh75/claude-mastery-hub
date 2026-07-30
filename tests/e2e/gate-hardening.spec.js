@@ -48,6 +48,16 @@ test.describe('gate hardening (external audit findings)', () => {
     }
     // navigator itself stays legal: navigator.clipboard powers the copy buttons.
     expect(src).toMatch(/navigator.{0,80}clipboard/s);
+
+    // Pin the enforcement too: the list is inert without the AST walk that
+    // consumes it, so assert the walk, both node kinds, and the failure call.
+    const enforcement = src.slice(src.indexOf('BANNED_SINKS'), src.indexOf('BANNED_ASSIGN'));
+    expect(enforcement).toMatch(/walkAst\(/);
+    expect(enforcement).toMatch(/'Identifier'/);
+    expect(enforcement).toMatch(/'MemberExpression'/);
+    expect(enforcement).toMatch(/node\.computed/); // computed access is covered
+    expect(enforcement).toMatch(/bad\(/);
+    expect(enforcement).toMatch(/jsHits\+\+/);
   });
 
   test('URL assignment is checked structurally, including concatenation', async () => {
@@ -60,10 +70,11 @@ test.describe('gate hardening (external audit findings)', () => {
 
   test('untrusted interpolation is matched anywhere inside an expression', async () => {
     const src = await readFile(new URL('scripts/check-static.mjs', ROOT), 'utf8');
-    const m = src.match(/const UNTRUSTED = (\/.*\/);/);
-    expect(m, 'UNTRUSTED regex must be present').not.toBeNull();
-    // eslint-disable-next-line no-eval
-    const re = new RegExp(m[1].slice(1, -1));
+    // Extract pattern and flags separately and fail loudly if the declaration
+    // shape changes, rather than silently testing a different regex.
+    const m = src.match(/const UNTRUSTED = \/((?:[^/\\\n]|\\.)+)\/([gimsuy]*);/);
+    expect(m, 'UNTRUSTED must be a single-line regex literal this test can read').not.toBeNull();
+    const re = new RegExp(m[1], m[2].replace('g', ''));
     // A bare interpolation, a comparison, a function wrapper, and head_ref must
     // all match. The original regex only matched the bare form.
     for (const expr of [
@@ -86,7 +97,11 @@ test.describe('gate hardening (external audit findings)', () => {
 
   test('persisted-state write path enforces the same caps as the read path', async () => {
     const html = await readFile(new URL('index.html', ROOT), 'utf8');
-    const write = html.slice(html.indexOf('function hubWrite'), html.indexOf('function hubResetAt'));
-    expect(write, 'hubWrite must bound what it stores').toMatch(/HUB_MAX_RAW/);
+    // Match the function's own body rather than slicing between two names,
+    // which would drift if either is moved, split, or duplicated.
+    const m = html.match(/function hubWrite\s*\([^)]*\)\s*\{([\s\S]*?)\n\}/);
+    expect(m, 'hubWrite must be locatable as a single function body').not.toBeNull();
+    expect(m[1], 'hubWrite must bound what it stores').toMatch(/HUB_MAX_RAW/);
+    expect(m[1], 'hubWrite must refuse rather than store an oversized value').toMatch(/return false/);
   });
 });

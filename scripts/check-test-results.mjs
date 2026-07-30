@@ -149,11 +149,12 @@ if (structural.length) die('Playwright report is structurally invalid', structur
 const provenance = [];
 const cfg = report.config;
 if (!Array.isArray(cfg.projects) || cfg.projects.length !== 1 || cfg.projects[0]?.name !== 'chromium') {
-  provenance.push(
-    `report.config.projects must be exactly [chromium], got ${JSON.stringify(
-      (cfg.projects ?? []).map((p) => p?.name)
-    )}`
-  );
+  // Build the display value defensively: a non-array `projects` must still
+  // produce this error rather than throwing on .map and losing the report.
+  const shown = Array.isArray(cfg.projects)
+    ? JSON.stringify(cfg.projects.map((p) => (isObject(p) ? p.name : p)))
+    : JSON.stringify(cfg.projects);
+  provenance.push(`report.config.projects must be exactly [chromium], got ${shown}`);
 }
 if (process.env.CI && cfg.forbidOnly !== true) {
   provenance.push('report.config.forbidOnly must be true under CI, so a stray test.only fails the run');
