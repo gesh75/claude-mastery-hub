@@ -66,6 +66,8 @@ The gate is built so that a green run cannot be vacuous:
 | [#17](https://github.com/gesh75/claude-mastery-hub/pull/17) | Durable documentation + offline roadmap dashboard | `7be4ce3` |
 | [#18](https://github.com/gesh75/claude-mastery-hub/pull/18) | Persisted-state integrity | `7049355` |
 | [#19](https://github.com/gesh75/claude-mastery-hub/pull/19) | Practice Lab validation | `dc20627` |
+| [#20](https://github.com/gesh75/claude-mastery-hub/pull/20) | Final programme state + Notion sync | `59086b8` |
+| [#21](https://github.com/gesh75/claude-mastery-hub/pull/21) | External-audit findings closed | `f830158` |
 
 ### In progress
 
@@ -73,13 +75,10 @@ Nothing. All planned milestones are merged and production-verified.
 
 ### Deferred
 
-**Model registry rendering.** `MODEL_FACTS.availability`, `positioning`,
+**Model registry rendering.** *(the only remaining deferred item)* `MODEL_FACTS.availability`, `positioning`,
 `sources`, `featureExceptions`, `fastMode`, and `BENCHMARK_EVIDENCE` are
 maintained but not all consumed by a renderer. Tests assert both the registry
 and the rendered HTML so they cannot drift silently.
-
-**Section-count drift.** The hero says "37" while README and `og.png` say
-"39/40". Reconcile to one honest number when the area is next touched.
 
 **Maintainability consolidation.** Keep the app single-file unless extraction
 produces a measurable maintenance benefit; never mix that with a behaviour fix.
