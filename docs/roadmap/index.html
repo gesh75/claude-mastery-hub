@@ -82,13 +82,13 @@
 <header class="top">
   <p class="eyebrow">Project Roadmap &amp; Status</p>
   <h1>Claude Mastery Hub</h1>
-  <p class="sub">Interactive single-file guide to mastering Claude — one <code>index.html</code>, zero dependencies, fully offline. Updated 2026-07-30.</p>
+  <p class="sub">Interactive single-file guide to mastering Claude — one <code>index.html</code>, zero dependencies, fully offline. Updated 2026-07-31.</p>
 </header>
 
 <h2>Executive status</h2>
 <div class="pulse">
-  <div class="stat"><span class="k">Health</span><span class="v green">Stable<small>gate enforced on main</small></span></div>
-  <div class="stat"><span class="k">Tests</span><span class="v cyan">29 passing<small>0 skipped · 0 retried</small></span></div>
+  <div class="stat"><span class="k">Health</span><span class="v green">Complete<small>gate enforced on main</small></span></div>
+  <div class="stat"><span class="k">Tests</span><span class="v cyan">86 passing<small>0 skipped · 0 retried</small></span></div>
   <div class="stat"><span class="k">CI</span><span class="v green">Green<small>Quality gate · push</small></span></div>
   <div class="stat"><span class="k">Branch protection</span><span class="v green">Enforced<small>incl. admins</small></span></div>
   <div class="stat"><span class="k">Deployment</span><span class="v green">Live<small>GitHub Pages</small></span></div>
@@ -97,7 +97,7 @@
 
 <div class="next">
   <span class="k">Current next action — exactly one</span>
-  <p>Merge the documentation PR, then start <code>fix/persisted-state-integrity</code>.</p>
+  <p>None — stabilization programme complete. All milestones merged and production-verified.</p>
 </div>
 
 <h2>Milestones</h2>
@@ -135,28 +135,44 @@
     <p class="meta">merge <b>7f7f24f</b> · push run <b>30520594773</b></p>
   </article>
 
-  <article class="card active">
-    <span class="tag active">In progress</span>
-    <h3>Documentation system</h3>
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #17 — Documentation system</h3>
     <p>Roadmap, current state, decision log, execution changelog, and this offline dashboard, so any session starts grounded.</p>
-    <div class="bar p100"><span></span></div><div class="pct">In review</div>
-    <p class="meta">branch <b>docs/project-roadmap</b></p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>7be4ce3</b></p>
   </article>
 
-  <article class="card plan">
-    <span class="tag plan">Planned</span>
-    <h3>Persisted-state integrity</h3>
-    <p>Safe parsing, schema version with idempotent migration, validation and clamping (mastery 0–100%), and deterministic cross-tab merge.</p>
-    <div class="bar p0"><span></span></div><div class="pct">Not started</div>
-    <p class="meta">branch <b>fix/persisted-state-integrity</b></p>
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #18 — Persisted-state integrity</h3>
+    <p>Fixed a startup crash from a stored <code>null</code> and an over-100% mastery path. Safe parsing, schema version 2 with idempotent migration, clamping, and deterministic cross-tab merge.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>7049355</b> · 20 regressions</p>
   </article>
 
-  <article class="card plan">
-    <span class="tag plan">Planned</span>
-    <h3>Practice Lab validation</h3>
-    <p>Explicit per-challenge validators; a bare <code>@</code>, <code>!</code>, <code>#</code>, or incomplete <code>claude -p</code> must be rejected.</p>
-    <div class="bar p0"><span></span></div><div class="pct">Not started</div>
-    <p class="meta">branch <b>fix/practice-lab-validation</b></p>
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #19 — Practice Lab validation</h3>
+    <p>Explicit per-challenge validators. A bare <code>@</code>, <code>!</code>, <code>#</code>, or incomplete <code>claude -p</code> is now rejected; prefix and substring acceptance are gone.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>dc20627</b> · 20 regressions</p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #21 — External audit closed</h3>
+    <p>Report provenance pinned, network APIs banned by AST identifier, write-path caps enforced. 3 of 5 findings real, 1 partially valid, 1 did not reproduce.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>f830158</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #22 — Counts reconciled</h3>
+    <p>Hero, meta tags and README advertised 37/40/39 sections against a real 41. Now derived from the DOM and pinned by tests.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>aae8d25</b></p>
   </article>
 
 </div>
@@ -170,7 +186,7 @@
       <tr><td><code>check-diff.mjs</code></td><td>whitespace/conflict errors over an exact per-event commit range</td><td class="green">pass</td></tr>
       <tr><td><code>npm audit</code></td><td>no advisories at any severity</td><td class="green">0 vulnerabilities</td></tr>
       <tr><td><code>check-static.mjs</code></td><td>YAML + AST + CSS structural integrity, offline guarantee</td><td class="green">pass</td></tr>
-      <tr><td><code>npm test</code></td><td>Playwright suite, <code>forbidOnly</code> active</td><td class="green">29 passed</td></tr>
+      <tr><td><code>npm test</code></td><td>Playwright suite, <code>forbidOnly</code> active</td><td class="green">86 passed</td></tr>
       <tr><td><code>check-test-results.mjs</code></td><td>the suite actually ran what it claims</td><td class="green">pass</td></tr>
       <tr><td>Artifacts</td><td>upload on failure only</td><td class="green">0 on success</td></tr>
     </tbody>
@@ -181,7 +197,7 @@
 <div class="cards">
   <article class="card done"><h3>Content &amp; engines</h3><p><code>index.html</code> — sections plus the <code>QUIZ</code>, <code>EXAM</code>, and <code>LAB</code> data-driven engines.</p></article>
   <article class="card done"><h3>Model fact registry</h3><p><code>MODEL_FACTS</code>, <code>MODEL_SOURCES</code>, <code>BENCHMARK_EVIDENCE</code> — one place for volatile facts with a verification date.</p></article>
-  <article class="card active"><h3>Persistence</h3><p><code>localStorage</code> keys <code>claude_hub_quiz/exam/mastery/nav/lab_v1</code>. Hardening is the next milestone.</p></article>
+  <article class="card done"><h3>Persistence</h3><p><code>localStorage</code> keys <code>claude_hub_quiz/exam/mastery/lab_v1</code>, validated and version-2 migrated, with deterministic cross-tab merge.</p></article>
   <article class="card done"><h3>Quality gate</h3><p><code>.github/workflows/ci.yml</code> plus <code>scripts/check-*.mjs</code> — structural parsing, not text matching.</p></article>
 </div>
 
@@ -229,7 +245,7 @@
 
 <footer>
   Claude Mastery Hub — project roadmap. Offline by design: this page loads no external
-  resources. Status reflects <code>main</code> @ <code>7f7f24f</code>.
+  resources. Status reflects the last merged PR, #22. Read the live HEAD with <code>git rev-parse origin/main</code>.
 </footer>
 
 </div>

@@ -71,30 +71,37 @@ test.describe('project roadmap dashboard', () => {
     const next = page.locator('.next');
     await expect(next).toHaveCount(1);
     await expect(next).toContainText('exactly one');
-    await expect(next).toContainText('fix/persisted-state-integrity');
+    await expect(next).toContainText('complete');
   });
 
   test('reports health, test count, CI and deployment state', async ({ page }) => {
     await page.goto(PAGE);
+    // Derive the expected count from the committed baseline so the dashboard
+    // cannot advertise a stale number, and this test cannot pin one either.
+    const baseline = JSON.parse(await readFile(new URL('scripts/expected-tests.json', ROOT), 'utf8'));
     const pulse = page.locator('.pulse');
-    await expect(pulse).toContainText('29 passing');
+    await expect(pulse).toContainText(`${baseline.totalMinimum} passing`);
     await expect(pulse).toContainText('Enforced');
     await expect(pulse).toContainText('Live');
-    await expect(page.locator('.scroll')).toContainText('29 passed');
+    await expect(page.locator('.scroll')).toContainText(`${baseline.totalMinimum} passed`);
     await expect(page.locator('.scroll')).toContainText('0 on success');
   });
 
   test('lists merged PRs 13-16 and both planned milestones', async ({ page }) => {
     await page.goto(PAGE);
     const cards = page.locator('.cards').first();
-    for (const pr of ['PR #13', 'PR #14', 'PR #15', 'PR #16']) {
+    for (const pr of ['PR #13', 'PR #14', 'PR #15', 'PR #16', 'PR #17', 'PR #18', 'PR #19', 'PR #21', 'PR #22']) {
       await expect(cards).toContainText(pr);
     }
     await expect(cards).toContainText('Persisted-state integrity');
     await expect(cards).toContainText('Practice Lab validation');
     // Merge SHAs are the evidence; without them a "merged" tag is just a claim.
-    await expect(cards).toContainText('7f7f24f');
-    await expect(cards).toContainText('9924a6b');
+    for (const sha of ['7f7f24f', '9924a6b', '7be4ce3', '7049355', 'dc20627', 'f830158', 'aae8d25']) {
+      await expect(cards).toContainText(sha);
+    }
+    // Nothing may still be advertised as planned or in progress.
+    await expect(page.locator('.tag.plan')).toHaveCount(0);
+    await expect(page.locator('.tag.active')).toHaveCount(0);
   });
 
   test('links to the repository, PRs and source documents', async ({ page }) => {
@@ -128,12 +135,23 @@ test.describe('project roadmap dashboard', () => {
     const md = await readFile(new URL('docs/CURRENT_STATE.md', ROOT), 'utf8');
     expect(md).toMatch(/read this file first/i);
     expect(md).toMatch(/update it last/i);
-    // Assert the *shape*, not a literal SHA: pinning one would make this test
-    // fail every time `main` advances, which is not a defect in the document.
-    expect(md, 'must record the current main commit as a full 40-hex SHA').toMatch(
-      /\|\s*`?main`?\s*\|\s*`[0-9a-f]{40}`/i
-    );
+    // The header table must NOT pin the current HEAD. A docs commit can never
+    // contain its own squash SHA, so any recorded HEAD is stale the moment the
+    // PR merges -- which happened twice. An earlier version of this test
+    // *required* that SHA, which is why the drift kept coming back. The stable
+    // facts are the last merged PR number and a command to read HEAD live.
+    const header = md.slice(0, md.indexOf('## Branch protection'));
+    expect(header, 'the header must not pin a volatile HEAD SHA').not.toMatch(/`[0-9a-f]{40}`/i);
+    expect(header, 'the header must name the last merged PR').toMatch(/Last merged PR\s*\|\s*\[?#\d+/);
+    expect(header, 'the header must say how to read HEAD live').toMatch(/git rev-parse origin\/main/);
     expect(md).toMatch(/run \[`\d+`\]/); // a real CI run id, linked
+
+    // The advertised test count must equal the committed anti-vacuity baseline,
+    // so the two cannot disagree about how much coverage exists.
+    const baseline = JSON.parse(await readFile(new URL('scripts/expected-tests.json', ROOT), 'utf8'));
+    const claimed = md.match(/\|\s*Tests\s*\|\s*\*\*(\d+)\*\*/);
+    expect(claimed, 'CURRENT_STATE must advertise a test count').not.toBeNull();
+    expect(Number(claimed[1]), 'test count disagrees with the baseline').toBe(baseline.totalMinimum);
     expect(md).toContain('enforce_admins');
     expect(md).toMatch(/## Next action/);
     // Exactly one next-action heading, so the file cannot accumulate several.
