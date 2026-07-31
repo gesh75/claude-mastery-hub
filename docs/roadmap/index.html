@@ -197,7 +197,7 @@
 <div class="cards">
   <article class="card done"><h3>Content &amp; engines</h3><p><code>index.html</code> — sections plus the <code>QUIZ</code>, <code>EXAM</code>, and <code>LAB</code> data-driven engines.</p></article>
   <article class="card done"><h3>Model fact registry</h3><p><code>MODEL_FACTS</code>, <code>MODEL_SOURCES</code>, <code>BENCHMARK_EVIDENCE</code> — one place for volatile facts with a verification date.</p></article>
-  <article class="card done"><h3>Persistence</h3><p><code>localStorage</code> keys <code>claude_hub_quiz/exam/mastery/lab_v1</code>, validated and version-2 migrated, with deterministic cross-tab merge.</p></article>
+  <article class="card done"><h3>Persistence</h3><p><code>localStorage</code> keys <code>claude_hub_quiz/exam/mastery/lab_v1</code>, validated and version-2 migrated, with deterministic cross-tab merge. <code>claude_hub_nav_v1</code> is a separate single-flag preference with its own guarded read/write, outside the state layer.</p></article>
   <article class="card done"><h3>Quality gate</h3><p><code>.github/workflows/ci.yml</code> plus <code>scripts/check-*.mjs</code> — structural parsing, not text matching.</p></article>
 </div>
 
@@ -245,7 +245,7 @@
 
 <footer>
   Claude Mastery Hub — project roadmap. Offline by design: this page loads no external
-  resources. Status reflects the last merged PR, #22. Read the live HEAD with <code>git rev-parse origin/main</code>.
+  resources. Status reflects the most recently merged pull request. Read the live HEAD with <code>git rev-parse origin/main</code> and the current PR list on GitHub.
 </footer>
 
 </div>

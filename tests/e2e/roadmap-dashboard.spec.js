@@ -87,7 +87,7 @@ test.describe('project roadmap dashboard', () => {
     await expect(page.locator('.scroll')).toContainText('0 on success');
   });
 
-  test('lists merged PRs 13-16 and both planned milestones', async ({ page }) => {
+  test('lists every merged PR with its SHA and nothing still planned', async ({ page }) => {
     await page.goto(PAGE);
     const cards = page.locator('.cards').first();
     for (const pr of ['PR #13', 'PR #14', 'PR #15', 'PR #16', 'PR #17', 'PR #18', 'PR #19', 'PR #21', 'PR #22']) {
@@ -140,7 +140,12 @@ test.describe('project roadmap dashboard', () => {
     // PR merges -- which happened twice. An earlier version of this test
     // *required* that SHA, which is why the drift kept coming back. The stable
     // facts are the last merged PR number and a command to read HEAD live.
-    const header = md.slice(0, md.indexOf('## Branch protection'));
+    // Guard the slice: indexOf returns -1 when the heading is renamed, and
+    // slice(0, -1) would then hand back nearly the whole file, letting the
+    // regression check pass for the wrong reason.
+    const headerEnd = md.indexOf('## Branch protection');
+    expect(headerEnd, 'the "## Branch protection" heading must delimit the header').toBeGreaterThan(0);
+    const header = md.slice(0, headerEnd);
     expect(header, 'the header must not pin a volatile HEAD SHA').not.toMatch(/`[0-9a-f]{40}`/i);
     expect(header, 'the header must name the last merged PR').toMatch(/Last merged PR\s*\|\s*\[?#\d+/);
     expect(header, 'the header must say how to read HEAD live').toMatch(/git rev-parse origin\/main/);

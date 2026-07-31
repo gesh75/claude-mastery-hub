@@ -10,7 +10,7 @@
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
 | Branch | `main` |
-| Last merged PR | [#22](https://github.com/gesh75/claude-mastery-hub/pull/22) — reconcile advertised counts |
+| Last merged PR | [#23](https://github.com/gesh75/claude-mastery-hub/pull/23) — stop recording a volatile HEAD |
 | Open PRs | none |
 | Latest CI on `main` | run [`30619580708`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30619580708) — workflow `CI`, check `Quality gate`, event `push`, **success** |
 | Tests | **86** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 2 |
@@ -22,8 +22,11 @@
 
 This file deliberately does **not** record `main`'s commit SHA. A documentation
 commit cannot contain its own squash SHA, so any recorded HEAD is already stale
-the moment the PR merges — which happened twice before this was fixed. The last
-merged PR number above is stable; read the live HEAD instead:
+the moment the PR merges — which happened twice before this was fixed.
+
+A PR **number**, unlike its squash SHA, *is* knowable while the PR is being
+written, so the row above names the PR that last touched this file and stays
+accurate through its own merge. Read the live HEAD instead of recording it:
 
 ```bash
 git rev-parse origin/main
@@ -78,6 +81,7 @@ Artifacts upload **only on failure** (7-day retention).
 | #20 | Final programme state + Notion sync | merged `59086b8` |
 | #21 | External-audit findings closed | merged `f830158` |
 | #22 | Advertised counts reconciled | merged `aae8d25` |
+| #23 | CURRENT_STATE stops recording a volatile HEAD | this PR |
 
 ## Deferred
 
