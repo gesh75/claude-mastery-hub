@@ -6,18 +6,35 @@
 
 | Field | Value |
 | --- | --- |
-| Last updated | 2026-07-30 |
+| Last updated | 2026-07-31 |
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
 | Branch | `main` |
-| `main` | `f830158ce116dd8030cefaf348734ec6c5f283fa` |
-| Active PR | count-drift reconciliation (`fix/count-drift`) |
-| Latest CI on `main` | run [`30618478289`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30618478289) — workflow `CI`, check `Quality gate`, event `push`, **success** |
+| Last merged PR | [#23](https://github.com/gesh75/claude-mastery-hub/pull/23) — stop recording a volatile HEAD |
+| Open PRs | none |
+| Latest CI on `main` | run [`30619580708`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30619580708) — workflow `CI`, check `Quality gate`, event `push`, **success** |
 | Tests | **86** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 2 |
 | Branch protection | **active and verified** on `main` (see below) |
-| Deployment | GitHub Pages serving `main` |
+| Deployment | GitHub Pages serving `main`, live page byte-identical to the repo |
 | Unresolved Critical/Important | none |
-| Production | verified on live Pages: live `index.html` sha256 identical to repo; 0 overflow at 320–1440 px; 0 console errors; 0 external requests |
+
+## Reading the current HEAD
+
+This file deliberately does **not** record `main`'s commit SHA. A documentation
+commit cannot contain its own squash SHA, so any recorded HEAD is already stale
+the moment the PR merges — which happened twice before this was fixed.
+
+A PR **number**, unlike its squash SHA, *is* knowable while the PR is being
+written, so the row above names the PR that last touched this file and stays
+accurate through its own merge. Read the live HEAD instead of recording it:
+
+```bash
+git rev-parse origin/main
+```
+
+A regression test enforces this: the header must not pin a 40-hex SHA, must name
+the last merged PR, and must advertise a test count equal to the committed
+anti-vacuity baseline.
 
 ## Branch protection on `main`
 
@@ -31,8 +48,8 @@ Applied and read back 2026-07-30; a direct push was rejected with
 - force pushes blocked · branch deletion blocked
 - conversation resolution required · no push-restriction bypass list
 
-**Consequence:** every change to `main`, including documentation, now goes
-through a pull request with a green `Quality gate`.
+**Consequence:** every change to `main`, including documentation, goes through a
+pull request with a green `Quality gate`.
 
 ## Quality gate
 
@@ -44,9 +61,9 @@ through a pull request with a green `Quality gate`.
 | `npm ci` | lockfile integrity |
 | `scripts/check-diff.mjs` | whitespace/conflict errors over an **exact per-event commit range** |
 | `npm audit --audit-level=high` | no high/critical advisories |
-| `scripts/check-static.mjs` | YAML/AST/CSS structural integrity, offline guarantee |
-| `npm test` (`CI=true`) | Playwright suite; `forbidOnly` active |
-| `scripts/check-test-results.mjs` | the suite actually ran what it claims |
+| `scripts/check-static.mjs` | YAML + JS AST + CSS structural integrity, offline guarantee, workflow self-check |
+| `npm test` (`CI=true`) | the Playwright suite; `forbidOnly` active |
+| `scripts/check-test-results.mjs` | the suite actually ran what it claims, from a credible report |
 
 Artifacts upload **only on failure** (7-day retention).
 
@@ -54,16 +71,28 @@ Artifacts upload **only on failure** (7-day retention).
 
 | # | Milestone | State |
 | --- | --- | --- |
-| PR #13 | P0 responsive containment + mobile nav a11y | merged |
-| PR #14 | Opus 5 currency + content-currency controls | merged |
-| PR #15 | Copilot custom instructions | merged |
-| PR #16 | Enforced CI quality gate | merged `7f7f24f` |
+| #13 | P0 responsive containment + mobile nav a11y | merged `8e6f8fb` |
+| #14 | Opus 5 currency + content-currency controls | merged `9924a6b` |
+| #15 | Copilot custom instructions | merged `11cd194` |
+| #16 | Enforced CI quality gate | merged `7f7f24f` |
 | #17 | Documentation system + visual roadmap | merged `7be4ce3` |
 | #18 | Persisted-state integrity | merged `7049355` |
 | #19 | Practice Lab validation | merged `dc20627` |
 | #20 | Final programme state + Notion sync | merged `59086b8` |
-| #21 | External-audit findings | merged `f830158` |
+| #21 | External-audit findings closed | merged `f830158` |
+| #22 | Advertised counts reconciled | merged `aae8d25` |
+| #23 | CURRENT_STATE stops recording a volatile HEAD | this PR |
+
+## Deferred
+
+**Model registry rendering.** Several `MODEL_FACTS` fields are maintained but not
+consumed by a renderer. Tests assert both the registry and the rendered HTML, so
+they cannot drift silently. This is a design choice, not a defect.
+
+**Mutation testing.** Nothing in the gate detects a test that executes but
+asserts nothing. The anti-vacuity checks prove the suite *ran*; they cannot
+prove it *verified*. This is the one genuinely open risk.
 
 ## Next action
 
-**None — programme complete.** Remaining deferred item is model-registry rendering, which is a design choice rather than a defect.
+**None — stabilization programme complete.**
