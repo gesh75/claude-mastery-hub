@@ -10,10 +10,10 @@
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
 | Branch | `main` |
-| `main` | `59086b8dfad5a6c7922bda012c7b91b7f233be9a` |
-| Active PR | external-audit findings (`fix/grok-audit-findings`) |
-| Latest CI on `main` | run [`30525451974`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30525451974) — workflow `CI`, check `Quality gate`, event `push`, **success** |
-| Tests | **84** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 |
+| `main` | `f830158ce116dd8030cefaf348734ec6c5f283fa` |
+| Active PR | count-drift reconciliation (`fix/count-drift`) |
+| Latest CI on `main` | run [`30618478289`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30618478289) — workflow `CI`, check `Quality gate`, event `push`, **success** |
+| Tests | **86** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 2 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main` |
 | Unresolved Critical/Important | none |
@@ -61,7 +61,9 @@ Artifacts upload **only on failure** (7-day retention).
 | #17 | Documentation system + visual roadmap | merged `7be4ce3` |
 | #18 | Persisted-state integrity | merged `7049355` |
 | #19 | Practice Lab validation | merged `dc20627` |
+| #20 | Final programme state + Notion sync | merged `59086b8` |
+| #21 | External-audit findings | merged `f830158` |
 
 ## Next action
 
-**Merge the external-audit findings PR.** Grok Super Heavy delivered 5 findings; 3 were real and fixed, 1 was partially valid (claim wording), 1 did not reproduce.
+**None — programme complete.** Remaining deferred item is model-registry rendering, which is a design choice rather than a defect.
