@@ -141,6 +141,42 @@ if (!isNonEmptyString(report?.config?.rootDir)) structural.push('report.config.r
 if (!Array.isArray(report?.suites)) structural.push('report.suites must be an array');
 if (structural.length) die('Playwright report is structurally invalid', structural);
 
+// --- provenance: this must be a real run of THIS suite -----------------------
+// Structure alone does not prove origin. A hand-written or stale report can be
+// shaped correctly, so cross-check the runner's own summary and configuration
+// against what we counted. Any disagreement means the report does not describe
+// the run that just happened.
+const provenance = [];
+const cfg = report.config;
+if (!Array.isArray(cfg.projects) || cfg.projects.length !== 1 || cfg.projects[0]?.name !== 'chromium') {
+  // Build the display value defensively: a non-array `projects` must still
+  // produce this error rather than throwing on .map and losing the report.
+  const shown = Array.isArray(cfg.projects)
+    ? JSON.stringify(cfg.projects.map((p) => (isObject(p) ? p.name : p)))
+    : JSON.stringify(cfg.projects);
+  provenance.push(`report.config.projects must be exactly [chromium], got ${shown}`);
+}
+if (process.env.CI && cfg.forbidOnly !== true) {
+  provenance.push('report.config.forbidOnly must be true under CI, so a stray test.only fails the run');
+}
+if (!isObject(report.stats)) {
+  provenance.push('report.stats must be an object');
+} else {
+  const st = report.stats;
+  for (const field of ['expected', 'unexpected', 'skipped', 'flaky']) {
+    if (!Number.isInteger(st[field]) || st[field] < 0) {
+      provenance.push(`report.stats.${field} must be a non-negative integer, got ${JSON.stringify(st[field])}`);
+    }
+  }
+  if (!(typeof st.duration === 'number' && st.duration > 0)) {
+    provenance.push(`report.stats.duration must be a positive number, got ${JSON.stringify(st.duration)}`);
+  }
+  if (!isNonEmptyString(st.startTime) || Number.isNaN(Date.parse(st.startTime))) {
+    provenance.push('report.stats.startTime must be a parseable timestamp');
+  }
+}
+if (provenance.length) die('Playwright report provenance is not credible', provenance);
+
 const rootDir = path.resolve(ROOT, report.config.rootDir);
 
 /** Walk the suite tree, validating every node, and flatten to test records. */
@@ -244,6 +280,19 @@ for (const t of tests) {
         'the declared status disagrees with the recorded execution'
     );
   }
+}
+
+// --- the runner's own summary must agree with what we counted ---------------
+// If stats and the walked tree disagree, one of them is fabricated.
+const st = report.stats;
+if (st.expected !== tests.length) {
+  failures.push(
+    `report.stats.expected is ${st.expected} but the suite tree contains ${tests.length} test(s) — ` +
+      'the summary and the tree disagree, so the report does not describe one coherent run'
+  );
+}
+for (const [field, label] of [['unexpected', 'failed'], ['skipped', 'skipped'], ['flaky', 'flaky']]) {
+  if (st[field] !== 0) failures.push(`report.stats.${field} is ${st[field]}: ${st[field]} ${label} test(s)`);
 }
 
 // --- counts ------------------------------------------------------------------

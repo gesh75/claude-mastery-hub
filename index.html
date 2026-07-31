@@ -6136,8 +6136,15 @@ function hubRead(key){
   if(typeof raw!=='string'||raw.length===0||raw.length>HUB_MAX_RAW)return null;
   try{return JSON.parse(raw);}catch(e){return null;}
 }
+// The size and key caps are enforced on WRITE as well as read. Enforcing them
+// only on read meant an oversized write succeeded, then read back as null, and
+// every normaliser returned its empty base -- silently discarding all progress.
+// Refusing the write keeps the last good value instead.
 function hubWrite(key,val){
-  try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}
+  var raw;
+  try{raw=JSON.stringify(val);}catch(e){return false;}
+  if(typeof raw!=='string'||raw.length>HUB_MAX_RAW)return false;
+  try{localStorage.setItem(key,raw);return true;}catch(e){return false;}
 }
 function hubResetAt(v){return hubIsObj(v)?hubInt(v.resetAt,0,8.64e15,0):0;}
 

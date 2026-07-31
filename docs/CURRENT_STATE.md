@@ -10,10 +10,10 @@
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
 | Branch | `main` |
-| `main` | `dc206273eb92ee8ae9e4b95434357039dbf4b01c` |
-| Active PR | none — all milestone PRs merged |
-| Latest CI on `main` | run [`30524608091`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30524608091) — workflow `CI`, check `Quality gate`, event `push`, **success** |
-| Tests | **78** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 |
+| `main` | `59086b8dfad5a6c7922bda012c7b91b7f233be9a` |
+| Active PR | external-audit findings (`fix/grok-audit-findings`) |
+| Latest CI on `main` | run [`30525451974`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30525451974) — workflow `CI`, check `Quality gate`, event `push`, **success** |
+| Tests | **84** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main` |
 | Unresolved Critical/Important | none |
@@ -64,4 +64,4 @@ Artifacts upload **only on failure** (7-day retention).
 
 ## Next action
 
-**Obtain SOL's single bounded read-only verdict on `main` `dc206273`.** No implementation work is outstanding.
+**Merge the external-audit findings PR.** Grok Super Heavy delivered 5 findings; 3 were real and fixed, 1 was partially valid (claim wording), 1 did not reproduce.
