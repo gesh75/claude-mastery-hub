@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 
 const ROOT = new URL('../../', import.meta.url);
 const PAGE = '/docs/roadmap/index.html';
+const LOCAL_ORIGIN = 'http://127.0.0.1:4173';
 const WIDTHS = [320, 390, 768, 1024, 1440];
 
 test.describe('project roadmap dashboard', () => {
@@ -15,7 +16,7 @@ test.describe('project roadmap dashboard', () => {
     page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
     page.on('requestfailed', (r) => errors.push(`requestfailed: ${r.url()}`));
     page.on('request', (r) => {
-      if (!r.url().startsWith('http://127.0.0.1:4173')) external.push(r.url());
+      if (new URL(r.url()).origin !== LOCAL_ORIGIN) external.push(r.url());
     });
 
     await page.goto(PAGE);
