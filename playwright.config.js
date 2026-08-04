@@ -1,7 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'node:path';
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  // Resolve from the tested checkout rather than this file. CI deliberately
+  // loads this config from a trusted base-commit checkout while testing the PR.
+  testDir: path.resolve(process.cwd(), 'tests/e2e'),
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,

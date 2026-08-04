@@ -360,6 +360,8 @@ const DIGEST = /@sha256:[0-9a-f]{64}$/i;
 // version required the ref to be the entire body, so `${{ github.event.x != 'y' }}`
 // and `${{ format('%s', github.event.x) }}` both slipped through.
 const UNTRUSTED = /\$\{\{[^}]*\b(github\.event\b[A-Za-z0-9_.*[\]]*|github\.head_ref)\b[^}]*\}\}/;
+// The PR base commit is trusted verifier input, not attacker-controlled text.
+const TRUSTED_BASE_SHA = /^\$\{\{\s*github\.event\.pull_request\.base\.sha\s*\|\|\s*github\.sha\s*\}\}$/;
 
 /**
  * Security-critical workflow semantics are read from the parsed YAML, not from
@@ -448,7 +450,7 @@ for (const f of wfFiles) {
       // list would otherwise carry an untrusted interpolation straight through.
       const scan = (v, path2) => {
         if (typeof v === 'string') {
-          if (UNTRUSTED.test(v)) {
+          if (UNTRUSTED.test(v) && !TRUSTED_BASE_SHA.test(v)) {
             wfBad(`${path2}: untrusted event data interpolated into \`${key}:\`: ${v.match(UNTRUSTED)[0]}`);
           }
           return;

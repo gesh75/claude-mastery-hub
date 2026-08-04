@@ -52,6 +52,16 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      # Verifiers must not come from the pull request they are judging. For a
+      # PR, anchor them to the immutable base commit; pushes and manual runs
+      # trust the commit that triggered the workflow.
+      - name: Checkout trusted CI verifier
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.sha }}
+          path: .trusted-ci
+          persist-credentials: false
+
       - name: Set up Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
@@ -61,10 +71,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install trusted verifier dependencies
+        run: npm ci --prefix ".trusted-ci"
+
       # Checks an explicit commit range for whitespace and conflict-marker
       # errors. A bare `git diff --check` on a clean tree would inspect nothing.
       - name: Diff integrity
-        run: node scripts/check-diff.mjs
+        run: node ".trusted-ci/scripts/check-diff.mjs"
 
       # Fails the build on a known high or critical advisory. This repo ships no
       # runtime dependencies, so the only exposure is the dev toolchain.
@@ -74,10 +87,11 @@ jobs:
       # Syntax, structure, encoding artifacts, offline integrity, and a
       # meta-check that no workflow here has been made advisory or unpinned.
       - name: Static integrity checks
-        run: npm run check:static
+        run: node ".trusted-ci/scripts/check-static.mjs"
 
       - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+        run: |
+          ".trusted-ci/node_modules/.bin/playwright" install --with-deps chromium
 
       # The canonical command, so CI and local runs cannot drift.
       # CI=true turns on forbidOnly, so a stray `test.only` fails the run rather
@@ -85,14 +99,16 @@ jobs:
       - name: Run Playwright suite
         env:
           CI: "true"
-        run: npm test
+        run: |
+          ".trusted-ci/node_modules/.bin/playwright" test --config ".trusted-ci/playwright.config.js"
 
       # A green suite proves nothing if it did not actually execute the tests.
       # Runs even when the suite fails, so a failing run still reports whether
       # the suite had also quietly shrunk.
       - name: Verify test-result integrity
         if: ${{ !cancelled() }}
-        run: npm run check:results
+        run: |
+          node ".trusted-ci/scripts/check-test-results.mjs" test-results/results.json ".trusted-ci/scripts/expected-tests.json"
 
       # Diagnostics are only useful when something broke. Uploading on success
       # would burn storage on artifacts nobody opens.
