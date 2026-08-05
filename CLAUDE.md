@@ -24,7 +24,7 @@ Claude Code, the API & Agent SDK, MCP, skills, subagents, hooks, plugins,
 multi-agent workflows) plus an "AI Foundations 101" track.
 
 - **Live page:** https://gesh75.github.io/claude-mastery-hub/ (GitHub Pages)
-- **Repo:** `gesh75/claude-mastery-hub` (owner: georgy75@gmail.com)
+- **Repo:** `gesh75/claude-mastery-hub` (owner: `@gesh75`)
 - **Everything ships in `index.html`** — inline CSS + JS, **zero dependencies,
   fully offline**. No build step. `open index.html` just works.
 - Other tracked files: `README.md`, `og.png` (1200×630 @2× social card), this file.
