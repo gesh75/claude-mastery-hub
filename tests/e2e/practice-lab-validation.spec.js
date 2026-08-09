@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { expectLabRendered } from '../helpers/lab.js';
 
 /**
  * Positive and negative matrix for every free-text (cmd) Practice Lab challenge.
@@ -95,7 +96,7 @@ async function judge(page, id, answer) {
 test.describe('practice lab validation', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('#lab-total')).toHaveText('12');
+    await expectLabRendered(page);
   });
 
   test('exposes a validator for every free-text challenge', async ({ page }) => {
@@ -149,7 +150,11 @@ test.describe('practice lab validation', () => {
   });
 
   test('multiple-choice validation stays exact', async ({ page }) => {
-    expect(await page.evaluate(() => document.querySelectorAll('#lab .lab-q').length)).toBe(12);
+    // Every declared challenge renders a card -- the invariant, not a literal.
+    const declared = await page.evaluate(() => window.LAB.length);
+    expect(await page.evaluate(() => document.querySelectorAll('#lab .lab-q').length)).toBe(
+      declared
+    );
     // A choice challenge has no free-text validator and must not be judged as one.
     expect(await page.evaluate(() => window.__labHasValidator('lab-plan'))).toBe(false);
 
@@ -176,7 +181,7 @@ test.describe('practice lab validation', () => {
         }
       });
       await page.reload();
-      await expect(page.locator('#lab-total')).toHaveText('12');
+      await expectLabRendered(page);
       outcome.push(
         await page.evaluate((idx) => {
           const card = [...document.querySelectorAll('#lab .lab-q')].find((c) =>
