@@ -2255,12 +2255,7 @@ settings, or org-wide via managed settings.</p>
 <h4>Runtime limits worth knowing before you scale up</h4>
 <table>
   <thead><tr><th>Limit</th><th>Value</th><th>Why it exists</th></tr></thead>
-  <tbody>
-    <tr><td>Concurrent agents</td><td><b data-workflow-fact="maxConcurrentAgents"></b></td><td>Bounds local resource use; fewer on machines with limited CPU cores</td></tr>
-    <tr><td>Agents per run</td><td><b data-workflow-fact="maxAgentsPerRun"></b></td><td>A runaway-loop backstop, far above any real workflow</td></tr>
-    <tr><td>&ldquo;Large workflow&rdquo; warning</td><td><b data-workflow-fact="largeRunAgentThreshold"></b> agents</td><td>Advisory only &mdash; it flags the run, it does not pause or limit it</td></tr>
-    <tr><td>&hellip;or projected tokens</td><td><b data-workflow-fact="largeRunTokenThreshold"></b></td><td>The same advisory warning, whichever trips first</td></tr>
-  </tbody>
+  <tbody data-workflow-rows></tbody>
 </table>
 
 <h4>Size guideline: advice, not a cap</h4>
@@ -6076,10 +6071,10 @@ var MODEL_FACTS={
 };
 var WORKFLOW_FACTS_VERIFIED_AT='2026-08-09';
 var WORKFLOW_FACTS={
-  maxConcurrentAgents:{label:'Concurrent agents',value:16,note:'fewer on machines with limited CPU cores',provenance:'Anthropic-documented',source:'workflowsDocs'},
-  maxAgentsPerRun:{label:'Agents per run',value:1000,note:'a runaway-loop backstop, far above any real workflow',provenance:'Anthropic-documented',source:'workflowsDocs'},
-  largeRunAgentThreshold:{label:'Large-workflow warning',value:25,note:'advisory only \u2014 it does not pause or limit the run',provenance:'Anthropic-documented',source:'workflowsDocs'},
-  largeRunTokenThreshold:{label:'Large-workflow token warning',value:1500000,note:'projected total for the run',provenance:'Anthropic-documented',source:'workflowsDocs'}
+  maxConcurrentAgents:{label:'Concurrent agents',value:16,note:'Bounds local resource use; fewer on machines with limited CPU cores',provenance:'Anthropic-documented',source:'workflowsDocs'},
+  maxAgentsPerRun:{label:'Agents per run',value:1000,note:'A runaway-loop backstop, far above any real workflow',provenance:'Anthropic-documented',source:'workflowsDocs'},
+  largeRunAgentThreshold:{label:'Large-workflow warning (agents)',value:25,note:'advisory only \u2014 it does not pause or limit the run',provenance:'Anthropic-documented',source:'workflowsDocs'},
+  largeRunTokenThreshold:{label:'Large-workflow warning (projected tokens)',value:1500000,note:'The same advisory warning, whichever trips first',provenance:'Anthropic-documented',source:'workflowsDocs'}
 };
 var MODEL_ORDER=['haiku','sonnet','opus','fable'];
 var MODEL_ALL_ORDER=['haiku','sonnet','opus','fable','mythos'];
@@ -6180,9 +6175,12 @@ function renderRegistry(){
   document.querySelectorAll('[data-bench-rows]').forEach(function(body){
     body.innerHTML=benchRows();
   });
-  document.querySelectorAll('[data-workflow-fact]').forEach(function(el){
-    var f=WORKFLOW_FACTS[el.getAttribute('data-workflow-fact')];
-    if(f)el.textContent=groupDigits(f.value);
+  document.querySelectorAll('[data-workflow-rows]').forEach(function(body){
+    body.innerHTML=Object.keys(WORKFLOW_FACTS).map(function(k){
+      var f=WORKFLOW_FACTS[k];
+      return '<tr><td>'+escHtml(f.label)+'</td><td><b data-workflow-fact="'+escHtml(k)+'">'+
+        groupDigits(f.value)+'</b></td><td>'+escHtml(f.note||'')+'</td></tr>';
+    }).join('');
   });
   document.querySelectorAll('[data-model-sources]').forEach(function(list){
     var kind=list.getAttribute('data-model-sources');

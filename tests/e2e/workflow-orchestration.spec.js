@@ -71,6 +71,16 @@ test.describe('workflow orchestration spine', () => {
       expect(fact.provenance, `${key} needs provenance`).toBeTruthy();
       expect(fact.source, `${key} needs a source key`).toBeTruthy();
     }
+
+    // The whole row renders from the registry, not just the number. A label or
+    // note that no renderer consumes is dead data -- the gap #28 existed to close.
+    const rows = page.locator('#workflows [data-workflow-rows] tr');
+    await expect(rows).toHaveCount(Object.keys(facts.facts).length);
+    for (const [key, fact] of Object.entries(facts.facts)) {
+      const row = page.locator(`#workflows [data-workflow-rows] tr:has([data-workflow-fact="${key}"])`);
+      await expect(row, `${key} label must render`).toContainText(fact.label);
+      await expect(row, `${key} note must render`).toContainText(fact.note);
+    }
   });
 
   test('the size guideline is taught with its agent counts and its default', async ({

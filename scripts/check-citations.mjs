@@ -313,6 +313,28 @@ if (!failures.length) {
   if (!urlHits) ok('every source URL is https, credential-free, and on the allowlist');
 
   console.log('verification date');
+  // Both registries carry their own date and both get the same treatment. The
+  // schema only checks the digit shape, which accepts 2026-02-31 and 2099-01-01.
+  const checkDate = (name, value) => {
+    const parsed = /^(\d{4})-(\d{2})-(\d{2})$/.test(String(value))
+      ? new Date(`${value}T00:00:00Z`)
+      : null;
+    const roundTrips =
+      parsed && !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === String(value);
+    if (!roundTrips) {
+      bad(`${name} \`${value}\` is not a valid calendar date`);
+      return;
+    }
+    const ageDays = Math.floor((Date.now() - parsed.getTime()) / 86400000);
+    if (ageDays < 0) {
+      bad(`${name} \`${value}\` is in the future — a date cannot be verified before it happens`);
+    } else if (ageDays > REVIEW_DUE_DAYS) {
+      ok(`${name} ${value} — stale by ${ageDays - REVIEW_DUE_DAYS} days, review due (not a build failure)`);
+    } else {
+      ok(`${name} ${value} — ${ageDays} days old`);
+    }
+  };
+  if (doc.workflow) checkDate('WORKFLOW_FACTS_VERIFIED_AT', doc.workflow.verifiedAt);
   const iso = doc.verifiedAt;
   const parsed = /^(\d{4})-(\d{2})-(\d{2})$/.test(String(iso)) ? new Date(`${iso}T00:00:00Z`) : null;
   // Round-trip the parse: JS normalises impossible dates (2026-02-31 becomes
