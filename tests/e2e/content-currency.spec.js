@@ -277,8 +277,20 @@ test.describe('Opus 5 content currency', () => {
     // comparing it to the visible claim is the drift this repo keeps hitting
     // (PR #22 existed to clean up exactly that class of stale number).
     const labClaimPattern = /(\d+)\s+hands[-\u2011]on\s+scenario\s+challenges/gi;
+
+    // The "Recently updated" panel is DATED HISTORY, not a live claim: its entry
+    // reads "Jul 2026 — New Practice Lab: 12 hands-on scenario challenges", which
+    // records what shipped then. Binding it to the current count would force
+    // rewriting the changelog every time a challenge is added. Strip it first.
+    const indexHtml = await readFile(new URL('index.html', ROOT), 'utf8');
+    const logStart = indexHtml.indexOf('<details class="anim-x" id="changelog"');
+    expect(logStart, 'the changelog block must still be findable to be excluded').toBeGreaterThan(0);
+    const logEnd = indexHtml.indexOf('</details>', logStart);
+    expect(logEnd, 'the changelog block must be closed').toBeGreaterThan(logStart);
+    const liveIndexHtml = indexHtml.slice(0, logStart) + indexHtml.slice(logEnd);
+
     const claimSources = {
-      'index.html': await readFile(new URL('index.html', ROOT), 'utf8'),
+      'index.html': liveIndexHtml,
       'README.md': await readFile(new URL('README.md', ROOT), 'utf8')
     };
     let labClaims = 0;
