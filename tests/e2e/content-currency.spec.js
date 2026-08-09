@@ -272,7 +272,27 @@ test.describe('Opus 5 content currency', () => {
 
     expect(assessmentFacts.quizCount).toBe(3);
     expect(assessmentFacts.examCount).toBe(20);
-    expect(assessmentFacts.labCount).toBe(12);
+    // The Practice Lab count is asserted against what the project ADVERTISES,
+    // not against a literal. Comparing LAB.length to itself would be vacuous;
+    // comparing it to the visible claim is the drift this repo keeps hitting
+    // (PR #22 existed to clean up exactly that class of stale number).
+    const labClaimPattern = /(\d+)\s+hands[-\u2011]on\s+scenario\s+challenges/gi;
+    const claimSources = {
+      'index.html': await readFile(new URL('index.html', ROOT), 'utf8'),
+      'README.md': await readFile(new URL('README.md', ROOT), 'utf8')
+    };
+    let labClaims = 0;
+    for (const [file, text] of Object.entries(claimSources)) {
+      for (const match of text.matchAll(labClaimPattern)) {
+        labClaims += 1;
+        expect(
+          Number(match[1]),
+          `${file} advertises ${match[1]} Practice Lab challenges, but LAB holds ${assessmentFacts.labCount}`
+        ).toBe(assessmentFacts.labCount);
+      }
+    }
+    expect(labClaims, 'the challenge count must be advertised somewhere').toBeGreaterThan(0);
+    expect(assessmentFacts.labCount).toBeGreaterThan(0);
     expect(assessmentFacts.quizOptions).toContain('Opus 5');
     expect(assessmentFacts.examOptions).toContain('Opus 5');
     expect(

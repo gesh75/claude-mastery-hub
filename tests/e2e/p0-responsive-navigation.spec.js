@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { expectLabRendered } from '../helpers/lab.js';
 import AxeBuilder from '@axe-core/playwright';
 
 const VIEWPORTS = [
@@ -23,7 +24,7 @@ async function loadApplication(page) {
   });
 
   await page.goto('/');
-  await expect(page.locator('#lab-total')).toHaveText('12');
+  await expectLabRendered(page);
   await expect(page.locator('#exam-host .exam-q')).toHaveCount(20);
   return runtimeErrors;
 }
@@ -166,7 +167,7 @@ test.describe('mobile navigation accessibility', () => {
     expect(firstSequence.some(item => item.insideSidebar)).toBe(false);
 
     await page.reload();
-    await expect(page.locator('#lab-total')).toHaveText('12');
+    await expectLabRendered(page);
     const secondSequence = await collectFullTabCycle(page);
     expect(secondSequence).toEqual(firstSequence);
   });
