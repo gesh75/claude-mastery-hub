@@ -257,6 +257,17 @@ test.describe('model registry rendering', () => {
       await expect(anchor).toHaveAttribute('rel', 'noopener');
     }
 
+    // Named, per-key resolution first. The set equality below already catches a
+    // dangling workflow source, but it fails as a whole-array diff; this names
+    // the offending key the way check-citations.mjs does.
+    const workflowSources = await page.evaluate(() =>
+      Object.entries(window.WORKFLOW_FACTS ?? {}).map(([name, f]) => [name, f.source])
+    );
+    expect(workflowSources.length, 'WORKFLOW_FACTS must cite something').toBeGreaterThan(0);
+    for (const [name, key] of workflowSources) {
+      expect(sources[key], `WORKFLOW_FACTS.${name} cites "${key}", absent from MODEL_SOURCES`).toBeTruthy();
+    }
+
     // Two-way: nothing in the registry is orphaned.
     expect(referenced.sort()).toEqual(Object.keys(sources).sort());
   });
