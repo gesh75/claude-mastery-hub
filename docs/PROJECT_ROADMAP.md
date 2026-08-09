@@ -68,17 +68,13 @@ The gate is built so that a green run cannot be vacuous:
 | [#19](https://github.com/gesh75/claude-mastery-hub/pull/19) | Practice Lab validation | `dc20627` |
 | [#20](https://github.com/gesh75/claude-mastery-hub/pull/20) | Final programme state + Notion sync | `59086b8` |
 | [#21](https://github.com/gesh75/claude-mastery-hub/pull/21) | External-audit findings closed | `f830158` |
+| [#28](https://github.com/gesh75/claude-mastery-hub/pull/28) | Model registry rendering + citation gate | this PR |
 
 ### In progress
 
 Nothing. All planned milestones are merged and production-verified.
 
 ### Deferred
-
-**Model registry rendering.** *(the only remaining deferred item)* `MODEL_FACTS.availability`, `positioning`,
-`sources`, `featureExceptions`, `fastMode`, and `BENCHMARK_EVIDENCE` are
-maintained but not all consumed by a renderer. Tests assert both the registry
-and the rendered HTML so they cannot drift silently.
 
 **Maintainability consolidation.** Keep the app single-file unless extraction
 produces a measurable maintenance benefit; never mix that with a behaviour fix.

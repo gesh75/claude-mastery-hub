@@ -6,14 +6,14 @@
 
 | Field | Value |
 | --- | --- |
-| Last updated | 2026-07-31 |
+| Last updated | 2026-08-09 |
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
 | Branch | `main` |
-| Last merged PR | [#23](https://github.com/gesh75/claude-mastery-hub/pull/23) — stop recording a volatile HEAD |
+| Last merged PR | [#28](https://github.com/gesh75/claude-mastery-hub/pull/28) — render the model registry and gate its citations |
 | Open PRs | none |
-| Latest CI on `main` | run [`30619580708`](https://github.com/gesh75/claude-mastery-hub/actions/runs/30619580708) — workflow `CI`, check `Quality gate`, event `push`, **success** |
-| Tests | **86** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 2 |
+| Latest CI on `main` | run [`31139306605`](https://github.com/gesh75/claude-mastery-hub/actions/runs/31139306605) — workflow `CI`, check `Quality gate`, event `push`, **success** |
+| Tests | **96** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 2 · model-registry-rendering 10 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main`, live page byte-identical to the repo |
 | Unresolved Critical/Important | none |
@@ -81,13 +81,12 @@ Artifacts upload **only on failure** (7-day retention).
 | #20 | Final programme state + Notion sync | merged `59086b8` |
 | #21 | External-audit findings closed | merged `f830158` |
 | #22 | Advertised counts reconciled | merged `aae8d25` |
-| #23 | CURRENT_STATE stops recording a volatile HEAD | this PR |
+| #23 | CURRENT_STATE stops recording a volatile HEAD | merged `a44b472` |
+| #24 | Personal email removed from public docs | merged `36df225` |
+| #27 | MIT LICENSE added | merged `70bfd68` |
+| #28 | Model registry rendering + citation gate | this PR |
 
 ## Deferred
-
-**Model registry rendering.** Several `MODEL_FACTS` fields are maintained but not
-consumed by a renderer. Tests assert both the registry and the rendered HTML, so
-they cannot drift silently. This is a design choice, not a defect.
 
 **Mutation testing.** Nothing in the gate detects a test that executes but
 asserts nothing. The anti-vacuity checks prove the suite *ran*; they cannot
@@ -95,4 +94,10 @@ prove it *verified*. This is the one genuinely open risk.
 
 ## Next action
 
-**None — stabilization programme complete.**
+**Open PR 3a — unpin the six hardcoded Lab counts.** It is next in the
+cookbook-tracks programme (`docs/plan/COOKBOOK_TRACKS.md`, landing separately),
+and every later PR that touches the Practice Lab depends on it.
+
+Two records are knowingly stale and are owned by the programme's final PR:
+`docs/NOTION_SYNC.md` (records 78 tests against a real 96) and `og.png`
+(regenerated once, against the final counts).
