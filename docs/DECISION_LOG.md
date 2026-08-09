@@ -5,6 +5,76 @@ Newest first. Each entry states the decision, why, and what it rules out.
 
 ---
 
+## 2026-08-09 — The dated changelog is history, not a claim
+
+**Decision.** Every live-count guard excludes `index.html`'s
+`<details id="changelog">` block. Its entries are dated statements about what
+shipped when — "Jul 2026 — New Practice Lab: 12 hands-on scenario challenges",
+"Jun 2026 — panels on all 24 diagrams" — and are never reconciled against the
+current count.
+
+**Why.** The first version of the Practice Lab drift guard matched that block. It
+would have forced rewriting the changelog on every addition, and turned a
+historically accurate sentence into a build failure. A count guard exists to catch
+a *stale live claim*; a dated entry is not a live claim.
+
+**Rules out.** Bumping a number inside the changelog to satisfy a test, and
+whole-file regex matching for advertised counts. The guard strips the block and
+asserts it is still findable and closed, so the exclusion cannot silently become a
+no-op if the id changes.
+
+**Corrects.** `docs/plan/` and both adversarial critics listed the changelog among
+the claim sites to bump. Live diagram claims are **four**, not five. The Practice
+Lab has **one** live claim (`README.md`), not two.
+
+---
+
+## 2026-08-09 — Link-liveness checking stays out of the Quality gate
+
+**Decision.** `scripts/check-citations.mjs` validates citations without fetching
+them: schema conformance, two-way referential integrity between `MODEL_FACTS` and
+`MODEL_SOURCES`, and that every URL is `https`, credential-free, and on the
+primary-source allowlist. No `lychee`, no network call, no new dependency.
+
+**Why.** The `claude-cookbooks` repo's `lychee.toml` was the obvious pattern to
+lift, and the citation load added by the content PRs is exactly what it would
+protect. But the gate's design rule is no `continue-on-error` and no `|| true`, so
+anything placed in it is blocking — and a blocking check that makes network
+requests is non-deterministic by construction. A third-party outage would turn
+`main` red for a reason unrelated to the change under review.
+
+**Rules out.** Adding link-liveness to the blocking gate. If it is ever wanted it
+belongs in a separate scheduled workflow whose failure notifies rather than blocks.
+
+**Also rules out** failing the build on a stale `MODEL_FACTS_VERIFIED_AT`. The
+checker asserts only that the date is a valid calendar date that is not in the
+future; staleness is surfaced, because failing on it would make an unrelated PR
+red for a content-owner problem.
+
+---
+
+## 2026-08-09 — Advertised counts are derived at branch time, never inherited
+
+**Decision.** No branch takes a section, diagram, Lab or test count from a plan
+document. Each is recomputed from the DOM at branch time — `.master-cb` for
+sections, `.diagram` (never `.anim-x`) for diagrams, `window.LAB.length` for
+challenges — and `totalMinimum` is recomputed as the sum of observed
+`perFileMinimum` values, never by arithmetic against the previous total.
+
+**Why.** Five independently written PR briefs each computed their deltas against
+the same baseline, so at most one could have been right. Three said sections
+41→42 when the batch end state is 44; four said diagrams 24→25 when it is 27–28.
+`content-counts.spec.js` derives the section count from `.master-cb`, so that one
+fails loudly on the second merge and is recoverable — but the diagram and Lab
+counts were guarded by nothing and would have shipped silently false, the same
+drift class PR #22 existed to end.
+
+**Rules out.** Plan documents that carry count arithmetic for any PR that is not
+first to merge, and any diagram guard built on `.anim-x` — that selector is 25,
+not 24, because the changelog panel is an `anim-x` that is not a diagram.
+
+---
+
 ## 2026-08-09 — The registry renders the page, and a registry defect fails the build
 
 **Decision.** `MODEL_FACTS` / `MODEL_SOURCES` / `BENCHMARK_EVIDENCE` now *drive*
@@ -32,7 +102,7 @@ AWS".
 
 **No network, no dependency.** The checker is a pure function of the checked-out
 tree, and its JSON-Schema subset is hand-rolled rather than pulling in a
-validator. See the 2026-08-08 entry on link-liveness.
+validator. See the link-liveness entry below.
 
 **Staleness is surfaced, not failed.** An old `MODEL_FACTS_VERIFIED_AT` prints a
 review-due line and exits 0. A future date fails, because a date cannot be
