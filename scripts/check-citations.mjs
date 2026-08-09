@@ -93,7 +93,10 @@ function extractRegistries(html) {
     'MODEL_FACTS_VERIFIED_AT',
     'MODEL_SOURCES',
     'MODEL_FACTS',
-    'BENCHMARK_EVIDENCE'
+    'BENCHMARK_EVIDENCE',
+    // Optional: absent from a fixture that only exercises the model registry.
+    'WORKFLOW_FACTS_VERIFIED_AT',
+    'WORKFLOW_FACTS'
   ]);
   const scripts = [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)];
   for (const m of scripts) {
@@ -236,6 +239,10 @@ if (!failures.length) {
     facts: reg.MODEL_FACTS,
     benchmarks: reg.BENCHMARK_EVIDENCE
   };
+  // Present only when the page ships the orchestration registry.
+  if (reg.WORKFLOW_FACTS !== undefined || reg.WORKFLOW_FACTS_VERIFIED_AT !== undefined) {
+    doc.workflow = { verifiedAt: reg.WORKFLOW_FACTS_VERIFIED_AT, facts: reg.WORKFLOW_FACTS };
+  }
 
   console.log('schema conformance');
   const errs = [];
@@ -254,6 +261,13 @@ if (!failures.length) {
         bad(`MODEL_FACTS.${model}.sources cites \`${key}\`, which is not in MODEL_SOURCES`);
         dangling += 1;
       }
+    }
+  }
+  for (const [name, fact] of Object.entries(doc.workflow?.facts ?? {})) {
+    referenced.add(fact.source);
+    if (!sourceKeys.has(fact.source)) {
+      bad(`WORKFLOW_FACTS.${name} cites \`${fact.source}\`, which is not in MODEL_SOURCES`);
+      dangling += 1;
     }
   }
   for (const key of Object.keys(doc.benchmarks ?? {})) {

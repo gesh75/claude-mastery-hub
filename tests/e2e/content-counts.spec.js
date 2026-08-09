@@ -62,6 +62,43 @@ test.describe('advertised counts match reality', () => {
     expect(actual.sections - actual.tracked).toBeLessThanOrEqual(1);
   });
 
+  test('every diagram claim equals the rendered diagram count', async ({ page }) => {
+    await page.goto('/');
+
+    // .diagram, never .anim-x: one anim-x is the #changelog panel, which is not
+    // a diagram, so a guard built on it is permanently off by one.
+    const diagrams = await page.evaluate(
+      () => document.querySelectorAll('.diagram').length
+    );
+    expect(diagrams).toBeGreaterThan(0);
+
+    // The changelog is DATED HISTORY -- "Jun 2026 - panels on all 24 diagrams"
+    // records what shipped then. Binding it to the live count would force
+    // rewriting history on every addition (DECISION_LOG 2026-08-09).
+    const html = await readFile(new URL('index.html', ROOT), 'utf8');
+    const logStart = html.indexOf('<details class="anim-x" id="changelog"');
+    expect(logStart, 'the changelog block must be findable to be excluded').toBeGreaterThan(0);
+    const logEnd = html.indexOf('</details>', logStart);
+    expect(logEnd).toBeGreaterThan(logStart);
+    const live = html.slice(0, logStart) + html.slice(logEnd);
+
+    // "animated" is optional: a future live claim may omit it and must still be caught.
+    const pattern = /(\d+)\s+(?:animated[^.]{0,40}?)?diagrams?\b/gi;
+    const sources = { 'index.html': live, 'README.md': await readFile(new URL('README.md', ROOT), 'utf8') };
+
+    let claims = 0;
+    for (const [file, text] of Object.entries(sources)) {
+      for (const match of text.matchAll(pattern)) {
+        claims += 1;
+        expect(
+          Number(match[1]),
+          `${file} advertises ${match[1]} diagrams, but the page renders ${diagrams}`
+        ).toBe(diagrams);
+      }
+    }
+    expect(claims, 'the diagram count must be advertised somewhere').toBeGreaterThan(0);
+  });
+
   test('the advertised track count equals the nav tracks', async ({ page }) => {
     await page.goto('/');
     const tracks = await page.evaluate(() => document.querySelectorAll('.nav-track').length);

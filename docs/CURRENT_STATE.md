@@ -10,10 +10,10 @@
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
 | Branch | `main` |
-| Last merged PR | [#28](https://github.com/gesh75/claude-mastery-hub/pull/28) — render the model registry and gate its citations |
+| Last merged PR | [#31](https://github.com/gesh75/claude-mastery-hub/pull/31) — the workflow orchestration spine |
 | Open PRs | none |
 | Latest CI on `main` | run [`31139306605`](https://github.com/gesh75/claude-mastery-hub/actions/runs/31139306605) — workflow `CI`, check `Quality gate`, event `push`, **success** |
-| Tests | **96** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 2 · model-registry-rendering 10 |
+| Tests | **105** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 3 · model-registry-rendering 10 · workflow-orchestration 8 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main`, live page byte-identical to the repo |
 | Unresolved Critical/Important | none |
@@ -94,12 +94,12 @@ prove it *verified*. This is the one genuinely open risk.
 
 ## Next action
 
-**Open PR 3 — the workflow orchestration spine.** Plan:
+**Open PR 2a — Managed Agents (core).** Plan:
 [`docs/plan/COOKBOOK_TRACKS.md`](plan/COOKBOOK_TRACKS.md) · brief:
 [`docs/plan/BRIEFS.md`](plan/BRIEFS.md) · measured baseline:
 [`docs/plan/VERIFIED_BASELINE.md`](plan/VERIFIED_BASELINE.md).
 
-Order is fixed: PR 5 ✅ → 3a ✅ → **3** → 2a → 2b → 1 → 4 → 6. Do not inherit a
+Order is fixed: PR 5 ✅ → 3a ✅ → 3 ✅ → **2a** → 2b → 1 → 4 → 6. Do not inherit a
 section, diagram, Lab or test count from any document; derive it at branch time,
 and exclude the dated `#changelog` block from every count guard
 (`DECISION_LOG.md`, 2026-08-09).

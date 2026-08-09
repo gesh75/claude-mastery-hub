@@ -236,9 +236,11 @@ test.describe('model registry rendering', () => {
       // with the gate the moment another model cites a source opus does not.
       const fromAllModels = Object.values(window.MODEL_FACTS).flatMap((m) => m.sources ?? []);
       const benchKeys = Object.keys(window.BENCHMARK_EVIDENCE);
+      // WORKFLOW_FACTS cites the same source table; check-citations counts it too.
+      const fromWorkflow = Object.values(window.WORKFLOW_FACTS ?? {}).map((f) => f.source);
       return {
         sources: window.MODEL_SOURCES,
-        referenced: [...new Set([...fromAllModels, ...benchKeys])],
+        referenced: [...new Set([...fromAllModels, ...benchKeys, ...fromWorkflow])],
         opusReferenced: [...new Set([...window.MODEL_FACTS.opus.sources, ...benchKeys])]
       };
     });
