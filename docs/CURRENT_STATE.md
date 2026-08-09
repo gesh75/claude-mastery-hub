@@ -94,9 +94,15 @@ prove it *verified*. This is the one genuinely open risk.
 
 ## Next action
 
-**Open PR 3a — unpin the six hardcoded Lab counts.** It is next in the
-cookbook-tracks programme (`docs/plan/COOKBOOK_TRACKS.md`, landing separately),
-and every later PR that touches the Practice Lab depends on it.
+**Open PR 3 — the workflow orchestration spine.** Plan:
+[`docs/plan/COOKBOOK_TRACKS.md`](plan/COOKBOOK_TRACKS.md) · brief:
+[`docs/plan/BRIEFS.md`](plan/BRIEFS.md) · measured baseline:
+[`docs/plan/VERIFIED_BASELINE.md`](plan/VERIFIED_BASELINE.md).
+
+Order is fixed: PR 5 ✅ → 3a ✅ → **3** → 2a → 2b → 1 → 4 → 6. Do not inherit a
+section, diagram, Lab or test count from any document; derive it at branch time,
+and exclude the dated `#changelog` block from every count guard
+(`DECISION_LOG.md`, 2026-08-09).
 
 Two records are knowingly stale and are owned by the programme's final PR:
 `docs/NOTION_SYNC.md` (records 78 tests against a real 96) and `og.png`
