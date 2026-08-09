@@ -14,7 +14,7 @@ runs inside the Quality gate. Closes the "model registry rendering" deferred ite
 **Why.** The 2026-07-28 entry below created the registry and recorded a known
 gap: several fields were maintained but never consumed by a renderer, so the
 registry and the visible prose could disagree with nothing to catch it. Wiring
-the fields in makes a currency pass a single registry edit, as intended. Writing
+the fields in reduces a currency pass to a single registry edit, as intended. Writing
 the checker uncovered a live instance of the gap it was built to close —
 `prompting` and `releaseNotes` were cited in the rendered prose but missing from
 `MODEL_FACTS.opus.sources`.

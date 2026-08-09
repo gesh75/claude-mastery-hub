@@ -67,7 +67,12 @@ function literalValue(node, path) {
       if (node.operator === '-') return -literalValue(node.argument, path);
       throw new Error(`${path}: unsupported unary \`${node.operator}\``);
     case 'ArrayExpression':
-      return node.elements.map((el, i) => literalValue(el, `${path}[${i}]`));
+      return node.elements.map((el, i) => {
+        // acorn represents a hole (`[1, , 2]`) as null; without this the map
+        // throws a TypeError instead of the documented "not a pure literal".
+        if (el === null) throw new Error(`${path}[${i}]: array hole is not a pure literal`);
+        return literalValue(el, `${path}[${i}]`);
+      });
     case 'ObjectExpression': {
       const out = {};
       for (const prop of node.properties) {
@@ -114,6 +119,17 @@ function extractRegistries(html) {
 // schema uses is small enough to keep honest.
 
 function validate(value, schema, path, errs) {
+  if (schema.anyOf) {
+    const satisfied = schema.anyOf.some((sub) => {
+      const probe = [];
+      validate(value, { type: schema.type ?? 'object', ...sub }, path, probe);
+      return probe.length === 0;
+    });
+    if (!satisfied) {
+      const shapes = schema.anyOf.map((s) => (s.required ?? []).join('+')).join(' | ');
+      errs.push(`${path}: satisfies none of the allowed shapes (${shapes})`);
+    }
+  }
   if (schema.enum) {
     if (!schema.enum.includes(value)) {
       errs.push(`${path}: ${JSON.stringify(value)} is not one of ${schema.enum.join(', ')}`);
@@ -182,8 +198,10 @@ function validate(value, schema, path, errs) {
     return;
   }
   if (type === 'number') {
-    if (typeof value !== 'number' || Number.isNaN(value)) {
-      errs.push(`${path}: expected number`);
+    // Number.isFinite, not !Number.isNaN: a pure literal such as 1e999 parses
+    // to Infinity, which is a number and not NaN.
+    if (!Number.isFinite(value)) {
+      errs.push(`${path}: expected a finite number`);
       return;
     }
     if (schema.minimum !== undefined && value < schema.minimum) {
@@ -283,8 +301,12 @@ if (!failures.length) {
   console.log('verification date');
   const iso = doc.verifiedAt;
   const parsed = /^(\d{4})-(\d{2})-(\d{2})$/.test(String(iso)) ? new Date(`${iso}T00:00:00Z`) : null;
-  if (!parsed || Number.isNaN(parsed.getTime())) {
-    bad(`MODEL_FACTS_VERIFIED_AT \`${iso}\` is not a valid ISO date`);
+  // Round-trip the parse: JS normalises impossible dates (2026-02-31 becomes
+  // March 3) rather than rejecting them, so getTime() alone accepts a typo.
+  const roundTrips = parsed && !Number.isNaN(parsed.getTime())
+    && parsed.toISOString().slice(0, 10) === String(iso);
+  if (!roundTrips) {
+    bad(`MODEL_FACTS_VERIFIED_AT \`${iso}\` is not a valid calendar date`);
   } else {
     const ageDays = Math.floor((Date.now() - parsed.getTime()) / 86400000);
     if (ageDays < 0) {

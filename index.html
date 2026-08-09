@@ -5949,6 +5949,7 @@ var MODEL_FACTS={
     speed:'Moderate',inputPrice:5,outputPrice:25,context:'1M tokens',maxOutput:'128k tokens',
     thinking:'Adaptive; on by default',reliableKnowledgeCutoff:'May 2026',trainingDataCutoff:'May 2026',
     availability:'Claude API, Amazon Bedrock, Google Cloud, and Microsoft Foundry',
+    availabilityNote:'Opus 4.8 remains available',
     featureExceptions:['API Web Fetch tool is not available on Opus 5; Web Search is unaffected','Priority Tier does not support Opus 5'],
     featureExceptionsNote:'Web Search is a separate tool and remains available.',
     fastMode:{inputPrice:10,outputPrice:50,availableOn:'Claude API (including Managed Agents) and Claude Code via usage credits',unavailableOn:['Amazon Bedrock','Google Cloud','Microsoft Foundry','Claude Platform on AWS'],speedClaim:'Anthropic-reported up to 2.5x higher output tokens per second; throughput, not time-to-first-token, and not a latency SLA'},
@@ -6015,7 +6016,7 @@ function factHtml(path){
   if(path==='verifiedAt')return escHtml(longDate(MODEL_FACTS_VERIFIED_AT));
   var parts=String(path).split('.'),m=MODEL_FACTS[parts[0]],field=parts[1];
   if(!m)return '';
-  if(field==='availability')return escHtml(m.availability)+'; Opus 4.8 remains available';
+  if(field==='availability')return escHtml(m.availability)+(m.availabilityNote?'; '+escHtml(m.availabilityNote):'');
   if(field==='featureExceptions'){
     return 'Opus 5 carries the Opus feature set forward with <strong>'+countWord(m.featureExceptions.length)+' exceptions</strong>:'+
       '<ul class="reg-list">'+m.featureExceptions.map(function(x){return '<li>'+escHtml(x)+'</li>';}).join('')+'</ul>'+

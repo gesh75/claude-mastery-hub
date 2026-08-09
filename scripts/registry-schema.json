@@ -54,6 +54,7 @@
             "reliableKnowledgeCutoff": { "type": "string" },
             "trainingDataCutoff": { "type": "string" },
             "availability": { "type": "string" },
+            "availabilityNote": { "type": "string", "minLength": 1 },
             "featureExceptions": { "type": "array", "items": { "type": "string", "minLength": 1 } },
             "featureExceptionsNote": { "type": "string", "minLength": 1 },
             "fastMode": {
@@ -112,7 +113,8 @@
           "dependencies": {
             "resultTemplate": ["exactScore", "roundedScore", "effort"],
             "exactScore": ["roundedScore"]
-          }
+          },
+          "anyOf": [{ "required": ["result"] }, { "required": ["resultTemplate"] }]
         }
       }
     }

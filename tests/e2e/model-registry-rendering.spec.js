@@ -230,19 +230,25 @@ test.describe('model registry rendering', () => {
   test('the Primary-sources list is rendered from MODEL_SOURCES and covers every referenced key', async ({
     page
   }) => {
-    const { sources, referenced } = await page.evaluate(() => {
+    const { sources, referenced, opusReferenced } = await page.evaluate(() => {
+      // Match check-citations.mjs: it walks EVERY model, not just opus. Deriving
+      // the set from opus alone would make the two-way assertion below disagree
+      // with the gate the moment another model cites a source opus does not.
+      const fromAllModels = Object.values(window.MODEL_FACTS).flatMap((m) => m.sources ?? []);
       const benchKeys = Object.keys(window.BENCHMARK_EVIDENCE);
       return {
         sources: window.MODEL_SOURCES,
-        referenced: [...new Set([...window.MODEL_FACTS.opus.sources, ...benchKeys])]
+        referenced: [...new Set([...fromAllModels, ...benchKeys])],
+        opusReferenced: [...new Set([...window.MODEL_FACTS.opus.sources, ...benchKeys])]
       };
     });
 
     const list = page.locator('ul.cites[data-model-sources="opus"]');
     await expect(list).toHaveCount(1);
-    await expect(list.locator('li a')).toHaveCount(referenced.length);
+    // The list renders what OPUS cites; the registry-wide set is checked below.
+    await expect(list.locator('li a')).toHaveCount(opusReferenced.length);
 
-    for (const key of referenced) {
+    for (const key of opusReferenced) {
       const anchor = list.locator(`a[href="${sources[key].url}"]`);
       await expect(anchor, `${key} must be cited`).toHaveCount(1);
       await expect(anchor).toHaveText(sources[key].label);
