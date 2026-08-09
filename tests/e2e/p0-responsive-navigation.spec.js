@@ -104,10 +104,27 @@ async function exerciseResponsiveViews(page, label) {
   await expectNoRootOverflow(page, `${label} exam interaction`);
 }
 
-async function collectFullTabCycle(page, maxStops = 1200) {
+// The cap is a runaway-loop valve -- a focus trap never reaches the trigger, so
+// the loop must end somehow -- not an accessibility budget. A literal bound is
+// something a growing page silently outgrows (it did, at 1291 focusable
+// elements), which is the same brittleness the hardcoded Lab count had. Derive it.
+const FOCUSABLE_SELECTOR =
+  'a[href],button,input,select,textarea,summary,[tabindex]:not([tabindex="-1"])';
+
+async function tabCycleLimit(page) {
+  const focusable = await page.evaluate(
+    (selector) => document.querySelectorAll(selector).length,
+    FOCUSABLE_SELECTOR
+  );
+  expect(focusable, 'the page must have focusable content').toBeGreaterThan(0);
+  return focusable * 2 + 50;
+}
+
+async function collectFullTabCycle(page, maxStops) {
+  const cap = maxStops ?? (await tabCycleLimit(page));
   await page.locator('#menu').focus();
   const sequence = [];
-  for (let index = 0; index < maxStops; index += 1) {
+  for (let index = 0; index < cap; index += 1) {
     await page.keyboard.press('Tab');
     const stop = await page.evaluate(() => {
       const active = document.activeElement;
@@ -123,7 +140,7 @@ async function collectFullTabCycle(page, maxStops = 1200) {
     if (stop.id === 'menu') return sequence;
     sequence.push(stop);
   }
-  throw new Error(`Keyboard focus did not cycle to the menu trigger within ${maxStops} stops`);
+  throw new Error(`Keyboard focus did not cycle to the menu trigger within ${cap} stops`);
 }
 
 test.describe('responsive containment', () => {
@@ -161,9 +178,10 @@ test.describe('mobile navigation accessibility', () => {
     await expect(sidebar).toBeHidden();
     expect(await sidebar.ariaSnapshot()).toBe('');
 
-    const firstSequence = await collectFullTabCycle(page);
+    const limit = await tabCycleLimit(page);
+    const firstSequence = await collectFullTabCycle(page, limit);
     expect(firstSequence.length).toBeGreaterThan(10);
-    expect(firstSequence.length).toBeLessThan(1200);
+    expect(firstSequence.length).toBeLessThan(limit);
     expect(firstSequence.some(item => item.insideSidebar)).toBe(false);
 
     await page.reload();

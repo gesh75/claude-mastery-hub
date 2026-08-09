@@ -236,9 +236,11 @@ test.describe('model registry rendering', () => {
       // with the gate the moment another model cites a source opus does not.
       const fromAllModels = Object.values(window.MODEL_FACTS).flatMap((m) => m.sources ?? []);
       const benchKeys = Object.keys(window.BENCHMARK_EVIDENCE);
+      // WORKFLOW_FACTS cites the same source table; check-citations counts it too.
+      const fromWorkflow = Object.values(window.WORKFLOW_FACTS ?? {}).map((f) => f.source);
       return {
         sources: window.MODEL_SOURCES,
-        referenced: [...new Set([...fromAllModels, ...benchKeys])],
+        referenced: [...new Set([...fromAllModels, ...benchKeys, ...fromWorkflow])],
         opusReferenced: [...new Set([...window.MODEL_FACTS.opus.sources, ...benchKeys])]
       };
     });
@@ -253,6 +255,17 @@ test.describe('model registry rendering', () => {
       await expect(anchor, `${key} must be cited`).toHaveCount(1);
       await expect(anchor).toHaveText(sources[key].label);
       await expect(anchor).toHaveAttribute('rel', 'noopener');
+    }
+
+    // Named, per-key resolution first. The set equality below already catches a
+    // dangling workflow source, but it fails as a whole-array diff; this names
+    // the offending key the way check-citations.mjs does.
+    const workflowSources = await page.evaluate(() =>
+      Object.entries(window.WORKFLOW_FACTS ?? {}).map(([name, f]) => [name, f.source])
+    );
+    expect(workflowSources.length, 'WORKFLOW_FACTS must cite something').toBeGreaterThan(0);
+    for (const [name, key] of workflowSources) {
+      expect(sources[key], `WORKFLOW_FACTS.${name} cites "${key}", absent from MODEL_SOURCES`).toBeTruthy();
     }
 
     // Two-way: nothing in the registry is orphaned.

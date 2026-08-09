@@ -78,6 +78,36 @@
         }
       }
     },
+    "workflow": {
+      "description": "Optional. Orchestration facts, citing the shared MODEL_SOURCES table.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verifiedAt", "facts"],
+      "properties": {
+        "verifiedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "facts": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "patternProperties": {
+            "^[a-zA-Z][a-zA-Z0-9]*$": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["label", "value", "provenance", "source"],
+              "properties": {
+                "label": { "type": "string", "minLength": 1 },
+                "value": { "type": "number", "minimum": 0 },
+                "note": { "type": "string", "minLength": 1 },
+                "provenance": {
+                  "enum": ["Anthropic-documented", "Anthropic-reported", "Unable to verify"]
+                },
+                "source": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        }
+      }
+    },
     "benchmarks": {
       "type": "object",
       "additionalProperties": false,

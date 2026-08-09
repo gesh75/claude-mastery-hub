@@ -93,7 +93,10 @@ function extractRegistries(html) {
     'MODEL_FACTS_VERIFIED_AT',
     'MODEL_SOURCES',
     'MODEL_FACTS',
-    'BENCHMARK_EVIDENCE'
+    'BENCHMARK_EVIDENCE',
+    // Optional: absent from a fixture that only exercises the model registry.
+    'WORKFLOW_FACTS_VERIFIED_AT',
+    'WORKFLOW_FACTS'
   ]);
   const scripts = [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)];
   for (const m of scripts) {
@@ -236,6 +239,10 @@ if (!failures.length) {
     facts: reg.MODEL_FACTS,
     benchmarks: reg.BENCHMARK_EVIDENCE
   };
+  // Present only when the page ships the orchestration registry.
+  if (reg.WORKFLOW_FACTS !== undefined || reg.WORKFLOW_FACTS_VERIFIED_AT !== undefined) {
+    doc.workflow = { verifiedAt: reg.WORKFLOW_FACTS_VERIFIED_AT, facts: reg.WORKFLOW_FACTS };
+  }
 
   console.log('schema conformance');
   const errs = [];
@@ -254,6 +261,13 @@ if (!failures.length) {
         bad(`MODEL_FACTS.${model}.sources cites \`${key}\`, which is not in MODEL_SOURCES`);
         dangling += 1;
       }
+    }
+  }
+  for (const [name, fact] of Object.entries(doc.workflow?.facts ?? {})) {
+    referenced.add(fact.source);
+    if (!sourceKeys.has(fact.source)) {
+      bad(`WORKFLOW_FACTS.${name} cites \`${fact.source}\`, which is not in MODEL_SOURCES`);
+      dangling += 1;
     }
   }
   for (const key of Object.keys(doc.benchmarks ?? {})) {
@@ -299,6 +313,28 @@ if (!failures.length) {
   if (!urlHits) ok('every source URL is https, credential-free, and on the allowlist');
 
   console.log('verification date');
+  // Both registries carry their own date and both get the same treatment. The
+  // schema only checks the digit shape, which accepts 2026-02-31 and 2099-01-01.
+  const checkDate = (name, value) => {
+    const parsed = /^(\d{4})-(\d{2})-(\d{2})$/.test(String(value))
+      ? new Date(`${value}T00:00:00Z`)
+      : null;
+    const roundTrips =
+      parsed && !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === String(value);
+    if (!roundTrips) {
+      bad(`${name} \`${value}\` is not a valid calendar date`);
+      return;
+    }
+    const ageDays = Math.floor((Date.now() - parsed.getTime()) / 86400000);
+    if (ageDays < 0) {
+      bad(`${name} \`${value}\` is in the future — a date cannot be verified before it happens`);
+    } else if (ageDays > REVIEW_DUE_DAYS) {
+      ok(`${name} ${value} — stale by ${ageDays - REVIEW_DUE_DAYS} days, review due (not a build failure)`);
+    } else {
+      ok(`${name} ${value} — ${ageDays} days old`);
+    }
+  };
+  if (doc.workflow) checkDate('WORKFLOW_FACTS_VERIFIED_AT', doc.workflow.verifiedAt);
   const iso = doc.verifiedAt;
   const parsed = /^(\d{4})-(\d{2})-(\d{2})$/.test(String(iso)) ? new Date(`${iso}T00:00:00Z`) : null;
   // Round-trip the parse: JS normalises impossible dates (2026-02-31 becomes

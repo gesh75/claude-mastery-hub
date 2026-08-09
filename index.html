@@ -2121,6 +2121,33 @@ claude plugin list --json</code></pre>
 
 <div class="cal info">Nested delegation is now real: subagents can spawn their own subagents up to <b>5 levels deep</b>. Use it sparingly — every level adds cold-start cost and makes the run harder to follow. For anything genuinely large, prefer a dynamic workflow (below), which keeps the whole tree coordinated and visible.</div>
 
+<h3>Who holds the plan</h3>
+
+<p>Subagents, skills, agent teams and workflows can all run a multi-step task. The
+difference is not how many agents run &mdash; it is <strong>who decides what runs
+next</strong>, and that one answer determines where results live, what is repeatable,
+and what survives an interruption.</p>
+
+<table data-plan-holder>
+  <thead><tr><th>&nbsp;</th><th>Subagents</th><th>Skills</th><th>Agent teams</th><th>Workflows</th></tr></thead>
+  <tbody>
+    <tr><td><strong>What it is</strong></td><td>A worker Claude spawns</td><td>Instructions Claude follows</td><td>A lead agent supervising peer sessions</td><td>A script the runtime executes</td></tr>
+    <tr><td><strong>Who decides what runs next</strong></td><td>Claude, turn by turn</td><td>Claude, following the prompt</td><td>The lead agent, turn by turn</td><td>The script</td></tr>
+    <tr><td><strong>Where intermediate results live</strong></td><td>Claude's context window</td><td>Claude's context window</td><td>A shared task list</td><td>Script variables</td></tr>
+    <tr><td><strong>What's repeatable</strong></td><td>The worker definition</td><td>The instructions</td><td>The team definition</td><td>The orchestration itself</td></tr>
+    <tr><td><strong>Scale</strong></td><td>A few delegated tasks per turn</td><td>Same as subagents</td><td>A handful of long-running peers</td><td>Dozens to hundreds of agents per run</td></tr>
+    <tr><td><strong>Interruption</strong></td><td>Restarts the turn</td><td>Restarts the turn</td><td>Teammates keep running</td><td>Resumable in the same session</td></tr>
+  </tbody>
+</table>
+
+<div class="cal info">The row that matters is the second one. With subagents, skills and
+agent teams <b>Claude</b> is the orchestrator and every result lands in a context window.
+A workflow moves the plan into code, so the script holds the loop, the branching and the
+intermediate results &mdash; and Claude's context holds only the final answer. That is also
+what lets a workflow apply a <b>repeatable quality pattern</b>: have independent agents
+adversarially review each other's findings before they are reported, or draft a plan from
+several angles and weigh them against each other.</div>
+
 <h3>Pattern 1: Parallel fan-out (research)</h3>
 
 <p>Spin up several agents at once on independent slices of a problem. Each explores in its own context; the main thread then synthesizes their summaries. This works best when the paths truly do not overlap.</p>
@@ -2198,23 +2225,79 @@ claude -p "Fix it, then run the suite until green" \
 
 <h3>Dynamic workflows: orchestration Claude writes for you</h3>
 
-<p>The patterns above are ones you design by hand. <strong>Dynamic workflows</strong> (GA across the CLI, Desktop, and VS Code) let Claude design the orchestration itself: from your prompt it writes an orchestration script that fans work out across <em>tens to hundreds</em> of parallel subagents in a single background run, checks the results, and hands you one coordinated answer. Work you'd normally scope in quarters can land in days.</p>
+<p>The patterns above are ones you design by hand. A <strong>dynamic workflow</strong> is a
+JavaScript script that orchestrates subagents at scale: Claude writes the script for the task
+you describe, and a runtime executes it in the background while your session stays responsive.
+Reach for one when a task needs more agents than a single conversation can coordinate, or when
+you want the orchestration codified as something you can read and rerun.</p>
 
-<p>Two ways to start one:</p>
-<pre><code># 1. Just ask
-&gt; create a workflow to migrate every component off the legacy API
+<p>The quickest way to see one work is the bundled <code>/deep-research</code> command &mdash; it
+fans web searches across several angles, cross-checks the sources it finds, votes on each claim,
+and returns a cited report with claims that did not survive filtered out.</p>
 
-# 2. Turn on ultracode &mdash; sets effort to xhigh and lets Claude
-#    decide when a task is big enough to warrant a workflow
-/config    # enable "ultracode" (also on the effort menu)
+<pre><code># Run the bundled one
+/deep-research What changed in the Node permission model between v20 and v22?
 
-/workflows # watch runs: live agent tree, status, per-run activity</code></pre>
+# Ask for one in your own words, or with the keyword
+ultracode: audit every API endpoint under src/routes/ for missing auth checks
 
-<p>How it reaches answers a single pass can't: agents attack the problem from independent angles, <em>other</em> agents try to refute what they found, and the run keeps iterating until the answers converge. Progress is saved as it goes, so an interrupted job resumes instead of restarting, and because the coordination happens outside your conversation the plan stays on track no matter how large the task grows.</p>
+# Let Claude decide for every substantive task this session
+/effort ultracode
 
-<div class="cal warn">Dynamic workflows consume <b>meaningfully more usage</b> than a normal session. The first time one triggers, Claude Code shows what's about to run and asks you to confirm; a "Dynamic workflow size" setting (small/medium/large) advises how many agents to spawn, and org admins can disable workflows via managed settings.</div>
+/workflows   # live agent tree, phase token totals, pause / stop / save</code></pre>
 
-<div class="cal info">On by default for Max, Team, Enterprise, and API use; Pro users enable them in <code>/config</code>. Pair with <b>auto mode</b> for the smoothest experience &mdash; each subagent spawn is checked by the permission classifier before it launches.</div>
+<p><strong>Availability.</strong> Workflows run on <strong>all paid plans</strong>, with Anthropic
+API access, and on <strong>Amazon Bedrock</strong>, Google Cloud's Agent Platform and
+<strong>Microsoft Foundry</strong>. On <strong>Pro</strong>, turn them on from the Dynamic
+workflows row in <code>/config</code>. Turn them off with <code>disableWorkflows</code> in
+settings, or org-wide via managed settings.</p>
+
+<h4>Runtime limits worth knowing before you scale up</h4>
+<table>
+  <thead><tr><th>Limit</th><th>Value</th><th>Why it exists</th></tr></thead>
+  <tbody data-workflow-rows></tbody>
+</table>
+
+<h4>Size guideline: advice, not a cap</h4>
+<p>The <em>Dynamic workflow size</em> setting tells Claude how many agents to aim for. It is sent
+as <strong>advice, not a cap</strong>, so a prompt that calls for a different scale still
+overrides it &mdash; and the runtime limits above still apply regardless.</p>
+<table data-size-guideline>
+  <thead><tr><th>Value</th><th>Agent count Claude aims for</th></tr></thead>
+  <tbody>
+    <tr><td><code>unrestricted</code></td><td>No guideline: Claude sizes the workflow to the task</td></tr>
+    <tr><td><code>small</code></td><td>Fewer than 5 agents</td></tr>
+    <tr><td><code>medium</code> <span class="pill">default</span></td><td>Fewer than 15 agents</td></tr>
+    <tr><td><code>large</code></td><td>Fewer than 50 agents</td></tr>
+  </tbody>
+</table>
+
+<h4>Resume: the counter-intuitive part</h4>
+<p>Stop a run and you can resume it &mdash; but which results survive is decided by
+<strong>start order</strong>, not by which agents finished. An agent still running when you
+stopped is never saved. And <em>Replay follows the order agents started</em>: cached results stop
+at the first agent that did not finish, and every agent that <strong>started after</strong> that
+one runs again, <strong>even though</strong> it completed.</p>
+
+<div class="cal warn">Say a script starts A, B, C and D in that order and you stop it while B is
+still going. On resume A comes from cache; B re-runs because it never finished; and C and D
+re-run too, because they started after B. The design lesson: a workflow that fans work out across
+<b>many small agents</b> preserves far more progress than one built from a few long ones. Resume
+works within the same session &mdash; exit Claude Code and the next session starts fresh.</div>
+
+<h4>Permissions are not what you might assume</h4>
+<p>Your permission mode controls only the <em>launch</em> prompt. The subagents a workflow spawns
+always run in <code>acceptEdits</code> mode and inherit your tool <strong>allowlist</strong>,
+<strong>regardless of your session's mode</strong> &mdash; file edits are auto-approved. Shell
+commands, web fetches and MCP tools outside the allowlist can still prompt you mid-run, so add
+what the agents will need before starting a long one.</p>
+
+<div class="cal warn">A workflow spawns many agents, so one run can use meaningfully more tokens
+than doing the same work in conversation, and it counts against your plan's usage and rate limits.
+Gauge the spend on a small slice first &mdash; one directory rather than the whole repo.</div>
+
+<h4>Primary sources</h4>
+<ul class="cites" data-model-sources="workflow"></ul>
 
 <h3>Background agents: dispatch, detach, come back to a PR</h3>
 
@@ -5928,6 +6011,7 @@ var MODEL_SOURCES={
   pricing:{label:'Claude Platform pricing',url:'https://platform.claude.com/docs/en/about-claude/pricing'},
   releaseNotes:{label:'Claude Platform release notes',url:'https://platform.claude.com/docs/en/release-notes/overview'},
   opusSystemCard:{label:'Claude Opus 5 System Card',url:'https://www.anthropic.com/claude-opus-5-system-card'},
+  workflowsDocs:{label:'Orchestrate subagents at scale with dynamic workflows',url:'https://code.claude.com/docs/en/workflows'},
   frontierBench:{label:'Frontier-Bench v0.1',url:'https://www.frontierbench.ai/announcement'},
   cursorBench:{label:'CursorBench 3.2',url:'https://cursor.com/evals'},
   arcAgi:{label:'ARC Prize verified Opus 5 results',url:'https://arcprize.org/results/anthropic-claude-opus-5'},
@@ -5985,6 +6069,13 @@ var MODEL_FACTS={
     use:'Approved defensive cybersecurity and specialized research, not normal general-purpose routing'
   }
 };
+var WORKFLOW_FACTS_VERIFIED_AT='2026-08-09';
+var WORKFLOW_FACTS={
+  maxConcurrentAgents:{label:'Concurrent agents',value:16,note:'Bounds local resource use; fewer on machines with limited CPU cores',provenance:'Anthropic-documented',source:'workflowsDocs'},
+  maxAgentsPerRun:{label:'Agents per run',value:1000,note:'A runaway-loop backstop, far above any real workflow',provenance:'Anthropic-documented',source:'workflowsDocs'},
+  largeRunAgentThreshold:{label:'Large-workflow warning (agents)',value:25,note:'advisory only \u2014 it does not pause or limit the run',provenance:'Anthropic-documented',source:'workflowsDocs'},
+  largeRunTokenThreshold:{label:'Large-workflow warning (projected tokens)',value:1500000,note:'The same advisory warning, whichever trips first',provenance:'Anthropic-documented',source:'workflowsDocs'}
+};
 var MODEL_ORDER=['haiku','sonnet','opus','fable'];
 var MODEL_ALL_ORDER=['haiku','sonnet','opus','fable','mythos'];
 var BENCHMARK_EVIDENCE={
@@ -6010,6 +6101,10 @@ function longDate(iso){
   var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso));
   return m?MONTH_NAMES[Number(m[2])-1]+' '+Number(m[3])+', '+m[1]:String(iso);
 }
+/* Deterministic thousands separator. A locale-dependent number formatter is banned
+   by test for the same reason as the date one: it renders differently under a
+   different ICU build. */
+function groupDigits(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
 var COUNT_WORDS=['zero','one','two','three','four','five','six'];
 function countWord(n){return COUNT_WORDS[n]||String(n);}
 function factHtml(path){
@@ -6080,8 +6175,21 @@ function renderRegistry(){
   document.querySelectorAll('[data-bench-rows]').forEach(function(body){
     body.innerHTML=benchRows();
   });
+  document.querySelectorAll('[data-workflow-rows]').forEach(function(body){
+    body.innerHTML=Object.keys(WORKFLOW_FACTS).map(function(k){
+      var f=WORKFLOW_FACTS[k];
+      return '<tr><td>'+escHtml(f.label)+'</td><td><b data-workflow-fact="'+escHtml(k)+'">'+
+        groupDigits(f.value)+'</b></td><td>'+escHtml(f.note||'')+'</td></tr>';
+    }).join('');
+  });
   document.querySelectorAll('[data-model-sources]').forEach(function(list){
-    list.innerHTML=sourceLinks(citedSourceKeys(list.getAttribute('data-model-sources')));
+    var kind=list.getAttribute('data-model-sources');
+    var keys=kind==='workflow'
+      ? Object.keys(WORKFLOW_FACTS).map(function(k){return WORKFLOW_FACTS[k].source;})
+      : citedSourceKeys(kind);
+    var seen={},uniq=[];
+    keys.forEach(function(k){if(!seen[k]){seen[k]=1;uniq.push(k);}});
+    list.innerHTML=sourceLinks(uniq);
   });
 }
 renderRegistry();
@@ -6531,6 +6639,10 @@ var QUIZ={
   {q:"Which hook can BLOCK a tool before it runs?",o:["Stop","PreToolUse (exit code 2)","PostToolUse","Notification"],c:1,e:"PreToolUse exiting 2 vetoes the tool call."},
   {q:"To auto-format files Claude edits, use which event?",o:["UserPromptSubmit","PostToolUse matching Edit|Write","SessionStart","Stop"],c:1,e:"PostToolUse fires after the edit — run prettier on $CLAUDE_FILE_PATHS."}],
  workflows:[
+  {q:"In a dynamic workflow, who decides what runs next?",o:["Claude, turn by turn","The script","The lead agent","The permission classifier"],c:1,e:"That is the whole distinction. With subagents, skills and agent teams Claude orchestrates turn by turn; a workflow moves the plan into code, so the script holds the loop and the intermediate results."},
+  {q:"You stop a run while agent B \u2014 the second of four to start \u2014 is still going. On resume, what happens to agent D, which started fourth and finished?",o:["It returns from cache","It runs again","It is skipped entirely","The whole run restarts"],c:1,e:"Replay follows the order agents STARTED. Cached results stop at the first agent that did not finish, so everything that started after B re-runs even if it completed \u2014 which is why many small agents preserve more progress than a few long ones."},
+  {q:"The Dynamic workflow size setting is\u2026",o:["A hard cap the runtime enforces","Advice Claude can override","The same as the 1,000-agent limit","Only available on Enterprise"],c:1,e:"It is sent to Claude as advice, not a cap \u2014 a prompt calling for a different scale still overrides it. The runtime caps apply regardless."},
+  {q:"Which permission mode do the subagents a workflow spawns run in?",o:["Whatever the session is set to","Always acceptEdits, inheriting your allowlist","Always plan mode","Bypass permissions"],c:1,e:"Your mode controls only the launch prompt. Workflow subagents always run acceptEdits and inherit your tool allowlist regardless of the session's mode, so file edits are auto-approved."},
   {q:"Dynamic workflows let Claude…",o:["Write orchestration that fans out to hundreds of parallel subagents","Only run one agent","Skip permissions","Train a model"],c:0,e:"Claude authors the orchestration script itself and runs it as one background job."},
   {q:"Which keyword nudges Claude to use a workflow for big tasks?",o:["ultrathink","ultracode","superplan","megamode"],c:1,e:"'ultracode' sets effort to xhigh and lets Claude decide when a task warrants a workflow."},
   {q:"The command to watch live workflow runs is…",o:["/agents","/workflows","/runs","/monitor"],c:1,e:"/workflows shows the live agent tree, status, and per-run activity."}],
@@ -6900,7 +7012,25 @@ var LAB=[
   type:"choice",options:["In CLAUDE.md at the project root","Retyped at the start of each session","Kept only in your head","Set via a higher temperature"],correct:0,sol:"CLAUDE.md",
   solText:"<code>CLAUDE.md</code> is durable project memory — Claude reads it at the start of every session, so conventions, commands, and constraints carry over automatically.",
   why:"<b>When:</b> context should persist across sessions. Use <code>#</code> for quick one-liners; edit <code>CLAUDE.md</code> for the project's standing brief."}
-];
+,
+ {id:"lab-planholder",n:13,topic:"Orchestration",sec:"workflows",
+  scenario:"A migration touches 500 files. You want the orchestration itself to be something you can read, rerun on the next branch, and hand to a teammate \u2014 not something Claude re-decides turn by turn.",
+  task:"Which approach puts <b>the plan in code</b>?",
+  type:"choice",options:["Spawn subagents from the conversation","Write a skill with detailed instructions","Use a dynamic workflow","Start an agent team"],correct:2,sol:"dynamic workflow",
+  solText:"A <b>dynamic workflow</b> is a script the runtime executes: it holds the loop, the branching and the intermediate results, so the orchestration itself is the repeatable artifact. Subagents, skills and agent teams all leave Claude as the orchestrator, deciding turn by turn.",
+  why:"<b>When:</b> the task is bigger than one conversation can coordinate, or you want the orchestration codified. Otherwise a subagent or skill is lighter."},
+ {id:"lab-wfresume",n:14,topic:"Orchestration",sec:"workflows",
+  scenario:"Your workflow starts agents A, B, C, D in that order. You stop the run while B is still working \u2014 C and D had already finished.",
+  task:"On resume, which agents run again?",
+  type:"choice",options:["Only B","B, C and D","All four","None \u2014 the run restarts from scratch"],correct:1,sol:"B, C and D",
+  solText:"Replay follows the order agents <b>started</b>. Cached results stop at the first agent that did not finish \u2014 B \u2014 and everything that started after it re-runs, even though C and D completed. Only A returns from cache.",
+  why:"<b>Why it matters:</b> this is the argument for fanning work across many small agents instead of a few long ones. Stopping mid fan-out then costs far less."},
+ {id:"lab-wfperms",n:15,topic:"Orchestration",sec:"workflows",
+  scenario:"You launch a workflow from a session in the default permission mode, expecting to approve each file edit yourself.",
+  task:"What actually happens to the subagents' file edits?",
+  type:"choice",options:["Each edit prompts you, as in the session","They run acceptEdits and edits are auto-approved","They are blocked until you switch modes","They run in plan mode and only propose changes"],correct:1,sol:"acceptEdits",
+  solText:"Your permission mode controls only the <b>launch</b> prompt. Workflow subagents always run in <code>acceptEdits</code> and inherit your tool allowlist, regardless of the session's mode \u2014 so file edits are auto-approved. Shell commands, web fetches and MCP tools outside the allowlist can still prompt mid-run.",
+  why:"<b>Before a long run:</b> add the commands the agents will need to your allowlist, or the run stalls on a prompt you are not watching."}];
 (function(){
   var LK='claude_hub_lab_v1';
   var host=document.getElementById('lab-host'); if(!host)return;
