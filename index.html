@@ -294,6 +294,10 @@ img,svg,canvas,video{max-width:100%}
 /* footer */
 footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 22px 60px;text-align:center;color:var(--mut)}
 .cites{list-style:none;padding:0;max-width:880px;margin:14px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:6px;text-align:left;font-size:13px}
+/* Registry-rendered lists inside table cells: tight, so a two-item list does not
+   out-space the sentence that introduces it. */
+.reg-list{margin:6px 0;padding-left:20px}
+.reg-list li{margin:2px 0}
 .cites li{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* fab */
@@ -1852,12 +1856,12 @@ claude mcp logout github              # sign it back out (--no-browser works ove
           <tr><td>Prompt cache</td><td>512-token prompt-cache minimum; cache reads cost 0.1× base input</td></tr>
           <tr><td>Thinking and effort</td><td>Adaptive thinking is on by default; <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, and <code>max</code></td></tr>
           <tr><td>Knowledge</td><td>May 2026 knowledge and training cutoff</td></tr>
-          <tr><td>Availability</td><td>Claude API, Amazon Bedrock, Google Cloud, and Microsoft Foundry; Opus 4.8 remains available</td></tr>
-          <tr><td>Feature exceptions</td><td>Opus 5 carries the Opus feature set forward with <strong>two exceptions</strong>: the API <strong>Web Fetch</strong> tool is not available on Opus 5, and <strong>Priority Tier</strong> is not supported. <strong>Web Search is a separate tool and remains available.</strong></td></tr>
-          <tr><td>Fast mode</td><td>Research preview on the Claude API (including Managed Agents) and in Claude Code via usage credits; <strong>not</strong> on Amazon Bedrock, Google Cloud, or Microsoft Foundry. Up to about 2.5× output tokens per second; $10 input / $50 output per MTok.</td></tr>
+          <tr><td>Availability</td><td data-model-fact="opus.availability"></td></tr>
+          <tr><td>Feature exceptions</td><td data-model-fact="opus.featureExceptions"></td></tr>
+          <tr><td>Fast mode</td><td data-model-fact="opus.fastMode"></td></tr>
         </tbody>
       </table>
-      <p><small>Model specifications and prices verified July 28, 2026 against Anthropic's model overview, pricing page, release notes, and Opus 5 System Card.</small></p>
+      <p><small>Model specifications and prices verified <span data-model-fact="verifiedAt"></span> against Anthropic's model overview, pricing page, release notes, and Opus 5 System Card.</small></p>
 
       <h3>What changes from Opus 4.8</h3>
       <div class="grid">
@@ -1896,28 +1900,13 @@ model = "claude-opus-5"
         <p>Benchmarks are task-specific evidence, not a universal leaderboard. The owner-reported figures below were re-checked against the benchmark owners' own published result pages on July 28, 2026; the Frontier-Bench row stays an Anthropic-reported launch evaluation because no benchmark-owner Opus 5 score is published. Leaderboards move, so re-verify before you cite them.</p>
         <table>
           <thead><tr><th>Evaluation</th><th>What it measures</th><th>Reported result</th><th>Provenance and limitation</th></tr></thead>
-          <tbody>
-            <tr><td>Frontier-Bench v0.1</td><td>Difficult coding and non-coding work in rich terminal environments</td><td>Anthropic reports Opus 5 led its internal run and more than doubled Opus 4.8 at lower cost per task.</td><td><strong>Anthropic-run.</strong> Mini-SWE-agent harness, GKE backend, mean reward over five attempts; this is a model-plus-harness result.</td></tr>
-            <tr><td>CursorBench 3.2</td><td>Ambiguous, multi-file tasks drawn from real Cursor sessions</td><td>Opus 5 Max: <strong>70.0%</strong>; Fable 5 Max: 70.5%, with lower reported task cost for Opus.</td><td><strong>Cursor-reported.</strong> Cursor warns that small score differences may not be statistically meaningful.</td></tr>
-            <tr><td>ARC-AGI-3</td><td>Interactive novel-problem solving and action efficiency</td><td>Opus 5 at <strong>High</strong> effort: <strong>30.2%</strong> rounded, which is <strong>30.16%</strong> exact in ARC Prize's verified-score table. Same single result, two representations.</td><td><strong>ARC Prize-verified.</strong> Evaluated only at High effort because of the short testing window; one benchmark does not establish general intelligence.</td></tr>
-            <tr><td>AutomationBench</td><td>Strict end-to-end completion of multi-app business workflows</td><td>Opus 5 Max: <strong>26.2%</strong> on Zapier's current private held-out leaderboard.</td><td><strong>Zapier-reported.</strong> Simulated tools, strict all-assertions pass/fail, and typical run-to-run variance within one point.</td></tr>
-          </tbody>
+          <tbody data-bench-rows></tbody>
         </table>
         <div class="cal warn">These results do not establish superiority for every workload. Effort, tools, harness, token budget, task set, price date, and evaluator all affect the comparison. Build a representative evaluation set for your own production decision.</div>
       </div>
 
       <h3>Primary sources</h3>
-      <ul class="cites">
-        <li><a href="https://www.anthropic.com/news/claude-opus-5" target="_blank" rel="noopener">Introducing Claude Opus 5 — Anthropic</a></li>
-        <li><a href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noopener">Models overview — Claude Platform Docs</a></li>
-        <li><a href="https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5" target="_blank" rel="noopener">What's new in Claude Opus 5</a></li>
-        <li><a href="https://platform.claude.com/docs/en/about-claude/models/migration-guide" target="_blank" rel="noopener">Model migration guide</a></li>
-        <li><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5" target="_blank" rel="noopener">Prompting Claude Opus 5</a></li>
-        <li><a href="https://www.anthropic.com/claude-opus-5-system-card" target="_blank" rel="noopener">Claude Opus 5 System Card</a></li>
-        <li><a href="https://cursor.com/evals" target="_blank" rel="noopener">CursorBench 3.2</a></li>
-        <li><a href="https://arcprize.org/results/anthropic-claude-opus-5" target="_blank" rel="noopener">ARC Prize verified Opus 5 results</a></li>
-        <li><a href="https://zapier.com/benchmarks" target="_blank" rel="noopener">Zapier AutomationBench</a></li>
-      </ul>
+      <ul class="cites" data-model-sources="opus"></ul>
 
       <hr>
       <p class="lead">On June 9, 2026 Anthropic released <span class="pill">Claude Fable 5</span>, its highest-capability widely released model, plus limited-access <span class="pill">Claude Mythos 5</span> for approved Project Glasswing work.</p>
@@ -5961,8 +5950,9 @@ var MODEL_FACTS={
     thinking:'Adaptive; on by default',reliableKnowledgeCutoff:'May 2026',trainingDataCutoff:'May 2026',
     availability:'Claude API, Amazon Bedrock, Google Cloud, and Microsoft Foundry',
     featureExceptions:['API Web Fetch tool is not available on Opus 5; Web Search is unaffected','Priority Tier does not support Opus 5'],
+    featureExceptionsNote:'Web Search is a separate tool and remains available.',
     fastMode:{inputPrice:10,outputPrice:50,availableOn:'Claude API (including Managed Agents) and Claude Code via usage credits',unavailableOn:['Amazon Bedrock','Google Cloud','Microsoft Foundry','Claude Platform on AWS'],speedClaim:'Anthropic-reported up to 2.5x higher output tokens per second; throughput, not time-to-first-token, and not a latency SLA'},
-    sources:['opusLaunch','modelsOverview','opusWhatsNew','migration','serviceTiers','fastMode','fastModeClaudeCode','batchProcessing','pricing','opusSystemCard'],
+    sources:['opusLaunch','modelsOverview','opusWhatsNew','migration','prompting','serviceTiers','fastMode','fastModeClaudeCode','batchProcessing','pricing','releaseNotes','opusSystemCard'],
     use:'Complex coding, large refactors, deep analysis, vision-heavy and long-horizon work'
   },
   sonnet:{
@@ -5997,15 +5987,75 @@ var MODEL_FACTS={
 var MODEL_ORDER=['haiku','sonnet','opus','fable'];
 var MODEL_ALL_ORDER=['haiku','sonnet','opus','fable','mythos'];
 var BENCHMARK_EVIDENCE={
-  frontierBench:{result:'Anthropic reports that Opus 5 more than doubled Opus 4.8 and led its internal run.',provenance:'Anthropic-run',limitation:'Internal mini-SWE-agent run, mean reward over five attempts; model and harness results should not be generalized.'},
-  cursorBench:{result:'70.0% at max effort, 0.5 points behind Fable 5 at 70.5%.',provenance:'Cursor-reported',limitation:'Small differences may not be statistically meaningful; cost and score vary with effort and harness.'},
-  arcAgi:{exactScore:30.16,roundedScore:30.2,effort:'High',result:'30.16% on ARC-AGI-3 at High effort, which ARC Prize rounds to 30.2% in its page headline.',provenance:'ARC Prize-verified',limitation:'Evaluated only at High effort because of the short testing window; public-demo environments are a narrow slice of reasoning.'},
-  automationBench:{result:'26.2% at max effort on the current private held-out leaderboard.',provenance:'Zapier-reported',limitation:'Strict end-state pass/fail on simulated business tools; run-to-run variance is typically within one point.'}
+  frontierBench:{label:'Frontier-Bench v0.1',measures:'Difficult coding and non-coding work in rich terminal environments',result:'Anthropic reports that Opus 5 more than doubled Opus 4.8 and led its internal run.',provenance:'Anthropic-run',limitation:'Internal mini-SWE-agent run, mean reward over five attempts; model and harness results should not be generalized.'},
+  cursorBench:{label:'CursorBench 3.2',measures:'Ambiguous, multi-file tasks drawn from real Cursor sessions',result:'70.0% at max effort, 0.5 points behind Fable 5 at 70.5%.',provenance:'Cursor-reported',limitation:'Small differences may not be statistically meaningful; cost and score vary with effort and harness.'},
+  arcAgi:{label:'ARC-AGI-3',measures:'Interactive novel-problem solving and action efficiency',exactScore:30.16,roundedScore:30.2,effort:'High',resultTemplate:'Opus 5 at {effort} effort: {rounded} rounded, which is {exact} exact in ARC Prize\u2019s verified-score table. Same single result, two representations.',result:'30.16% on ARC-AGI-3 at High effort, which ARC Prize rounds to 30.2% in its page headline.',provenance:'ARC Prize-verified',limitation:'Evaluated only at High effort because of the short testing window; public-demo environments are a narrow slice of reasoning.'},
+  automationBench:{label:'AutomationBench',measures:'Strict end-to-end completion of multi-app business workflows',result:'26.2% at max effort on the current private held-out leaderboard.',provenance:'Zapier-reported',limitation:'Strict end-state pass/fail on simulated business tools; run-to-run variance is typically within one point.'}
 };
 function money(n){return '$'+Number(n).toFixed(n%1?2:0);}
 function basePrice(m){
   var text=money(m.inputPrice)+' / '+money(m.outputPrice);
   return m.priceNote?text+' <i>('+m.priceNote+')</i>':text;
+}
+function escHtml(v){
+  var map={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+  return String(v).replace(/[&<>"']/g,function(c){return map[c];});
+}
+/* Deterministic on purpose: a locale-dependent date formatter renders differently
+   under a different ICU build or TZ, which would make the rendered date
+   machine-specific. A regression test bans those APIs by name. */
+var MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function longDate(iso){
+  var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso));
+  return m?MONTH_NAMES[Number(m[2])-1]+' '+Number(m[3])+', '+m[1]:String(iso);
+}
+var COUNT_WORDS=['zero','one','two','three','four','five','six'];
+function countWord(n){return COUNT_WORDS[n]||String(n);}
+function factHtml(path){
+  if(path==='verifiedAt')return escHtml(longDate(MODEL_FACTS_VERIFIED_AT));
+  var parts=String(path).split('.'),m=MODEL_FACTS[parts[0]],field=parts[1];
+  if(!m)return '';
+  if(field==='availability')return escHtml(m.availability)+'; Opus 4.8 remains available';
+  if(field==='featureExceptions'){
+    return 'Opus 5 carries the Opus feature set forward with <strong>'+countWord(m.featureExceptions.length)+' exceptions</strong>:'+
+      '<ul class="reg-list">'+m.featureExceptions.map(function(x){return '<li>'+escHtml(x)+'</li>';}).join('')+'</ul>'+
+      '<strong>'+escHtml(m.featureExceptionsNote)+'</strong>';
+  }
+  if(field==='fastMode'){
+    var f=m.fastMode;
+    return 'Research preview on '+escHtml(f.availableOn)+'; <strong>not</strong> on '+
+      escHtml(f.unavailableOn.join(', '))+'. '+escHtml(f.speedClaim)+'. '+
+      money(f.inputPrice)+' input / '+money(f.outputPrice)+' output per MTok.';
+  }
+  return '';
+}
+function benchResult(b){
+  if(!b.resultTemplate)return escHtml(b.result);
+  return escHtml(b.resultTemplate)
+    .replace('{effort}','<strong>'+escHtml(b.effort)+'</strong>')
+    .replace('{rounded}','<strong>'+escHtml(b.roundedScore)+'%</strong>')
+    .replace('{exact}','<strong>'+escHtml(b.exactScore)+'%</strong>');
+}
+function benchRows(){
+  return Object.keys(BENCHMARK_EVIDENCE).map(function(k){
+    var b=BENCHMARK_EVIDENCE[k];
+    return '<tr><td>'+escHtml(b.label)+'</td><td>'+escHtml(b.measures)+'</td><td>'+
+      benchResult(b)+'</td><td><strong>'+escHtml(b.provenance)+'.</strong> '+escHtml(b.limitation)+'</td></tr>';
+  }).join('');
+}
+/* Every key a model cites, plus every benchmark's own source. */
+function citedSourceKeys(modelKey){
+  var seen={},out=[];
+  ((MODEL_FACTS[modelKey]||{}).sources||[]).concat(Object.keys(BENCHMARK_EVIDENCE)).forEach(function(k){
+    if(!seen[k]){seen[k]=1;out.push(k);}
+  });
+  return out;
+}
+function sourceLinks(keys){
+  return keys.map(function(k){
+    var src=MODEL_SOURCES[k];
+    return src?'<li><a href="'+escHtml(src.url)+'" target="_blank" rel="noopener">'+escHtml(src.label)+'</a></li>':'';
+  }).join('');
 }
 function modelRows(kind){
   var order=(kind==='comparison'||kind==='picker')?MODEL_ALL_ORDER:MODEL_ORDER;
@@ -6019,9 +6069,21 @@ function modelRows(kind){
     return '';
   }).join('');
 }
-document.querySelectorAll('[data-model-rows]').forEach(function(body){
-  body.innerHTML=modelRows(body.getAttribute('data-model-rows'));
-});
+function renderRegistry(){
+  document.querySelectorAll('[data-model-rows]').forEach(function(body){
+    body.innerHTML=modelRows(body.getAttribute('data-model-rows'));
+  });
+  document.querySelectorAll('[data-model-fact]').forEach(function(el){
+    el.innerHTML=factHtml(el.getAttribute('data-model-fact'));
+  });
+  document.querySelectorAll('[data-bench-rows]').forEach(function(body){
+    body.innerHTML=benchRows();
+  });
+  document.querySelectorAll('[data-model-sources]').forEach(function(list){
+    list.innerHTML=sourceLinks(citedSourceKeys(list.getAttribute('data-model-sources')));
+  });
+}
+renderRegistry();
 
 // typing subtitle
 (function(){

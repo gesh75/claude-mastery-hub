@@ -9,7 +9,8 @@
     "check:static": "node scripts/check-static.mjs",
     "check:diff": "node scripts/check-diff.mjs",
     "check:results": "node scripts/check-test-results.mjs test-results/results.json",
-    "verify": "npm run check:static && npm test && npm run check:results"
+    "check:citations": "node scripts/check-citations.mjs",
+    "verify": "npm run check:static && npm run check:citations && npm test && npm run check:results"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",

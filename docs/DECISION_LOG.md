@@ -5,6 +5,41 @@ Newest first. Each entry states the decision, why, and what it rules out.
 
 ---
 
+## 2026-08-09 — The registry renders the page, and a registry defect fails the build
+
+**Decision.** `MODEL_FACTS` / `MODEL_SOURCES` / `BENCHMARK_EVIDENCE` now *drive*
+the `#whats-new` DOM through `renderRegistry()`, and `scripts/check-citations.mjs`
+runs inside the Quality gate. Closes the "model registry rendering" deferred item.
+
+**Why.** The 2026-07-28 entry below created the registry and recorded a known
+gap: several fields were maintained but never consumed by a renderer, so the
+registry and the visible prose could disagree with nothing to catch it. Wiring
+the fields in makes a currency pass a single registry edit, as intended. Writing
+the checker uncovered a live instance of the gap it was built to close —
+`prompting` and `releaseNotes` were cited in the rendered prose but missing from
+`MODEL_FACTS.opus.sources`.
+
+**Rules out.** Hand-typing a volatile value into `#whats-new` markup. The
+availability cell, the feature-exception list, the fast-mode row, the
+verification stamp, the benchmark tbody, and the primary-source list are all
+empty in source; a value typed into them is dead text a test will not see.
+
+**Two deliberate visible changes.** The primary-source list went from 9
+hand-written entries to 16 rendered ones — the hand-written list had silently
+omitted seven cited sources. The fast-mode row now names all four excluded
+platforms; the hand-written cell listed three and dropped "Claude Platform on
+AWS".
+
+**No network, no dependency.** The checker is a pure function of the checked-out
+tree, and its JSON-Schema subset is hand-rolled rather than pulling in a
+validator. See the 2026-08-08 entry on link-liveness.
+
+**Staleness is surfaced, not failed.** An old `MODEL_FACTS_VERIFIED_AT` prints a
+review-due line and exits 0. A future date fails, because a date cannot be
+verified before it happens.
+
+---
+
 ## 2026-07-30 — `enforce_admins: true` on `main`
 
 **Decision.** Branch protection applies to the sole maintainer as well; no bypass.
