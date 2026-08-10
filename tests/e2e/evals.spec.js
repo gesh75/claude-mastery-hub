@@ -74,6 +74,36 @@ test.describe('evaluating your own agent', () => {
     expect(numbered).toEqual(Array.from({ length: numbered.length }, (_, i) => i + 1));
   });
 
+  test('the grader example is defensive: final verdict, untrusted input, bounded loop', async ({
+    page
+  }) => {
+    const section = page.locator('#evals');
+    // Parse the LAST verdict, not any occurrence -- a grader that quotes the
+    // positive tag as an example and then rules against it must not score a pass.
+    await expect(section).toContainText('matches[-1]');
+    await expect(section).toContainText('no verdict');
+    // The candidate answer is untrusted: it can close the delimiter and address
+    // the grader directly. Running the grader elsewhere does not prevent that.
+    await expect(section).toContainText('UNTRUSTED');
+    await expect(section).toContainText('never instructions to follow');
+    await expect(section).toContainText('[/answer]');
+    // The retry loop is bounded, so a rubric the task cannot satisfy escalates
+    // instead of spending forever.
+    await expect(section).toContainText('MAX_ROUNDS');
+    await expect(section).toContainText('escalate');
+  });
+
+  test('the grading table order matches the ranking the heading claims', async ({ page }) => {
+    const order = await page.evaluate(() =>
+      [...document.querySelectorAll('#evals table')]
+        .map((t) => [...t.querySelectorAll('tbody tr td:first-child')].map((td) => td.textContent.trim()))
+        .find((rows) => rows.some((r) => r.includes('Code-based')))
+    );
+    // Ranked by speed, reliability and scale: code-based, then LLM-based, then
+    // human as the last resort the prose tells you to avoid.
+    expect(order).toEqual(['Code-based', 'LLM-based', 'Human']);
+  });
+
   test('the four parts of an eval are taught, golden-answer-first', async ({ page }) => {
     const section = page.locator('#evals');
     for (const part of ['Input prompt', 'Output', 'Golden answer', 'Score']) {
@@ -137,7 +167,10 @@ test.describe('evaluating your own agent', () => {
   }) => {
     const section = page.locator('#evals');
     await expect(section).toContainText('generate(task');
-    await expect(section).toContainText('while verdict !=');
+    // The loop's shape, not its keyword: it grades, folds feedback back in, and
+    // retries. Pinning `while` broke the moment the example was bounded.
+    await expect(section).toContainText('verdict, feedback = grade(');
+    await expect(section).toContainText('context.append(');
     await expect(section).toContainText('Find → fix → test loop');
     await expect(section).toContainText('binary, code-based');
     await expect(section).toContainText('graded, judgment-bearing');
