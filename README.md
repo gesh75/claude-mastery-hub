@@ -5,11 +5,11 @@ An interactive, single‑file guide to getting the **maximum** out of Claude —
 **▶︎ Live page:** https://gesh75.github.io/claude-mastery-hub/
 
 ## What's inside
-- **42 deep‑dive sections** across 6 tracks — Foundations → Claude Code Core → Power Features → Mastery → Practice → AI Foundations 101
+- **43 deep‑dive sections** across 6 tracks — Foundations → Claude Code Core → Power Features → Mastery → Practice → AI Foundations 101
 - **24 animated "Why it matters" architecture diagrams** (inline SVG, no dependencies), each with a step‑by‑step **"Animation, explained"** panel
 - **150+ copy‑paste examples**, callouts, comparison tables, how‑to recipes, CLI hacks, and a master cheat sheet
 - **Test yourself** — 100+ active‑recall quiz questions on every teachable section, a scored 20‑question **final exam** with ranks, and a spaced‑repetition review nudge (all saved locally)
-- **Practice Lab** — 18 hands‑on scenario challenges: you're dropped into a real situation, type the command (or pick the move), get instant feedback + on‑demand hints, and unlock a solution walk‑through with the *why* and *when*
+- **Practice Lab** — 21 hands‑on scenario challenges: you're dropped into a real situation, type the command (or pick the move), get instant feedback + on‑demand hints, and unlock a solution walk‑through with the *why* and *when*
 - **Model facts verified July 28, 2026** — Claude Fable 5, Opus 5, Sonnet 5, Haiku 4.5, limited-access Mythos 5, plus source-labeled benchmark and Opus 4.8 migration guidance
 - **Progress tracker** — mark sections "Mastered" (saved in your browser) and hit 100% 🎉
 - Live search, smooth in‑page navigation, mobile‑friendly, respects reduced‑motion
