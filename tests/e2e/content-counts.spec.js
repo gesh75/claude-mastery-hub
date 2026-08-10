@@ -127,6 +127,15 @@ test.describe('advertised counts match reality', () => {
         .map((el) => el.closest('section.sec')?.id ?? '(unknown)')
     );
     expect(unlabelled, 'decorative section icons must be hidden from assistive tech').toEqual([]);
+
+    // Same gap in the sidebar: every nav link carries a decorative emoji, so an
+    // unhidden one is announced before the link text on all 44 of them.
+    const navUnlabelled = await page.evaluate(() =>
+      [...document.querySelectorAll('.nav-link .nav-ic')]
+        .filter((el) => el.getAttribute('aria-hidden') !== 'true')
+        .map((el) => el.closest('.nav-link')?.getAttribute('data-id') ?? '(unknown)')
+    );
+    expect(navUnlabelled, 'decorative nav icons must be hidden from assistive tech').toEqual([]);
   });
 
   test('the advertised track count equals the nav tracks', async ({ page }) => {
