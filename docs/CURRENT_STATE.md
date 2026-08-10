@@ -106,5 +106,5 @@ Do not inherit a section, diagram, Lab or test count from any document; derive i
 at branch time, and exclude the dated `#changelog` block from every count guard
 (`DECISION_LOG.md`, 2026-08-09).
 
-One item still needs a human: re-syncing the Notion page. `docs/NOTION_SYNC.md`
-carries the exact divergence table; pushing it needs interactive Notion auth.
+Nothing is outstanding. The Notion page was re-synced on 2026-08-10 through the
+MCP connector -- appended, not overwritten, so the #13-#19 record survives.
