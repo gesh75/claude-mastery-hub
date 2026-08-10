@@ -99,6 +99,36 @@ test.describe('advertised counts match reality', () => {
     expect(claims, 'the diagram count must be advertised somewhere').toBeGreaterThan(0);
   });
 
+  test('every section header follows the same structure', async ({ page }) => {
+    await page.goto('/');
+
+    // Nothing guarded this before, so #managed-agents shipped in #32 with a bare
+    // <div> instead of .sec-icon + .sec-titles and rendered with no icon beside
+    // every other section that has one. Structure is invisible to check-static,
+    // which only balances tags -- it needs an explicit assertion.
+    const broken = await page.evaluate(() =>
+      [...document.querySelectorAll('section.sec')]
+        .map((section) => ({
+          id: section.id,
+          icon: Boolean(section.querySelector('.sec-head > .sec-icon')),
+          titles: Boolean(section.querySelector('.sec-head > .sec-titles')),
+          num: Boolean(section.querySelector('.sec-head .sec-num'))
+        }))
+        .filter((s) => !s.icon || !s.titles || !s.num)
+        .map((s) => s.id)
+    );
+    expect(broken, 'these sections do not use the .sec-icon/.sec-titles header').toEqual([]);
+
+    // The icon is a decorative emoji. Unhidden, a screen reader announces it
+    // before the heading on every section.
+    const unlabelled = await page.evaluate(() =>
+      [...document.querySelectorAll('.sec-head > .sec-icon')]
+        .filter((el) => el.getAttribute('aria-hidden') !== 'true')
+        .map((el) => el.closest('section.sec')?.id ?? '(unknown)')
+    );
+    expect(unlabelled, 'decorative section icons must be hidden from assistive tech').toEqual([]);
+  });
+
   test('the advertised track count equals the nav tracks', async ({ page }) => {
     await page.goto('/');
     const tracks = await page.evaluate(() => document.querySelectorAll('.nav-track').length);

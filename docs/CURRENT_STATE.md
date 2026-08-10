@@ -13,7 +13,7 @@
 | Last merged PR | [#33](https://github.com/gesh75/claude-mastery-hub/pull/33) — Managed Agents (advanced) |
 | Open PRs | none |
 | Latest CI on `main` | run [`31139306605`](https://github.com/gesh75/claude-mastery-hub/actions/runs/31139306605) — workflow `CI`, check `Quality gate`, event `push`, **success** |
-| Tests | **135** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 3 · model-registry-rendering 10 · workflow-orchestration 8 · managed-agents 30 |
+| Tests | **136** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 4 · model-registry-rendering 10 · workflow-orchestration 8 · managed-agents 30 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main`, live page byte-identical to the repo |
 | Unresolved Critical/Important | none |
