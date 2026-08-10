@@ -10,10 +10,10 @@
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
 | Branch | `main` |
-| Last merged PR | [#33](https://github.com/gesh75/claude-mastery-hub/pull/33) — Managed Agents (advanced) |
+| Last merged PR | [#35](https://github.com/gesh75/claude-mastery-hub/pull/35) — the Evals track |
 | Open PRs | none |
 | Latest CI on `main` | run [`31139306605`](https://github.com/gesh75/claude-mastery-hub/actions/runs/31139306605) — workflow `CI`, check `Quality gate`, event `push`, **success** |
-| Tests | **136** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 4 · model-registry-rendering 10 · workflow-orchestration 8 · managed-agents 30 |
+| Tests | **155** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 4 · model-registry-rendering 10 · workflow-orchestration 8 · managed-agents 30 · evals 19 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main`, live page byte-identical to the repo |
 | Unresolved Critical/Important | none |
@@ -94,12 +94,12 @@ prove it *verified*. This is the one genuinely open risk.
 
 ## Next action
 
-**Open PR 1 — the Evals track.** Plan:
+**Open PR 4 — context engineering + spend attribution.** Plan:
 [`docs/plan/COOKBOOK_TRACKS.md`](plan/COOKBOOK_TRACKS.md) · brief:
 [`docs/plan/BRIEFS.md`](plan/BRIEFS.md) · measured baseline:
 [`docs/plan/VERIFIED_BASELINE.md`](plan/VERIFIED_BASELINE.md).
 
-Order is fixed: PR 5 ✅ → 3a ✅ → 3 ✅ → 2a ✅ → 2b ✅ → **1** → 4 → 6. Do not inherit a
+Order is fixed: PR 5 ✅ → 3a ✅ → 3 ✅ → 2a ✅ → 2b ✅ → 1 ✅ → **4** → 6. Do not inherit a
 section, diagram, Lab or test count from any document; derive it at branch time,
 and exclude the dated `#changelog` block from every count guard
 (`DECISION_LOG.md`, 2026-08-09).
