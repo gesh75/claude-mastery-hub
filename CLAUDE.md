@@ -38,14 +38,14 @@ multi-agent workflows) plus an "AI Foundations 101" track.
 - **Data-driven learning engines** (near end of file):
   - `QUIZ` — per-section quizzes keyed by section id.
   - `EXAM` — the 20-question final exam (`#exam`), ranked tiers.
-  - `LAB` — the **Practice Lab** (`#lab`): 12 hands-on scenario challenges,
+  - `LAB` — the **Practice Lab** (`#lab`): 25 hands-on scenario challenges,
     two types (`type:"cmd"` typed answer with `accept`/`startsWith` matching,
     or `type:"choice"`); each has `hint`, `sol`/`solText`, and a `why` note.
     "Show solution" unlocks only after an attempt.
 - **localStorage keys:** `claude_hub_quiz_v1`, `claude_hub_exam_v1`,
   `claude_hub_mastery_v1`, `claude_hub_nav_v1`, `claude_hub_lab_v1`.
   Spaced-repetition intervals: `[1,3,7,21,45]` days.
-- **Mastery ring** counts `.master-cb` checkboxes (currently **41**); adding a
+- **Mastery ring** counts `.master-cb` checkboxes (currently **43**); adding a
   section with a `master-cb` auto-increments the `/N` total — update the
   hardcoded `ringmeta` fallback text to match.
 

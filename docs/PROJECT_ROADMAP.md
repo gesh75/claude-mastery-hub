@@ -68,7 +68,21 @@ The gate is built so that a green run cannot be vacuous:
 | [#19](https://github.com/gesh75/claude-mastery-hub/pull/19) | Practice Lab validation | `dc20627` |
 | [#20](https://github.com/gesh75/claude-mastery-hub/pull/20) | Final programme state + Notion sync | `59086b8` |
 | [#21](https://github.com/gesh75/claude-mastery-hub/pull/21) | External-audit findings closed | `f830158` |
-| [#28](https://github.com/gesh75/claude-mastery-hub/pull/28) | Model registry rendering + citation gate | this PR |
+| [#22](https://github.com/gesh75/claude-mastery-hub/pull/22) | Advertised counts reconciled and pinned | `aae8d25` |
+| [#23](https://github.com/gesh75/claude-mastery-hub/pull/23) | CURRENT_STATE stops recording a volatile HEAD | `a44b472` |
+| [#24](https://github.com/gesh75/claude-mastery-hub/pull/24) | Personal email removed from public docs | `36df225` |
+| [#27](https://github.com/gesh75/claude-mastery-hub/pull/27) | MIT LICENSE added | `70bfd68` |
+| [#28](https://github.com/gesh75/claude-mastery-hub/pull/28) | Model registry rendering + citation gate | `fe53eb6` |
+| [#29](https://github.com/gesh75/claude-mastery-hub/pull/29) | Derive the Practice Lab count | `21798dc` |
+| [#30](https://github.com/gesh75/claude-mastery-hub/pull/30) | Cookbook-tracks programme recorded | `c2c1bde` |
+| [#31](https://github.com/gesh75/claude-mastery-hub/pull/31) | Workflow orchestration spine | `873df14` |
+| [#32](https://github.com/gesh75/claude-mastery-hub/pull/32) | Managed Agents (core) | `645551f` |
+| [#33](https://github.com/gesh75/claude-mastery-hub/pull/33) | Managed Agents (advanced) | `be7756d` |
+| [#34](https://github.com/gesh75/claude-mastery-hub/pull/34) | Section-header structure + a11y guard | `2ac1de2` |
+| [#35](https://github.com/gesh75/claude-mastery-hub/pull/35) | Evals track | `929b9d2` |
+| [#36](https://github.com/gesh75/claude-mastery-hub/pull/36) | Context engineering + spend attribution | `e3ac3bf` |
+| [#37](https://github.com/gesh75/claude-mastery-hub/pull/37) | Nav-icon a11y | `9b72fda` |
+| #38 | Record reconciliation | this PR |
 
 ### In progress
 
