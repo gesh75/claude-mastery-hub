@@ -10,7 +10,7 @@
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
 | Branch | `main` |
-| Last merged PR | [#36](https://github.com/gesh75/claude-mastery-hub/pull/36) — context engineering + spend attribution |
+| Last merged PR | [#38](https://github.com/gesh75/claude-mastery-hub/pull/38) — record reconciliation |
 | Open PRs | none |
 | Latest CI on `main` | run [`31139306605`](https://github.com/gesh75/claude-mastery-hub/actions/runs/31139306605) — workflow `CI`, check `Quality gate`, event `push`, **success** |
 | Tests | **167** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 4 · model-registry-rendering 10 · workflow-orchestration 8 · managed-agents 30 · evals 19 · context-engineering 12 |
@@ -94,16 +94,22 @@ prove it *verified*. This is the one genuinely open risk.
 
 ## Next action
 
-**Open PR 6 — record reconciliation.** Plan:
+**None — the cookbook-tracks programme is complete.** Plan:
 [`docs/plan/COOKBOOK_TRACKS.md`](plan/COOKBOOK_TRACKS.md) · brief:
 [`docs/plan/BRIEFS.md`](plan/BRIEFS.md) · measured baseline:
 [`docs/plan/VERIFIED_BASELINE.md`](plan/VERIFIED_BASELINE.md).
 
-Order is fixed: PR 5 ✅ → 3a ✅ → 3 ✅ → 2a ✅ → 2b ✅ → 1 ✅ → 4 ✅ → **6**. Do not inherit a
+Programme complete: PR 5 ✅ 3a ✅ 3 ✅ 2a ✅ 2b ✅ 1 ✅ 4 ✅ 6 ✅.
 section, diagram, Lab or test count from any document; derive it at branch time,
 and exclude the dated `#changelog` block from every count guard
 (`DECISION_LOG.md`, 2026-08-09).
 
-Two records are knowingly stale and are owned by the programme's final PR:
-`docs/NOTION_SYNC.md` (records 78 tests against a real 96) and `og.png`
-(regenerated once, against the final counts).
+**Two items need a human and cannot be closed from a headless session:**
+
+1. **`og.png`** — the 1200×630 social card is mtime 2026-07-12 and advertises 39
+   sections against a real 43. Regenerating it needs image tooling
+   this environment does not have. Numbers for whoever regenerates it:
+   **43 sections · 25 Practice Lab challenges ·
+   24 diagrams · 6 tracks**.
+2. **Notion re-sync** — `docs/NOTION_SYNC.md` records the divergence and the exact
+   figures; pushing it needs interactive Notion auth.
