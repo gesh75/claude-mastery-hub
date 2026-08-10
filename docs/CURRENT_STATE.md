@@ -104,6 +104,10 @@ the programme's own PRs: `roadmap-dashboard.spec.js` forbids `.tag.plan` and
 `.tag.active`, and each card needs a real merge SHA, which only exists after the
 PR it describes has merged. `git log --oneline origin/main` supplies them.
 
+**In the same pass**, replace `this PR` with #38's own squash SHA in
+`PROJECT_ROADMAP.md`'s Complete table. That placeholder is not self-correcting:
+#28's row read `this PR` for ten merges before this reconciliation caught it.
+
 The cookbook-tracks programme itself is complete: PR 5 ✅ 3a ✅ 3 ✅ 2a ✅ 2b ✅
 1 ✅ 4 ✅ 6 ✅. Plan:
 [`docs/plan/COOKBOOK_TRACKS.md`](plan/COOKBOOK_TRACKS.md) · brief:
