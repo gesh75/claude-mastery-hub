@@ -118,6 +118,15 @@ test.describe('advertised counts match reality', () => {
         .map((s) => s.id)
     );
     expect(broken, 'these sections do not use the .sec-icon/.sec-titles header').toEqual([]);
+
+    // The icon is a decorative emoji. Unhidden, a screen reader announces it
+    // before the heading on every section.
+    const unlabelled = await page.evaluate(() =>
+      [...document.querySelectorAll('.sec-head > .sec-icon')]
+        .filter((el) => el.getAttribute('aria-hidden') !== 'true')
+        .map((el) => el.closest('section.sec')?.id ?? '(unknown)')
+    );
+    expect(unlabelled, 'decorative section icons must be hidden from assistive tech').toEqual([]);
   });
 
   test('the advertised track count equals the nav tracks', async ({ page }) => {
