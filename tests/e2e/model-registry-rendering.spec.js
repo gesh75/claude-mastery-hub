@@ -236,8 +236,11 @@ test.describe('model registry rendering', () => {
       // with the gate the moment another model cites a source opus does not.
       const fromAllModels = Object.values(window.MODEL_FACTS).flatMap((m) => m.sources ?? []);
       const benchKeys = Object.keys(window.BENCHMARK_EVIDENCE);
-      // WORKFLOW_FACTS cites the same source table; check-citations counts it too.
-      const fromWorkflow = Object.values(window.WORKFLOW_FACTS ?? {}).map((f) => f.source);
+      // Sibling fact registries cite the same source table; check-citations
+      // counts them too. Collected generically so adding a third registry does
+      // not silently fall out of this assertion.
+      const siblings = [window.WORKFLOW_FACTS, window.MANAGED_AGENT_FACTS];
+      const fromWorkflow = siblings.flatMap((r) => Object.values(r ?? {}).map((f) => f.source));
       return {
         sources: window.MODEL_SOURCES,
         referenced: [...new Set([...fromAllModels, ...benchKeys, ...fromWorkflow])],
@@ -260,12 +263,20 @@ test.describe('model registry rendering', () => {
     // Named, per-key resolution first. The set equality below already catches a
     // dangling workflow source, but it fails as a whole-array diff; this names
     // the offending key the way check-citations.mjs does.
-    const workflowSources = await page.evaluate(() =>
-      Object.entries(window.WORKFLOW_FACTS ?? {}).map(([name, f]) => [name, f.source])
+    const siblingSources = await page.evaluate(() =>
+      [
+        ['WORKFLOW_FACTS', window.WORKFLOW_FACTS],
+        ['MANAGED_AGENT_FACTS', window.MANAGED_AGENT_FACTS]
+      ].flatMap(([registry, facts]) =>
+        Object.entries(facts ?? {}).map(([name, f]) => [registry, name, f.source])
+      )
     );
-    expect(workflowSources.length, 'WORKFLOW_FACTS must cite something').toBeGreaterThan(0);
-    for (const [name, key] of workflowSources) {
-      expect(sources[key], `WORKFLOW_FACTS.${name} cites "${key}", absent from MODEL_SOURCES`).toBeTruthy();
+    expect(siblingSources.length, 'the sibling registries must cite something').toBeGreaterThan(0);
+    for (const [registry, name, key] of siblingSources) {
+      expect(
+        sources[key],
+        `${registry}.${name} cites "${key}", absent from MODEL_SOURCES`
+      ).toBeTruthy();
     }
 
     // Two-way: nothing in the registry is orphaned.

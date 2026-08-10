@@ -96,7 +96,9 @@ function extractRegistries(html) {
     'BENCHMARK_EVIDENCE',
     // Optional: absent from a fixture that only exercises the model registry.
     'WORKFLOW_FACTS_VERIFIED_AT',
-    'WORKFLOW_FACTS'
+    'WORKFLOW_FACTS',
+    'MANAGED_AGENT_FACTS_VERIFIED_AT',
+    'MANAGED_AGENT_FACTS'
   ]);
   const scripts = [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)];
   for (const m of scripts) {
@@ -243,6 +245,12 @@ if (!failures.length) {
   if (reg.WORKFLOW_FACTS !== undefined || reg.WORKFLOW_FACTS_VERIFIED_AT !== undefined) {
     doc.workflow = { verifiedAt: reg.WORKFLOW_FACTS_VERIFIED_AT, facts: reg.WORKFLOW_FACTS };
   }
+  if (reg.MANAGED_AGENT_FACTS !== undefined || reg.MANAGED_AGENT_FACTS_VERIFIED_AT !== undefined) {
+    doc.managedAgents = {
+      verifiedAt: reg.MANAGED_AGENT_FACTS_VERIFIED_AT,
+      facts: reg.MANAGED_AGENT_FACTS
+    };
+  }
 
   console.log('schema conformance');
   const errs = [];
@@ -263,11 +271,16 @@ if (!failures.length) {
       }
     }
   }
-  for (const [name, fact] of Object.entries(doc.workflow?.facts ?? {})) {
-    referenced.add(fact.source);
-    if (!sourceKeys.has(fact.source)) {
-      bad(`WORKFLOW_FACTS.${name} cites \`${fact.source}\`, which is not in MODEL_SOURCES`);
-      dangling += 1;
+  for (const [registryName, node] of [
+    ['WORKFLOW_FACTS', doc.workflow],
+    ['MANAGED_AGENT_FACTS', doc.managedAgents]
+  ]) {
+    for (const [name, fact] of Object.entries(node?.facts ?? {})) {
+      referenced.add(fact.source);
+      if (!sourceKeys.has(fact.source)) {
+        bad(`${registryName}.${name} cites \`${fact.source}\`, which is not in MODEL_SOURCES`);
+        dangling += 1;
+      }
     }
   }
   for (const key of Object.keys(doc.benchmarks ?? {})) {
@@ -335,6 +348,7 @@ if (!failures.length) {
     }
   };
   if (doc.workflow) checkDate('WORKFLOW_FACTS_VERIFIED_AT', doc.workflow.verifiedAt);
+  if (doc.managedAgents) checkDate('MANAGED_AGENT_FACTS_VERIFIED_AT', doc.managedAgents.verifiedAt);
   const iso = doc.verifiedAt;
   const parsed = /^(\d{4})-(\d{2})-(\d{2})$/.test(String(iso)) ? new Date(`${iso}T00:00:00Z`) : null;
   // Round-trip the parse: JS normalises impossible dates (2026-02-31 becomes
