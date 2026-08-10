@@ -111,8 +111,9 @@ The cookbook-tracks programme itself is complete: PR 5 ✅ 3a ✅ 3 ✅ 2a ✅ 2
 [`docs/plan/VERIFIED_BASELINE.md`](plan/VERIFIED_BASELINE.md).
 
 Programme complete: PR 5 ✅ 3a ✅ 3 ✅ 2a ✅ 2b ✅ 1 ✅ 4 ✅ 6 ✅.
-section, diagram, Lab or test count from any document; derive it at branch time,
-and exclude the dated `#changelog` block from every count guard
+
+Do not inherit a section, diagram, Lab or test count from any document; derive it
+at branch time, and exclude the dated `#changelog` block from every count guard
 (`DECISION_LOG.md`, 2026-08-09).
 
 **Two items need a human and cannot be closed from a headless session:**

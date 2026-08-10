@@ -50,9 +50,9 @@ leaving the file silently wrong, because this file's own rule is that it and
 | Last merged PR | #19 | **#38** |
 | Deferred items | 3 | **2** — mutation testing *and* maintainability consolidation |
 
-`docs/CURRENT_STATE.md` lists only mutation testing; `docs/PROJECT_ROADMAP.md`
-lists only maintainability consolidation. Neither file is wrong about its own
-entry, but neither carries both, so a reader of either one undercounts. Both are
+Both were previously split: `docs/CURRENT_STATE.md` carried only mutation
+testing and `docs/PROJECT_ROADMAP.md` only maintainability consolidation, so a
+reader of either one undercounted. `CURRENT_STATE.md` now lists both. Both are
 still genuinely open.
 
 **Action required by the maintainer:** re-run the Notion sync via the MCP
