@@ -99,6 +99,28 @@ test.describe('advertised counts match reality', () => {
     expect(claims, 'the diagram count must be advertised somewhere').toBeGreaterThan(0);
   });
 
+  test('the social card is not stale', async ({ page }) => {
+    await page.goto('/');
+
+    // og.png is a binary no test can read, so it drifted unnoticed: it claimed 39
+    // sections against a real 43 for a month, caught by eye in an external audit
+    // rather than by the gate. scripts/make-og.mjs derives the counts from
+    // index.html and records them here, which makes staleness detectable.
+    const meta = JSON.parse(await readFile(new URL('og.meta.json', ROOT), 'utf8'));
+    const live = await page.evaluate(() => ({
+      sections: document.querySelectorAll('.master-cb').length,
+      lab: window.LAB.length,
+      diagrams: document.querySelectorAll('.diagram').length,
+      tracks: document.querySelectorAll('.nav-track').length
+    }));
+    for (const key of Object.keys(live)) {
+      expect(
+        meta[key],
+        `og.png advertises ${meta[key]} ${key} but the page has ${live[key]} — run node scripts/make-og.mjs`
+      ).toBe(live[key]);
+    }
+  });
+
   test('every section header follows the same structure', async ({ page }) => {
     await page.goto('/');
 

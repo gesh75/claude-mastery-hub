@@ -1,0 +1,36 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1200px;height:630px;background:#12101c;color:#ece9f5;
+ font-family:-apple-system,"Segoe UI",Inter,sans-serif;display:flex;flex-direction:column;
+ justify-content:center;padding:0 76px;position:relative;overflow:hidden}
+.glow{position:absolute;width:760px;height:760px;border-radius:50%;filter:blur(120px);opacity:.30}
+.g1{background:#9b8cff;top:-320px;right:-240px}
+.g2{background:#54e6e0;bottom:-380px;left:-260px;opacity:.20}
+.inner{position:relative;z-index:1}
+.bot{font-size:60px;line-height:1;margin-bottom:26px}
+h1{font-size:78px;line-height:1.02;letter-spacing:-2.5px;font-weight:750}
+.accent{background:linear-gradient(90deg,#9b8cff,#54e6e0);-webkit-background-clip:text;
+ -webkit-text-fill-color:transparent}
+p.sub{font-size:29px;color:#a59fc0;margin-top:22px;max-width:930px;line-height:1.4}
+.stats{display:flex;gap:56px;margin-top:52px}
+.stat b{display:block;font-size:52px;font-weight:750;letter-spacing:-1.5px}
+.stat span{font-size:17px;color:#a59fc0;text-transform:uppercase;letter-spacing:1.6px}
+.s1 b{color:#9b8cff}.s2 b{color:#54e6e0}.s3 b{color:#5fd39a}.s4 b{color:#ffd166}
+.foot{position:absolute;bottom:44px;left:76px;right:76px;display:flex;justify-content:space-between;
+ align-items:center;font-size:19px;color:#7d7899;z-index:1}
+.pill{border:1px solid #2b2542;border-radius:999px;padding:9px 20px;color:#a59fc0;background:#171327}
+</style></head><body>
+<div class="glow g1"></div><div class="glow g2"></div>
+<div class="inner">
+  <div class="bot">🤖</div>
+  <h1>Claude <span class="accent">Mastery Hub</span></h1>
+  <p class="sub">An interactive guide to Claude Code, the app, the API &amp; Agent SDK, MCP, skills, subagents, hooks, workflows and Managed Agents.</p>
+  <div class="stats">
+    <div class="stat s1"><b id="a"></b><span>Deep-dive sections</span></div>
+    <div class="stat s2"><b id="b"></b><span>Lab challenges</span></div>
+    <div class="stat s3"><b id="c"></b><span>Animated diagrams</span></div>
+    <div class="stat s4"><b id="d"></b><span>Learning tracks</span></div>
+  </div>
+</div>
+<div class="foot"><span>gesh75.github.io/claude-mastery-hub</span><span class="pill">Free · offline · single file</span></div>
+</body></html>
