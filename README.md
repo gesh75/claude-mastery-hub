@@ -5,7 +5,7 @@ An interactive, single‑file guide to getting the **maximum** out of Claude —
 **▶︎ Live page:** https://gesh75.github.io/claude-mastery-hub/
 
 ## What's inside
-- **41 deep‑dive sections** across 6 tracks — Foundations → Claude Code Core → Power Features → Mastery → Practice → AI Foundations 101
+- **42 deep‑dive sections** across 6 tracks — Foundations → Claude Code Core → Power Features → Mastery → Practice → AI Foundations 101
 - **24 animated "Why it matters" architecture diagrams** (inline SVG, no dependencies), each with a step‑by‑step **"Animation, explained"** panel
 - **150+ copy‑paste examples**, callouts, comparison tables, how‑to recipes, CLI hacks, and a master cheat sheet
 - **Test yourself** — 100+ active‑recall quiz questions on every teachable section, a scored 20‑question **final exam** with ranks, and a spaced‑repetition review nudge (all saved locally)
