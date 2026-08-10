@@ -33,9 +33,10 @@ implying the review happened.
 
 ## Divergence recorded 2026-08-10 (NOT yet pushed to Notion)
 
-The mirror above describes the state at PR #19. Eleven PRs have merged since
-(#20–#21 stabilization, then the cookbook-tracks programme #28–#37), and the
-Notion page has **not** been re-synced. Recording the gap here rather than
+The mirror above describes the state at PR #19. **Sixteen** PRs have merged
+since — #20–#24 and #27 (stabilization, count reconciliation, LICENSE, email
+removal), then the cookbook-tracks programme #28–#37 — and the Notion page has
+**not** been re-synced. Recording the gap here rather than
 leaving the file silently wrong, because this file's own rule is that it and
 `CURRENT_STATE.md` must agree.
 
@@ -47,7 +48,12 @@ leaving the file silently wrong, because this file's own rule is that it and
 | Quiz keys | not recorded | **38** |
 | Diagrams | 24 | **24** |
 | Last merged PR | #19 | **#38** |
-| Deferred items | 3 | **1** (mutation testing) |
+| Deferred items | 3 | **2** — mutation testing *and* maintainability consolidation |
+
+`docs/CURRENT_STATE.md` lists only mutation testing; `docs/PROJECT_ROADMAP.md`
+lists only maintainability consolidation. Neither file is wrong about its own
+entry, but neither carries both, so a reader of either one undercounts. Both are
+still genuinely open.
 
 **Action required by the maintainer:** re-run the Notion sync via the MCP
 connector, then replace the mirror above. That needs interactive Notion auth and

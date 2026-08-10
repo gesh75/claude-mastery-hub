@@ -90,11 +90,22 @@ Artifacts upload **only on failure** (7-day retention).
 
 **Mutation testing.** Nothing in the gate detects a test that executes but
 asserts nothing. The anti-vacuity checks prove the suite *ran*; they cannot
-prove it *verified*. This is the one genuinely open risk.
+prove it *verified*.
+
+**Maintainability consolidation.** Keep the app single-file unless extraction
+produces a measurable maintenance benefit; never mix that with a behaviour fix.
+Carried in `PROJECT_ROADMAP.md`; recorded here too so neither file undercounts.
 
 ## Next action
 
-**None — the cookbook-tracks programme is complete.** Plan:
+**Add the merged milestone cards to `docs/roadmap/index.html`.** The offline
+dashboard still ends at #22 while `main` is at #38. This could not be done inside
+the programme's own PRs: `roadmap-dashboard.spec.js` forbids `.tag.plan` and
+`.tag.active`, and each card needs a real merge SHA, which only exists after the
+PR it describes has merged. `git log --oneline origin/main` supplies them.
+
+The cookbook-tracks programme itself is complete: PR 5 ✅ 3a ✅ 3 ✅ 2a ✅ 2b ✅
+1 ✅ 4 ✅ 6 ✅. Plan:
 [`docs/plan/COOKBOOK_TRACKS.md`](plan/COOKBOOK_TRACKS.md) · brief:
 [`docs/plan/BRIEFS.md`](plan/BRIEFS.md) · measured baseline:
 [`docs/plan/VERIFIED_BASELINE.md`](plan/VERIFIED_BASELINE.md).
