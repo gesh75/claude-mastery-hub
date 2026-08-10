@@ -88,7 +88,7 @@
 <h2>Executive status</h2>
 <div class="pulse">
   <div class="stat"><span class="k">Health</span><span class="v green">Complete<small>gate enforced on main</small></span></div>
-  <div class="stat"><span class="k">Tests</span><span class="v cyan">167 passing<small>0 skipped · 0 retried</small></span></div>
+  <div class="stat"><span class="k">Tests</span><span class="v cyan">168 passing<small>0 skipped · 0 retried</small></span></div>
   <div class="stat"><span class="k">CI</span><span class="v green">Green<small>Quality gate · push</small></span></div>
   <div class="stat"><span class="k">Branch protection</span><span class="v green">Enforced<small>incl. admins</small></span></div>
   <div class="stat"><span class="k">Deployment</span><span class="v green">Live<small>GitHub Pages</small></span></div>
@@ -175,6 +175,118 @@
     <p class="meta">merge <b>aae8d25</b></p>
   </article>
 
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #23 — CURRENT_STATE stops recording its own HEAD</h3>
+    <p>A documentation commit cannot contain its own squash SHA, so any recorded HEAD was stale on merge. The header now names the last merged PR and a command to read HEAD live.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>a44b472</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #24 — Personal email removed from public docs</h3>
+    <p>Maintainer email disclosure closed across the public documentation.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>36df225</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #27 — MIT LICENSE added</h3>
+    <p>Repository licensed.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>70bfd68</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #28 — Model registry rendering + citation gate</h3>
+    <p>Closes the last deferred milestone. MODEL_FACTS now drives the #whats-new DOM, and check-citations.mjs fails the build on a schema violation, a dangling or orphaned source, or an invalid date — with zero network calls.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>fe53eb6</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #29 — Derive the Practice Lab count</h3>
+    <p>Six hardcoded 12s, two inside shared setup, turned ~30 tests red whenever the Lab grew. Now derived from window.LAB.length; the one genuine content claim became a drift guard.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>21798dc</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #30 — Cookbook-tracks programme recorded</h3>
+    <p>Plan, measured baseline and eight briefs, plus the decision entries the shipped PRs depend on.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>c2c1bde</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #31 — Workflow orchestration spine</h3>
+    <p>Who holds the plan — Claude turn by turn, or a script. Corrected availability, the ultracode trigger and the size guideline against primary docs.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>873df14</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #32 — Managed Agents (core)</h3>
+    <p>New section 17. Settled the cloud vs anthropic_cloud question against the primary docs, and stated the ZDR/HIPAA boundary with its reason and remedy.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>645551f</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #33 — Managed Agents (advanced)</h3>
+    <p>Coordinator, advisor, repository skills, session budgets and the production surface. Lab n derived, and a gapless-sequence guard added.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>be7756d</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #34 — Section-header structure + a11y guard</h3>
+    <p>#managed-agents shipped with no icon through a full gate and two reviewers, because nothing asserted header structure. Fixed and guarded.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>2ac1de2</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #35 — Evals track</h3>
+    <p>The largest curriculum gap: the page graded the reader, never what the reader built. Closes four dangling forward-references.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>929b9d2</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #36 — Context engineering + spend attribution</h3>
+    <p>Three API-level context primitives and the surfaces that prove spend. All six cross-PR audit findings applied.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>e3ac3bf</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #37 — Nav-icon accessibility</h3>
+    <p>44 decorative sidebar emoji hidden from assistive technology; the deferred half of #34.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>9b72fda</b></p>
+  </article>
+
+  <article class="card done">
+    <span class="tag done">Merged</span>
+    <h3>PR #38 — Records reconciled</h3>
+    <p>CLAUDE.md, PROJECT_ROADMAP and the Notion mirror brought back in line after sixteen merges.</p>
+    <div class="bar p100"><span></span></div><div class="pct">100%</div>
+    <p class="meta">merge <b>851f4eb</b></p>
+  </article>
+
 </div>
 
 <h2>Quality evidence</h2>
@@ -186,7 +298,7 @@
       <tr><td><code>check-diff.mjs</code></td><td>whitespace/conflict errors over an exact per-event commit range</td><td class="green">pass</td></tr>
       <tr><td><code>npm audit</code></td><td>no advisories at any severity</td><td class="green">0 vulnerabilities</td></tr>
       <tr><td><code>check-static.mjs</code></td><td>YAML + AST + CSS structural integrity, offline guarantee</td><td class="green">pass</td></tr>
-      <tr><td><code>npm test</code></td><td>Playwright suite, <code>forbidOnly</code> active</td><td class="green">167 passed</td></tr>
+      <tr><td><code>npm test</code></td><td>Playwright suite, <code>forbidOnly</code> active</td><td class="green">168 passed</td></tr>
       <tr><td><code>check-test-results.mjs</code></td><td>the suite actually ran what it claims</td><td class="green">pass</td></tr>
       <tr><td>Artifacts</td><td>upload on failure only</td><td class="green">0 on success</td></tr>
     </tbody>

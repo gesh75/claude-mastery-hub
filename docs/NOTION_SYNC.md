@@ -5,7 +5,8 @@ alone if Notion is ever unavailable.
 
 - **Page:** [Claude Mastery Hub — Project Tracker & Roadmap](https://app.notion.com/p/3adff39485008115a642ccdcde02f74c)
 - **Operating standard:** https://app.notion.com/p/3adff394850081a7b6bff6353337f178
-- **Synced:** 2026-07-30. **Stale as of 2026-08-10 — see below.**
+- **Synced:** 2026-08-10 — reconciliation appended via the Notion MCP connector. The
+  2026-07-30 mirror below is retained as history.
 
 The Notion page and `docs/CURRENT_STATE.md` must agree. If they diverge,
 `CURRENT_STATE.md` is authoritative for repository facts and Notion is
@@ -55,7 +56,13 @@ testing and `docs/PROJECT_ROADMAP.md` only maintainability consolidation, so a
 reader of either one undercounted. `CURRENT_STATE.md` now lists both. Both are
 still genuinely open.
 
-**Action required by the maintainer:** re-run the Notion sync via the MCP
-connector, then replace the mirror above. That needs interactive Notion auth and
-cannot be done from a headless session, which is why this PR records the
-divergence instead of closing it.
+**Closed 2026-08-10.** The sync ran through the Notion MCP connector. A
+"Reconciliation — 2026-08-10" section was **appended** rather than replacing the
+page: the 2026-07-30 record of PRs #13-#19 is real history and overwriting it
+would destroy the only durable account of the stabilization programme. The
+appended section carries the figures in the table above, the sixteen merged PRs,
+the four new curriculum units, the new gate machinery, and both remaining
+deferred items.
+
+An earlier note here claimed this needed interactive auth and could not be done
+headless. That was wrong -- the connector was already authenticated.
