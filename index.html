@@ -2678,6 +2678,186 @@ client.beta.sessions.events.send(
     API. Verified <b data-ma-fact="verifiedAt"></b>; this is a statement about a moving posture, so
     re-check it against the primary docs before you rely on it for a regulated workload.</div>
 
+<h3>Coordinating multiple agents</h3>
+<p>An agent becomes a <strong>coordinator</strong> by setting <code>multiagent</code> on its
+definition. The coordinator's primary thread <strong>is</strong> the session-level event
+stream; delegating to another agent spawns an additional, context-isolated <strong>session
+thread</strong> at runtime.</p>
+<pre><code>{
+  "name": "Engineering Lead",
+  "model": "claude-opus-5",
+  "multiagent": {
+    "type": "coordinator",
+    "agents": [
+      {"type": "agent", "id": "$REVIEWER_AGENT_ID"},
+      {"type": "self"}
+    ]
+  }
+}</code></pre>
+<table>
+<thead><tr><th>Roster entry</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>{"type": "agent", "id": ...}</code></td><td>Delegate to another agent's latest version.</td></tr>
+<tr><td><code>{"type": "agent", "id": ..., "version": ...}</code></td><td>Delegate to a version pinned at coordinator create/update time.</td></tr>
+<tr><td><code>{"type": "self"}</code></td><td>Spawn additional copies of the coordinator itself.</td></tr>
+<tr><td><code>{"type": "advisor", "model": ...}</code></td><td>Give the primary thread a mid-turn advisor &mdash; see below.</td></tr>
+</tbody>
+</table>
+<p>The roster is <strong>snapshotted</strong> at coordinator create/update time: referenced
+agents stay pinned to the versions resolved then. The coordinator can delegate only
+<strong>one level</strong> &mdash; a roster member that is itself a coordinator fails
+validation. A roster holds at most <b data-ma-fact="multiagentRosterCap"></b> unique agents
+(the coordinator can still call multiple copies of each), and a session supports at most
+<b data-ma-fact="threadCap"></b> concurrent threads, a limit the advisor's own consultation
+threads are exempt from.</p>
+<p>All agents on the roster share the same sandbox, filesystem, and vault credentials, but
+each keeps its own model, system prompt, tools, MCP servers, and skills &mdash; per-role
+scoping, not a shared toolset. Session-level agent-configuration overrides are the one
+exception: they apply only to the coordinator and its <code>self</code> copies. Threads are
+persistent, so the coordinator can send a follow-up to an agent it called earlier and that
+agent retains everything from its prior turns.</p>
+<p>Send <code>user.interrupt</code> with a <code>session_thread_id</code> to stop one thread,
+or omit it to interrupt every non-archived thread including the primary. Archiving a thread
+frees a slot against the concurrency cap and only succeeds once the thread is
+<code>idle</code> &mdash; a thread parked on <code>requires_action</code> counts as idle and
+archives directly; a <code>running</code> thread must be interrupted first. When a subagent
+thread needs a tool confirmation or a custom-tool result, that need is cross-posted to the
+primary thread carrying the originating <code>session_thread_id</code>, and the server routes
+your <code>user.tool_confirmation</code> / <code>user.custom_tool_result</code> reply back to
+the correct thread automatically.</p>
+
+<h3>Giving the coordinator an advisor</h3>
+<p>An <code>{"type": "advisor", "model": ...}</code> roster entry gives the session's primary
+thread a model it can consult mid-turn for planning, getting unstuck, or a pre-finish review.
+A roster holds at most one advisor entry, which occupies the reserved roster name
+<code>anthropic.advisor</code> &mdash; listing both an advisor entry and a literal member
+named <code>anthropic.advisor</code> is rejected. The advisor model must meet a minimum
+capability bar and the agent's own model must not be more capable than its advisor, though
+models of equal capability can pair; an invalid pairing is rejected when the agent is saved.</p>
+<p>The advisor is also available as a server tool on the Messages API, but delivery differs:
+the Managed Agents roster entry carries no <code>max_uses</code>, <code>max_tokens</code>, or
+<code>caching</code> fields, and advice arrives through <strong>thread events</strong> rather
+than <code>advisor_tool_result</code> blocks. Each consultation runs as a platform-spawned
+thread named <code>anthropic.advisor</code> that terminates itself on completion; no
+<code>agent.tool_use</code> or <code>agent.thread_message_sent</code> events appear for it,
+because the platform composes the consultation, not the agent. The advice-delivery event is
+not guaranteed to arrive before that thread's idle and terminated events.</p>
+<div class="cal info">Delivery can be <b>redacted or plaintext</b>, mirroring the Messages API
+advisor tool's result variants. Claude Opus 5 is a redacted-result advisor: your client sees a
+placeholder while the agent reads the full advice server-side. Choose Claude Opus 4.8 as the
+advisor instead if you want the advice readable on the event stream.</div>
+<p>A failed or interrupted consultation never fails the agent's turn &mdash; the agent
+continues after a generic failure notice. The advisor is invisible to the coordinator's
+<code>list_agents</code> tool and cannot be messaged with <code>send_to_agent</code>; only the
+primary thread can consult it, and consultations bill at the advisor model's own rates. Drop
+the advisor by updating the agent with a roster that omits it, or clear the roster entirely
+with <code>"multiagent": null</code> if it was the only entry.</p>
+
+<h3>Skills from a mounted repository</h3>
+<p>This is a different mechanism from the local <code>.claude/skills</code> directory covered
+in <a href="#skills">Skills</a> &mdash; same path convention, same <code>SKILL.md</code>
+format, but a separate runtime feature scoped to Managed Agents sessions. Mount a repository
+as a <code>github_repository</code> resource and its root <code>.claude/skills</code>
+directory is scanned once, at session start; each skill found becomes available with no
+upload and no entry in the agent's <code>skills</code> array. Discovery relies on the agent's
+<code>read</code> tool (enabled by default) &mdash; an agent with <code>read</code> disabled
+doesn't load repository skills.</p>
+<p>Only one exact layout is discovered: <code>.claude/skills/&lt;skill-name&gt;/SKILL.md</code>,
+one directory level deep, at the repository root. Not discovered: a bare
+<code>.claude/skills/SKILL.md</code>, anything nested more than one level such as
+<code>.claude/skills/tools/code-review/SKILL.md</code>, a <code>skills</code> directory
+outside <code>.claude</code>, or a <code>.claude/skills</code> elsewhere in the repo such as a
+package subdirectory &mdash; those can still surface if the agent reads that subtree, just
+aren't announced at start. Discovery follows the mounted resource's <code>checkout</code>
+branch or commit, or the default branch if none is set; the scan runs once, so commits pushed
+mid-session are not picked up &mdash; start a new session to load updates.</p>
+<div class="cal warn">Repository skills are agent <b>instructions</b>, and a mounted
+repository joins your agent's trust boundary. Anyone who can commit &mdash; a merged external
+pull request, a compromised dependency, a contributor &mdash; can add or change a skill, the
+platform loads it at session start with <b>no review step</b>, and session tools like
+<code>bash</code> and <code>web_fetch</code> give those instructions real reach. Mount only
+repositories you trust, and review <code>.claude/skills</code> before mounting one that
+accepts outside contributions. Cloud sandboxes only &mdash; self-hosted sandboxes don't
+support <code>github_repository</code> resources at all.</div>
+<p>Repository skills coexist with skills attached through the agent's <code>skills</code>
+array (capped at <b data-ma-fact="skillsCap"></b> per session, deduplicated across every
+agent in the session) and with skills from other mounted repositories &mdash; a name collision
+is fine, each is announced with its own path. Creating a custom skill directly with the Skills
+API needs its own beta header, <code data-ma-fact="skillsBetaHeader"></code>, not the general
+Managed Agents one; the CLI and SDKs send it automatically.</p>
+
+<h3>Capping a session's spend</h3>
+<p>An optional <code>budget</code> field on session creation is a hard dollar ceiling, checked
+between model requests against the session's continuously-priced <strong>list cost</strong>:
+model tokens at each served model's list price, web search at $10 per 1,000 searches, and
+session running time at $0.08 per hour. List cost is not your contracted price &mdash; a
+negotiated discount means billed spend can land below the cap. A budget can only be attached
+at session creation; adding one to an existing unbudgeted session is rejected with a 400.</p>
+<pre><code>"budget": {
+  "type": "limit",
+  "max_list_cost": {"amount": "2500", "currency": "USD"}
+}</code></pre>
+<p><code>amount</code> is a whole number of US cents written as a <strong>string</strong> (no
+float rounding), and <code>currency</code> is always <code>USD</code>. The <code>type</code>
+field is always <code data-ma-fact="sessionBudgetType"></code>.</p>
+<p>The cap is enforced <strong>between</strong> model requests, not mid-request: the request
+that carries the total past the cap is already admitted and runs to completion, so a session
+capped at 50&cent; can pause with a reported <code>list_cost</code> of <code>"53"</code>
+&mdash; expected, bounded to one request per thread, not a billing error. A session that
+reaches its budget goes <strong>idle</strong> with <code>stop_reason: budget_reached</code>;
+it is not terminated, and its history and sandbox are preserved.</p>
+<p>On the event stream this is one fixed sequence: a <code>session.thread_status_idle</code>
+event per thread as it pauses, then a <code>session.usage</code> event with cumulative usage,
+then a <code>session.status_idle</code> event &mdash; the usage event always immediately
+precedes the idle one. While paused at the cap, the session accepts only events that settle
+work already in progress (<code>user.tool_confirmation</code>, <code>user.tool_result</code>,
+<code>user.custom_tool_result</code>, <code>user.interrupt</code>); anything that would start
+new work, such as <code>user.message</code>, is rejected with a 400 naming that list.</p>
+<p>Resume by updating the session with a new <code>max_list_cost</code> &mdash; higher or
+lower, but strictly greater than the consumed list cost &mdash; or by removing the budget
+entirely with <code>budget: null</code>. Either resumes the session automatically. Removal is
+one-way: a budget-removed session can never be given a new one. In a multiagent session, one
+budget is shared across every thread, with no per-thread caps; advisor consultations count
+against it too, at the advisor model's own rates. A deployment can carry the same
+<code>budget</code> object, copied onto each session it starts so it bounds every run
+separately rather than cumulatively.</p>
+
+<h3>Production surface: webhooks, vaults, and session lifecycle</h3>
+<p>Most real-time interaction happens over the SSE event stream; <strong>webhooks</strong> are
+for major state changes so you don't have to poll. A webhook delivers only the event's
+<code>type</code> and <code>id</code>, not the full object &mdash; fetch the resource yourself
+with a <code>GET</code>. Every delivery carries <code>webhook-id</code>,
+<code>webhook-timestamp</code>, and <code>webhook-signature</code> headers; verify them (the
+SDK's <code>unwrap()</code> throws on an invalid signature or a payload over 5 minutes old).
+Use the top-level <code>event.id</code> to de-duplicate &mdash; the same id twice is a retry,
+safe to discard. Ordering is <strong>not guaranteed</strong>, so drive state from a fetched
+resource, never from arrival order.</p>
+<p>Anthropic makes up to <b data-ma-fact="webhookMaxRetries"></b> delivery attempts per
+endpoint and event, with jittered exponential backoff between 5 and 120 seconds; after the
+last attempt fails the event is dropped, not queued &mdash; webhooks are not a durable log.
+An endpoint auto-disables (reversibly) on any <code>3xx</code> response (redirects are never
+followed), on a URL resolving to a non-public IP, or on sustained continuous failure over
+time; a single <code>2xx</code> resets that failure window.</p>
+<p><strong>Vaults</strong> hold per-end-user credentials, referenced at session creation with
+a <code>vault_ids</code> array; they are <strong>workspace-scoped</strong>, so any API key for
+the same workspace can reference them. Two categories exist: <code
+data-ma-fact="vaultCredentialTypes"></code> &mdash; the first two are MCP credentials, keyed
+by <code>mcp_server_url</code> and auto-injected on connect; the third is an
+environment-variable credential, keyed by <code>secret_name</code>, stored as an opaque
+sandbox placeholder and substituted with the real secret at egress, so the agent never sees
+the value (a client that signs a request from the secret, e.g. AWS SigV4, will fail).
+Credentials are re-resolved periodically, so rotation, archival, or deletion propagates to a
+running session without a restart.</p>
+<p>A session's <code>status</code> is one of <code data-ma-fact="sessionStatuses"></code>
+&mdash; a session that <em>finishes</em> its work goes idle, not terminated. Only
+<code>tools</code> and <code>mcp_servers</code> can change mid-session, and only while the
+session is <code>idle</code>; the posted array is a full replacement, so <code>GET</code> then
+modify then <code>POST</code> to preserve existing entries. <strong>Archiving</strong> a
+session prevents new events while preserving history (a running session must be interrupted
+first); <strong>deleting</strong> a session permanently removes its record, events, and
+sandbox, while memory stores, vaults, skills, environments, and agents are independent and
+unaffected.</p>
+
     <h4>Primary sources</h4>
     <ul class="cites" data-model-sources="managedAgents"></ul>
   </div>
@@ -6122,6 +6302,12 @@ var MODEL_SOURCES={
   managedAgentsOverview:{label:'Claude Managed Agents overview',url:'https://platform.claude.com/docs/en/managed-agents/overview'},
   managedAgentsEnvironments:{label:'Cloud environment setup',url:'https://platform.claude.com/docs/en/managed-agents/environments'},
   managedAgentsSessions:{label:'Start a session',url:'https://platform.claude.com/docs/en/managed-agents/sessions'},
+  managedAgentsBudgets:{label:'Session budgets',url:'https://platform.claude.com/docs/en/managed-agents/budgets'},
+  managedAgentsMultiagent:{label:'Multiagent orchestration',url:'https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration'},
+  managedAgentsSkills:{label:'Skills (Managed Agents)',url:'https://platform.claude.com/docs/en/managed-agents/skills'},
+  managedAgentsWebhooks:{label:'Webhooks',url:'https://platform.claude.com/docs/en/managed-agents/webhooks'},
+  managedAgentsVaults:{label:'Vaults',url:'https://platform.claude.com/docs/en/managed-agents/vaults'},
+  managedAgentsSessionOps:{label:'Session operations',url:'https://platform.claude.com/docs/en/managed-agents/session-operations'},
   frontierBench:{label:'Frontier-Bench v0.1',url:'https://www.frontierbench.ai/announcement'},
   cursorBench:{label:'CursorBench 3.2',url:'https://cursor.com/evals'},
   arcAgi:{label:'ARC Prize verified Opus 5 results',url:'https://arcprize.org/results/anthropic-claude-opus-5'},
@@ -6183,7 +6369,15 @@ var MANAGED_AGENT_FACTS_VERIFIED_AT='2026-08-09';
 var MANAGED_AGENT_FACTS={
   betaHeader:{label:'Beta header (all endpoints)',value:'managed-agents-2026-04-01',note:'Required on every Managed Agents request; the SDKs set it for you',provenance:'Anthropic-documented',source:'managedAgentsOverview'},
   memoryBetaHeader:{label:'Beta header (memory store)',value:'agent-memory-2026-07-22',note:'The one exception \u2014 memory store endpoints take this instead',provenance:'Anthropic-documented',source:'managedAgentsSessions'},
-  environmentConfigType:{label:'Cloud environment config type',value:'cloud',note:'The value used throughout the primary docs, in every language example',provenance:'Anthropic-documented',source:'managedAgentsEnvironments'}
+  environmentConfigType:{label:'Cloud environment config type',value:'cloud',note:'The value used throughout the primary docs, in every language example',provenance:'Anthropic-documented',source:'managedAgentsEnvironments'},
+  multiagentRosterCap:{label:'Max unique agents in a coordinator roster',value:'20',note:'multiagent.agents; the coordinator can still call multiple copies of each',provenance:'Anthropic-documented',source:'managedAgentsMultiagent'},
+  threadCap:{label:'Max concurrent session threads',value:'25',note:'Advisor consultation threads are exempt from this limit',provenance:'Anthropic-documented',source:'managedAgentsMultiagent'},
+  sessionBudgetType:{label:'Budget object type field',value:'limit',note:'The only value the field ever takes',provenance:'Anthropic-documented',source:'managedAgentsBudgets'},
+  skillsBetaHeader:{label:'Beta header (create a custom skill via the API)',value:'skills-2025-10-02',note:'Different from managed-agents-2026-04-01; the CLI and SDKs send it automatically',provenance:'Anthropic-documented',source:'managedAgentsSkills'},
+  skillsCap:{label:'Max skills per session',value:'500',note:'Deduplicated across every agent in the session',provenance:'Anthropic-documented',source:'managedAgentsSkills'},
+  webhookMaxRetries:{label:'Max webhook delivery attempts',value:'3',note:'Jittered exponential backoff between 5 and 120 seconds; the event is dropped after the last attempt',provenance:'Anthropic-documented',source:'managedAgentsWebhooks'},
+  vaultCredentialTypes:{label:'Vault credential types',value:'mcp_oauth, static_bearer, environment_variable',note:'The first two are MCP credentials; the third is an environment-variable credential',provenance:'Anthropic-documented',source:'managedAgentsVaults'},
+  sessionStatuses:{label:'Session status values',value:'idle, running, rescheduling, terminated',note:'A session that finishes work goes idle, not terminated',provenance:'Anthropic-documented',source:'managedAgentsSessionOps'}
 };
 var WORKFLOW_FACTS_VERIFIED_AT='2026-08-09';
 var WORKFLOW_FACTS={
@@ -7159,7 +7353,25 @@ var LAB=[
   task:"What actually happens to the subagents' file edits?",
   type:"choice",options:["Each edit prompts you, as in the session","They run acceptEdits and edits are auto-approved","They are blocked until you switch modes","They run in plan mode and only propose changes"],correct:1,sol:"acceptEdits",
   solText:"Your permission mode controls only the <b>launch</b> prompt. Workflow subagents always run in <code>acceptEdits</code> and inherit your tool allowlist, regardless of the session's mode \u2014 so file edits are auto-approved. Shell commands, web fetches and MCP tools outside the allowlist can still prompt mid-run.",
-  why:"<b>Before a long run:</b> add the commands the agents will need to your allowlist, or the run stalls on a prompt you are not watching."}];
+  why:"<b>Before a long run:</b> add the commands the agents will need to your allowlist, or the run stalls on a prompt you are not watching."},
+ {id:"lab-budget",n:16,topic:"Managed Agents",sec:"managed-agents",
+  scenario:"A session is capped at 50 cents \u2014 max_list_cost.amount is the string \"50\". Mid-run, the request that pushes total list cost past the cap is already in flight.",
+  task:"What happens to the session?",
+  type:"choice",options:["It pauses and goes idle with stop_reason budget_reached \u2014 not terminated","It terminates immediately and the sandbox is destroyed","The in-flight request is killed mid-response to stay under the cap","It keeps running past the cap with no limit"],correct:0,sol:"Pauses at budget_reached",
+  solText:"The cap is enforced <b>between</b> model requests, not mid-request, so the already-admitted request finishes \u2014 the session can report a <code>list_cost</code> a little past the cap, bounded to one request per thread. It then goes <b>idle</b> with <code>stop_reason: budget_reached</code>, not terminated: history and sandbox are preserved. Resume by updating the budget to a strictly greater value, or removing it \u2014 which is one-way.",
+  why:"<b>When:</b> capping spend on a long or unattended run. <b>Not:</b> assuming a budget is a kill switch \u2014 it pauses work, it does not destroy it."},
+ {id:"lab-madvisor",n:17,topic:"Managed Agents",sec:"managed-agents",
+  scenario:"A coordinator consults an advisor before big architecture calls. The team wants that advice visible in their own dashboard, which only reads the session's event stream.",
+  task:"Which advisor model should they pick, and why does the choice matter here?",
+  type:"choice",options:["Claude Opus 4.8 \u2014 it delivers advice as plaintext on the event stream","Claude Opus 5 \u2014 it is the newest model, so naturally the most transparent","Claude Haiku 4.5 \u2014 cheaper is always the safer default for an advisor","Any qualifying model works identically; delivery format never depends on which one you pick"],correct:0,sol:"Claude Opus 4.8 (plaintext delivery)",
+  solText:"Advisor delivery mirrors the Messages API advisor tool's redacted-vs-plaintext split. Claude Opus 5 is a <b>redacted-result</b> advisor \u2014 the agent reads the full advice server-side, but the client only sees a placeholder. Claude Opus 4.8 delivers plaintext advice on the event stream, which is what a dashboard reading raw events needs.",
+  why:"<b>When:</b> something outside the agent \u2014 a dashboard, a log, a teammate \u2014 needs to read the advice itself, not just see that the agent used it. Picking the advisor is a delivery decision, not only a capability one."},
+ {id:"lab-maskills",n:18,topic:"Managed Agents",sec:"managed-agents",
+  scenario:"A repository has a skill at tools/code-review/.claude/skills/pr-check/SKILL.md. A teammate insists it will load automatically into any session that mounts the repo.",
+  task:"Will it be discovered at session start?",
+  type:"choice",options:["No \u2014 only .claude/skills/&lt;name&gt;/SKILL.md at the repository root, one directory deep, is scanned","Yes \u2014 Managed Agents scans the entire repo tree for any SKILL.md file","Yes, but only if the agent's read tool is disabled","No \u2014 repository skill discovery is not a real Managed Agents feature"],correct:0,sol:"No \u2014 must sit at the repo root, one level deep",
+  solText:"Discovery matches exactly <code>.claude/skills/&lt;skill-name&gt;/SKILL.md</code> at the repository root, one directory level deep, scanned once at session start. A <code>.claude/skills</code> folder nested inside <code>tools/code-review/</code> is not announced \u2014 though the agent can still stumble onto it if it happens to read that subtree.",
+  why:"<b>When:</b> deciding whether to rely on auto-discovery or to tell the agent explicitly to read a nonstandard location. Root, one level deep, or it does not count."}];
 (function(){
   var LK='claude_hub_lab_v1';
   var host=document.getElementById('lab-host'); if(!host)return;
