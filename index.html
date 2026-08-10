@@ -1334,6 +1334,7 @@ export MAX_THINKING_TOKENS=10000
 <div class="cal tip">After a big edit to CLAUDE.md mid-session, remember it invalidates the prompt cache and triggers one slower, more expensive turn. Prefer editing memory between tasks, not in the middle of one.</div>
 
 <p>Treat CLAUDE.md as a living document. Every time Claude repeats a mistake, capture the fix with <code>#</code> — over a few weeks your repo trains itself.</p>
+<p>CLAUDE.md is Claude Code's own memory. The Messages API has a separate, API-level <b>memory tool</b> (<code>memory_20250818</code>) that any application can give Claude for persistent, file-like storage across calls — see <a href="#api-sdk">Claude API &amp; Agent SDK</a>.</p>
     </div>
   </section>
   <section class="sec" id="skills" data-id="skills">
@@ -2460,6 +2461,38 @@ while True:
 <p>TTL is 5 minutes by default or 1 hour (GA, no beta header). Minimum cacheable length is 512 tokens on Opus 5, 1,024 on Opus 4.8, and 4,096 on Haiku 4.5. Usage reports <code>cache_creation_input_tokens</code> and <code>cache_read_input_tokens</code>.</p>
 
 <div class="cal pro">Pre-warm the cache by sending <code>max_tokens: 0</code> — the API writes the cache at the breakpoint and returns an empty <code>content</code> array with <code>stop_reason: "max_tokens"</code> and full usage, generating no output. (Rejected inside Batch requests.)</div>
+<h4>Context editing, compaction &amp; the memory tool</h4>
+
+<p>Three different levers manage a long-running conversation's context, and it matters which one you reach for. Prompt caching cuts the <em>cost</em> of content you keep; these three cut the <em>size</em> of it.</p>
+
+<p><b>Context editing</b> (beta) clears stale content from the conversation before you hit the limit. Add the <code>context-management-2025-06-27</code> beta header, then list one or more <code>edits</code>:</p>
+
+<pre><code>context_management={
+    "edits": [
+        {"type": "clear_thinking_20251015"},
+        {"type": "clear_tool_uses_20250919", "trigger": {"type": "input_tokens", "value": 100000}}
+    ]
+}</code></pre>
+
+<p><code>clear_tool_uses_20250919</code> clears old tool results (default: triggers at 100,000 input tokens, keeps the 3 most recent tool uses). <code>clear_thinking_20251015</code> clears old thinking blocks — Opus 4.5+/Sonnet 4.6+ keep all of them by default, older Opus/Sonnet and all Haiku keep only the last turn's. When you use both, <code>clear_thinking_20251015</code> must come first in the <code>edits</code> array.</p>
+
+<div class="cal info">Preview the effect before you send the real request: <code>/v1/messages/count_tokens</code> accepts the same <code>context_management</code> block and returns <code>original_input_tokens</code> alongside the reduced <code>input_tokens</code>.</div>
+
+<p><b>Server-side compaction</b> (beta) is the <b>primary strategy</b> Anthropic recommends for long-running conversations — context editing is for narrower cases. Add the <code>compact-2026-01-12</code> beta header and the <code>compact_20260112</code> edit; the API summarizes and drops old content for you, automatically, on your next request:</p>
+
+<pre><code>context_management={"edits": [{
+    "type": "compact_20260112",
+    "trigger": {"type": "input_tokens", "value": 150000}
+}]}</code></pre>
+
+<p>Default trigger is 150,000 input tokens; the minimum allowed is 50,000. <code>instructions</code> fully replaces — not supplements — the default summarization prompt. The SDKs' client-side <code>compaction_control</code> parameter is deprecated in favor of this.</p>
+
+<div class="cal warn">This is a different feature from Claude Code CLI's own <code>/compact</code> — that's the CLI's local auto-compaction behavior. Server-side compaction is a Messages API primitive any caller can use, independent of Claude Code.</div>
+
+<p><b>The memory tool</b> (<code>memory_20250818</code>) is <b>GA on the Messages API</b> — no beta header required, available on all Claude 4-and-later models. Unlike compaction and context editing, memory is client-side: Claude issues <code>view</code>/<code>create</code>/<code>str_replace</code>/<code>insert</code>/<code>delete</code>/<code>rename</code> tool calls rooted at <code>/memories</code>, and your application executes them against storage you control.</p>
+
+<div class="cal pro">Use compaction and memory together for long-running agents: compaction keeps the active context small without you managing history, and memory preserves what has to survive summarization. When context nears the clearing threshold, Claude gets an automatic system-prompt nudge to write anything important to memory first.</div>
+<p><small><b>Primary sources:</b> <a href="https://platform.claude.com/docs/en/build-with-claude/context-editing" target="_blank" rel="noopener">Context editing</a> &middot; <a href="https://platform.claude.com/docs/en/build-with-claude/compaction" target="_blank" rel="noopener">Compaction</a> &middot; <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool" target="_blank" rel="noopener">Memory tool</a>. Beta identifiers and trigger thresholds verified 2026-08-10; these are beta surfaces and may be refined between releases.</small></p>
 
 <h4>Batch API — 50% off, async at scale</h4>
 
@@ -2859,6 +2892,14 @@ first); <strong>deleting</strong> a session permanently removes its record, even
 sandbox, while memory stores, vaults, skills, environments, and agents are independent and
 unaffected.</p>
 
+<h3>Delegation economics: who pays for what</h3>
+
+<p>Cost attribution is server-computed, not something you total up yourself. Every session thread carries its own cumulative <code>usage</code>, and each thread reports <code data-ma-fact="parentThreadField"></code> — <code>null</code> on the primary thread, and set to the primary thread's id on every worker thread the coordinator delegates to. Group by that field and you split spend by delegation, with no client-side bookkeeping.</p>
+
+<div class="cal warn">Delegation has a <b>floor cost</b>: splitting a task into more, narrower worker threads can raise total spend past a point, because each worker thread pays its own fixed setup overhead. Measure before you fan out further — more delegation is not always cheaper.</div>
+
+<p>When you compare a delegated team against working the task alone, compare like for like: hold the solo baseline to the <b>same</b> verification rigor as the team, not a shortcut, on a workload that genuinely needs broad reading — a narrow question rarely has enough reading to arbitrage across workers. A cost comparison is only meaningful under a rigor-matched control: same task, same quality bar, same measurement window. Published single-run ratios illustrate the method, they are not numbers to plan against</p>
+
     <h4>Primary sources</h4>
     <ul class="cites" data-model-sources="managedAgents"></ul>
   </div>
@@ -3249,6 +3290,26 @@ claude --version   # verify your client supports the current Opus 5 fast tier</c
 /mcp        # per-server tool cost — prune noisy servers</code></pre>
 
 <div class="cal pro">Reserve <code>ultrathink</code> for genuinely hard, costly-to-get-wrong decisions (architecture, multi-file debugging). For everyday work, plain <code>think</code> or <code>think hard</code> gives the depth you need without the token bill.</div>
+<h3>Prove it: org-wide and per-developer spend</h3>
+
+<p><code>/cost</code> is a local, list-rate estimate for one session — a gut-check, not a bill. Two Admin API endpoints give you the after-the-fact, organization-wide truth (Admin API key, header <code>x-api-key</code>, key format <code>sk-ant-admin...</code> — an org admin must provision it):</p>
+
+<table>
+<thead><tr><th>Endpoint</th><th>Answers</th></tr></thead>
+<tbody>
+<tr><td><code>/v1/organizations/usage_report/messages</code></td><td>Token-level usage in time buckets, grouped by model / workspace / API key / service tier</td></tr>
+<tr><td><code>/v1/organizations/cost_report</code></td><td>USD cost, <b>daily granularity only</b>, grouped by workspace or description</td></tr>
+</tbody>
+</table>
+
+<p>Data typically appears within 5 minutes. <b>Priority Tier spend is excluded</b> from the cost endpoint — a different billing model — so track it via the usage endpoint's <code>service_tier</code> dimension instead; code execution costs show up only in the cost endpoint, under <code>description: "Code Execution Usage"</code>.</p>
+
+<p>For <b>per-developer</b> Claude Code spend — a different question from org-wide spend — the <b>Claude Code Analytics API</b> (<code>/v1/organizations/usage_report/claude_code</code>, free with Admin API access) reports <b>one record per user per day</b>: <code>model_breakdown</code> with per-model tokens and estimated cost, plus productivity fields (sessions, lines of code, commits and PRs by Claude Code). Data typically appears within 1 hour. It covers Claude Code on the Claude API only — Bedrock, Google Cloud, Foundry, and Claude Platform on AWS usage need <b>OpenTelemetry export</b> instead.</p>
+
+<div class="cal warn">Anthropic's own framing: enterprise Claude Code deployments average <b>~$13 per developer per active day</b> ($150–$250/month), with 90% of users staying under $30/day. That's Anthropic's own framing across its enterprise deployments — not a benchmark for any specific team, and a different number from what <code>/usage</code> shows you locally, which is a list-rate estimate that may not match your actual, discounted or contracted bill.</div>
+
+<p>Building on the Agent SDK? <code>total_cost_usd</code> / <code>costUSD</code> are the same kind of client-side estimate — computed locally from a bundled price table, useful for dev-time budgeting, never for billing end users. Unlike the raw <code>usage</code> field (top-level agent only), <code>total_cost_usd</code> does include subagent activity — but dedupe by message <code>id</code> before summing, since parallel tool calls in one turn share an <code>id</code> and repeat <code>usage</code>. For the authoritative figure, use the Usage &amp; Cost API above.</p>
+<p><small><b>Primary sources:</b> <a href="https://platform.claude.com/docs/en/administration/usage-cost-api" target="_blank" rel="noopener">Usage &amp; Cost Admin API</a> &middot; <a href="https://platform.claude.com/docs/en/administration/claude-code-analytics-api" target="_blank" rel="noopener">Claude Code Analytics API</a> &middot; <a href="https://code.claude.com/docs/en/costs" target="_blank" rel="noopener">Manage costs</a>. Endpoint paths verified 2026-08-10.</small></p>
 
 <h3>Your cost-saving habits, in order</h3>
 
@@ -6486,6 +6547,7 @@ var MANAGED_AGENT_FACTS={
   betaHeader:{label:'Beta header (all endpoints)',value:'managed-agents-2026-04-01',note:'Required on every Managed Agents request; the SDKs set it for you',provenance:'Anthropic-documented',source:'managedAgentsOverview'},
   memoryBetaHeader:{label:'Beta header (memory store)',value:'agent-memory-2026-07-22',note:'The one exception \u2014 memory store endpoints take this instead',provenance:'Anthropic-documented',source:'managedAgentsSessions'},
   environmentConfigType:{label:'Cloud environment config type',value:'cloud',note:'The value used throughout the primary docs, in every language example',provenance:'Anthropic-documented',source:'managedAgentsEnvironments'},
+  parentThreadField:{label:'Parent-thread field (delegation attribution)',value:'parent_thread_id',note:'Null identifies the primary thread; any other value identifies a worker thread delegated by it',provenance:'Anthropic-documented',source:'managedAgentsMultiagent'},
   multiagentRosterCap:{label:'Max unique agents in a coordinator roster',value:'20',note:'multiagent.agents; the coordinator can still call multiple copies of each',provenance:'Anthropic-documented',source:'managedAgentsMultiagent'},
   threadCap:{label:'Max concurrent session threads',value:'25',note:'Advisor consultation threads are exempt from this limit',provenance:'Anthropic-documented',source:'managedAgentsMultiagent'},
   sessionBudgetType:{label:'Budget object type field',value:'limit',note:'The only value the field ever takes',provenance:'Anthropic-documented',source:'managedAgentsBudgets'},
@@ -7044,7 +7106,9 @@ var QUIZ={
   {q:"Which beta header do memory store endpoints take?",o:["managed-agents-2026-04-01","agent-memory-2026-07-22","None \u2014 they are GA","anthropic-version only"],c:1,e:"Every Managed Agents endpoint takes managed-agents-2026-04-01, with one exception: memory store endpoints take agent-memory-2026-07-22. The SDKs set the right one."},
   {q:"Why is Managed Agents not eligible for Zero Data Retention or a HIPAA BAA?",o:["It is not encrypted","It is stateful by design and stores history server-side","It runs on third-party infrastructure","It has no delete API"],c:1,e:"Sessions are long-running and store conversation history, sandbox state and outputs server-side. You can still delete sessions and uploaded files at any time through the API."},
   {q:"For a production environment, what does Anthropic recommend for sandbox networking?",o:["unrestricted, for simplicity","limited with an explicit allowed_hosts list","Disable networking entirely","It cannot be configured"],c:1,e:"Use limited networking with an explicit allowed_hosts list, following least privilege, and audit the allowed domains regularly."},
-  {q:"Which of these is versioned?",o:["Environments","Agents","Both","Neither"],c:1,e:"Agents are versioned \u2014 pass a version to pin a session to one. Environments are not versioned, so keep your own record if you change them often."}],
+  {q:"Which of these is versioned?",o:["Environments","Agents","Both","Neither"],c:1,e:"Agents are versioned \u2014 pass a version to pin a session to one. Environments are not versioned, so keep your own record if you change them often."},
+  {q:"How do you split Managed Agents spend by which delegated worker did the work?",o:["Manually sum tokens per API call","Group by each thread's parent_thread_id","There is no way to attribute it","Only the primary thread's usage is tracked"],c:1,e:"Every thread reports parent_thread_id — null on the primary thread, set on every worker thread — so spend splits by delegation without client-side bookkeeping."}
+],
  models:[
   {q:"You need to reformat 10,000 log lines — cheap and fast. Which model?",o:["Haiku 4.5","Sonnet 5","Opus 5","Fable 5"],c:0,e:"Haiku 4.5 is the fastest current lightweight tier — ideal for high-volume, simple work."},
   {q:"Which is Anthropic's highest-capability widely released model as of July 28, 2026?",o:["Sonnet 5","Opus 5","Fable 5","Haiku 4.5"],c:2,e:"Fable 5 is the highest-capability widely released model; Opus 5 is the latest Opus and the strongest model on Claude Pro."},
@@ -7088,7 +7152,10 @@ var QUIZ={
  "api-sdk":[
   {q:"In the Messages API, when Claude wants a tool it returns…",o:["an error","a tool_use block","a refusal","nothing"],c:1,e:"You run the tool and send tool_result back; the loop repeats until end_turn."},
   {q:"The Claude Agent SDK is essentially…",o:["A new model","Claude Code packaged as a library with built-in tools","An MCP server","A billing dashboard"],c:1,e:"It ships the full agent loop, built-in tools, hooks, and subagents."},
-  {q:"The Agent tool used to be called…",o:["Task","Worker","Sub","Job"],c:0,e:"Renamed from Task in v2.1.63; add Agent to allowedTools to auto-approve."}],
+  {q:"The Agent tool used to be called…",o:["Task","Worker","Sub","Job"],c:0,e:"Renamed from Task in v2.1.63; add Agent to allowedTools to auto-approve."},
+  {q:"Which is the primary strategy Anthropic recommends for managing a long-running conversation's context?",o:["Context editing","Server-side compaction","A bigger max_tokens","Manual message deletion"],c:1,e:"Server-side compaction (compact_20260112) is the primary strategy; context editing (clear_tool_uses_20250919/clear_thinking_20251015) is for narrower scenarios."},
+  {q:"The memory tool (memory_20250818) on the Messages API requires…",o:["A beta header","Nothing extra — it's GA","Claude 5 or later only","A dedicated storage subscription"],c:1,e:"It's generally available: no beta header, available on all Claude 4-and-later models. Your application executes the storage calls Claude issues."}
+],
  prompting:[
   {q:"The most reliable way to improve an answer on a factual task is to…",o:["Ask louder","Give it real context/files instead of relying on memory","Raise temperature","Repeat the question"],c:1,e:"Ground it in actual context — that's what keeps an LLM honest."},
   {q:"A vague prompt like 'investigate the codebase' tends to…",o:["Finish instantly","Cause endless exploration that floods context","Save tokens","Refuse"],c:1,e:"Scope it: name files, set boundaries, demand a short report."},
@@ -7100,7 +7167,9 @@ var QUIZ={
  cost:[
   {q:"A prompt-cache HIT costs roughly…",o:["The same as fresh input","~0.1× base input (90% off)","2× input","Nothing, ever"],c:1,e:"Cache reads are ~90% cheaper; caching is automatic in Claude Code."},
   {q:"Fast mode trades…",o:["Quality for speed","Cost for ~2.5× speed on Opus","Context for tokens","Nothing at all"],c:1,e:"Same model & quality, higher price per token. The up-to-2.5× figure is Anthropic-reported output tokens per second — throughput, not time-to-first-token, and not an SLA. Toggle with /fast."},
-  {q:"Between two unrelated tasks you should…",o:["/compact","/clear to start fresh","Switch models","Do nothing"],c:1,e:"Fresh context is free; /clear stops old tokens riding along on every turn."}],
+  {q:"Between two unrelated tasks you should…",o:["/compact","/clear to start fresh","Switch models","Do nothing"],c:1,e:"Fresh context is free; /clear stops old tokens riding along on every turn."},
+  {q:"For an exact, org-wide, historical dollar figure — not a live estimate — you'd check…",o:["/cost in Claude Code","The Admin API's cost_report endpoint","total_cost_usd in the Agent SDK","The MODEL_FACTS pricing table"],c:1,e:"/cost and total_cost_usd are both local, list-rate estimates for one session. The Admin API's cost_report is the after-the-fact, authoritative source."}
+],
  evals:[
   {q:"When deciding how to grade an eval, which method should you reach for first?",o:["LLM-based grading, because it's the most sophisticated","Human grading, because it's the most accurate","Code-based grading, because it's fastest, most reliable, and most scalable","Whichever method the model recommends"],c:2,e:"The ranking is code-based first (fast, reliable, scalable, but limited nuance), human grading last (best quality, but slow and expensive — avoid if possible), with LLM-based grading in between for judgment calls code can't express."},
   {q:"Your LLM-based grader runs inside the same conversation as the agent whose work it's grading. What's the risk?",o:["Nothing — more context always helps","The grader shares the agent's implementation bias and tends to approve its own work","It costs more tokens","It runs slower"],c:1,e:"A grader that shares context with what it's grading is grading its own work — it will say it passed whenever it believes it did. Run the grader in a separate context with no visibility into how the answer was produced."},
@@ -7513,6 +7582,31 @@ var LAB=[
   type:"choice",options:["No risk — more context helps the grader decide","The planning prose inflates both false positives and false negatives; extract and grade only the final &lt;result&gt; tag","The grader will run out of context","You should grade the plan, not the result"],correct:1,sol:"Grade the final answer, not the transcript",
   solText:"Feeding the grader the full transcript — reasoning, narration, and all — inflates both false positives (convincing-sounding reasoning nudges the grader toward pass) and false negatives (irrelevant detail distracts it from the actual answer). Extract just the final answer and grade that.",
   why:"<b>Before you wire up a grader:</b> decide exactly what slice of the output it sees. The narration that makes an agent's process legible to you is exactly what should NOT reach the grader."}
+,
+ {id:"lab-contextedit",n:22,topic:"Context engineering",sec:"api-sdk",
+  scenario:"Your agent's tool_result blocks from early in a long session are stale and eating your input-token budget, but you want to keep the conversation going in the same thread.",
+  task:"Which beta feature clears old tool results without wiping the conversation?",
+  type:"choice",options:["Context editing (clear_tool_uses_20250919)","/clear","A smaller max_tokens","Prompt caching"],correct:0,sol:"Context editing",
+  solText:"Context editing's <code>clear_tool_uses_20250919</code> strategy clears stale tool_result blocks past a token trigger (100,000 by default), keeping the 3 most recent tool uses. It needs the <code>context-management-2025-06-27</code> beta header.",
+  why:"<b>When:</b> a single thread has accumulated a lot of superseded tool output. <b>Not:</b> for most long-running conversations — Anthropic recommends server-side compaction as the primary strategy; context editing is for narrower cases."},
+ {id:"lab-compaction",n:23,topic:"Context engineering",sec:"api-sdk",
+  scenario:"You're running a long agentic session through the Messages API directly (not Claude Code) and want the API itself to summarize and drop old history once the conversation gets big — without you writing any summarization logic.",
+  task:"What's the beta strategy for this, and what's its minimum trigger value?",
+  type:"choice",options:["compact_20260112, minimum 50,000 input tokens","context-management-2025-06-27, no minimum","clear_thinking_20251015, minimum 10,000 tokens","/compact, minimum 95% full"],correct:0,sol:"compact_20260112, 50,000 tokens minimum",
+  solText:"Server-side compaction (<code>compact_20260112</code>, beta header <code>compact-2026-01-12</code>) is a Messages API primitive: on trigger it returns a <code>compaction</code> content block with the summary, and the API automatically drops everything before it on your next request. Default trigger is 150,000 input tokens; you can lower it, but not below 50,000.",
+  why:"<b>Careful:</b> this is different from Claude Code's own <code>/compact</code>, which is client-side CLI behavior. Server-side compaction works for any Messages API caller, not just Claude Code."},
+ {id:"lab-memtool",n:24,topic:"Context engineering",sec:"api-sdk",
+  scenario:"You're building a custom agent on the Messages API (not Claude Code) and want Claude to keep durable notes across separate API calls — its own file-like memory that survives when old conversation turns get cleared.",
+  task:"Which tool, and does it need a beta header?",
+  type:"choice",options:["The memory tool (memory_20250818) — no beta header, GA","The memory tool — yes, needs a beta header","Prompt caching — no beta header","CLAUDE.md — no beta header"],correct:0,sol:"memory_20250818, GA",
+  solText:"The memory tool (<code>memory_20250818</code>) is generally available on the Messages API — no beta header required, available on all Claude 4-and-later models. It's client-side: Claude issues view/create/str_replace/insert/delete/rename calls rooted at /memories, and your application executes them against storage you control.",
+  why:"<b>Don't confuse with:</b> CLAUDE.md, which is Claude Code's own file-based memory — a different mechanism for a different product. Compaction and the memory tool pair well: compaction keeps context small, memory preserves what must survive it."},
+ {id:"lab-costapi",n:25,topic:"Cost & speed",sec:"cost",
+  scenario:"Finance wants a monthly report of exact API dollar spend by workspace, going back over the last billing period — not a live session estimate.",
+  task:"Which surface answers this?",
+  type:"choice",options:["The Admin API's cost_report endpoint","/cost in Claude Code","The Agent SDK's total_cost_usd field","The MODEL_FACTS pricing table"],correct:0,sol:"Admin API cost_report",
+  solText:"<code>/v1/organizations/cost_report</code> (Admin API, daily granularity, grouped by workspace or description) is the org-wide, after-the-fact source of truth. <code>/cost</code> and the SDK's <code>total_cost_usd</code> are both local, list-rate estimates for one session — useful for a gut-check, not for a bill.",
+  why:"<b>When:</b> you need authoritative historical spend, not a live estimate. Per-developer Claude Code cost specifically has its own endpoint — the Claude Code Analytics API."}
 ];
 (function(){
   var LK='claude_hub_lab_v1';

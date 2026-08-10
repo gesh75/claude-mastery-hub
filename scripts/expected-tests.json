@@ -1,6 +1,6 @@
 {
   "_comment": "Anti-vacuity baseline, keyed by repository-relative POSIX spec path. A suite that silently stops running tests must fail the build, so CI asserts the observed counts are at least these numbers. Every spec file the report mentions must appear here: a new spec is rejected until it is listed, so it cannot sit unprotected behind a healthy total. Raise a value when you add tests; lowering one needs justification in the PR body, because it is indistinguishable from tests quietly disappearing.",
-  "totalMinimum": 155,
+  "totalMinimum": 167,
   "perFileMinimum": {
     "tests/e2e/content-currency.spec.js": 13,
     "tests/e2e/p0-responsive-navigation.spec.js": 16,
@@ -12,6 +12,7 @@
     "tests/e2e/model-registry-rendering.spec.js": 10,
     "tests/e2e/workflow-orchestration.spec.js": 8,
     "tests/e2e/managed-agents.spec.js": 30,
-    "tests/e2e/evals.spec.js": 19
+    "tests/e2e/evals.spec.js": 19,
+    "tests/e2e/context-engineering.spec.js": 12
   }
 }
