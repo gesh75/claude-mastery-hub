@@ -94,6 +94,44 @@ async function judge(page, id, answer) {
 }
 
 test.describe('practice lab validation', () => {
+  // Found by mutation testing: setting `correct: 99` on a four-option challenge
+  // left all 168 tests green. Three specs bounds-checked `correct`, but each only
+  // over its own hardcoded id list, so any item outside those lists was
+  // unguarded -- and a challenge whose `correct` is out of range is one where no
+  // answer the reader picks can ever be right.
+  //
+  // This guard is global: it walks every LAB item, so a new challenge is covered
+  // the moment it exists rather than when someone remembers to add its id.
+  test('every Practice Lab item is internally coherent', async ({ page }) => {
+    await page.goto('/');
+    const lab = await page.evaluate(() => window.LAB);
+    expect(lab.length).toBeGreaterThan(0);
+
+    const ids = lab.map((item) => item.id);
+    expect(new Set(ids).size, 'LAB ids must be unique').toBe(ids.length);
+
+    const ns = lab.map((item) => item.n).sort((a, b) => a - b);
+    expect(ns, 'the CHALLENGE n sequence must be a gapless 1..N').toEqual(
+      Array.from({ length: lab.length }, (_, i) => i + 1)
+    );
+
+    for (const item of lab) {
+      expect(item.id, 'every item needs an id').toBeTruthy();
+      expect(item.sec, `${item.id} needs a section`).toBeTruthy();
+      expect(['cmd', 'choice'], `${item.id} type`).toContain(item.type);
+
+      if (item.type === 'choice') {
+        expect(Array.isArray(item.options), `${item.id} needs an options array`).toBe(true);
+        expect(item.options.length, `${item.id} needs at least two options`).toBeGreaterThanOrEqual(2);
+        expect(Number.isInteger(item.correct), `${item.id} correct must be an integer`).toBe(true);
+        expect(
+          item.correct >= 0 && item.correct < item.options.length,
+          `${item.id} correct=${item.correct} is out of range for ${item.options.length} options`
+        ).toBe(true);
+      }
+    }
+  });
+
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await expectLabRendered(page);
