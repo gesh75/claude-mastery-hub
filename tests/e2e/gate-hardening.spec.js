@@ -1,4 +1,6 @@
+import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
 
 const ROOT = new URL('../../', import.meta.url);
@@ -103,5 +105,62 @@ test.describe('gate hardening (external audit findings)', () => {
     expect(m, 'hubWrite must be locatable as a single function body').not.toBeNull();
     expect(m[1], 'hubWrite must bound what it stores').toMatch(/HUB_MAX_RAW/);
     expect(m[1], 'hubWrite must refuse rather than store an oversized value').toMatch(/return false/);
+  });
+
+  // --- the mutation harness -------------------------------------------------
+  // A harness that reports "all mutants killed" without applying anything is the
+  // same disease it exists to cure. These run in the BLOCKING gate on purpose:
+  // they take about a second and touch no browser. The catalogue itself runs
+  // out-of-band -- see .github/workflows/mutation.yml.
+
+  test('every mutation anchor is unique in its target file', async () => {
+    const src = await readFile(new URL('scripts/mutation.mjs', ROOT), 'utf8');
+    const ops = [...src.matchAll(/\{ path: '([^']+)', find: (.+?), replace: (?:.+?), count: (\d+) \}/g)];
+    expect(ops.length, 'the catalogue must have entries').toBeGreaterThan(5);
+
+    for (const [, path, findLiteral, declared] of ops) {
+      // eslint-disable-next-line no-eval -- a string literal from our own source
+      const needle = eval(findLiteral);
+      const content = await readFile(new URL(path, ROOT), 'utf8');
+      const actual = content.split(needle).length - 1;
+      expect(
+        actual,
+        `${path}: anchor ${JSON.stringify(needle.slice(0, 40))} occurs ${actual}x, catalogue declares ${declared}`
+      ).toBe(Number(declared));
+    }
+  });
+
+  test('the harness restores what it mutates, and never with git checkout', async () => {
+    const src = await readFile(new URL('scripts/mutation.mjs', ROOT), 'utf8');
+    // git checkout <file> discards uncommitted work. It cost this repo real
+    // content twice; the harness must restore from its own snapshot instead.
+    //
+    // Match on CODE, not prose: the harness documents the ban in its own comments,
+    // and a naive scan flags that explanation as the violation it warns against.
+    const code = src
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/(^|[^:])\/\/.*$/gm, '$1');
+    expect(code, 'the harness must never restore with git checkout').not.toMatch(/git\s+checkout/);
+    expect(code).not.toMatch(/['"]checkout['"]/);
+    expect(src, 'restore must run in a finally').toMatch(/finally\s*\{\s*restore\(\)/);
+    expect(src, 'restore must also run on abnormal exit').toContain("process.on('exit', restore)");
+    expect(src, 'a stale anchor must abort before writing').toContain('stale mutation');
+  });
+
+  test('a mutation really is applied, killed, and rolled back', async () => {
+    // End to end on the cheapest entry: a registry mutation killed by a Node
+    // script, so no browser is involved and the whole thing is about a second.
+    const run = spawnSync(process.execPath, ['scripts/mutation.mjs', '--only', 'M-03'], {
+      cwd: fileURLToPath(ROOT),
+      encoding: 'utf8'
+    });
+    expect(run.stdout, 'M-03 must be killed').toContain('KILLED');
+    expect(run.status, 'a killed mutant means exit 0').toBe(0);
+
+    const dirty = spawnSync('git', ['status', '--porcelain', 'index.html'], {
+      cwd: fileURLToPath(ROOT),
+      encoding: 'utf8'
+    });
+    expect(dirty.stdout.trim(), 'index.html must be byte-identical afterwards').toBe('');
   });
 });

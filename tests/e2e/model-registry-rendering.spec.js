@@ -83,8 +83,19 @@ test.describe('model registry rendering', () => {
     const cell = page.locator('[data-model-fact="opus.availability"]');
     await expect(cell).toHaveCount(1);
 
-    const registryValue = await page.evaluate(() => window.MODEL_FACTS.opus.availability);
-    await expect(cell).toContainText(registryValue);
+    const registry = await page.evaluate(() => ({
+      availability: window.MODEL_FACTS.opus.availability,
+      note: window.MODEL_FACTS.opus.availabilityNote
+    }));
+    await expect(cell).toContainText(registry.availability);
+
+    // Found by mutation testing: deleting availabilityNote dropped
+    // "; Opus 4.8 remains available" from the rendered cell and every test stayed
+    // green. The renderer treats the field as optional, so only asserting the
+    // availability string left the note as unguarded output -- the same dead-data
+    // class this PR series has now hit three times.
+    expect(registry.note, 'MODEL_FACTS.opus.availabilityNote must exist').toBeTruthy();
+    await expect(cell, 'the availability note must reach the DOM').toContainText(registry.note);
 
     // The renderer -- not the markup -- must have produced it.
     const authored = await readFile(new URL('index.html', ROOT), 'utf8');

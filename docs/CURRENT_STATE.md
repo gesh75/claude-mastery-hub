@@ -10,10 +10,10 @@
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
 | Branch | `main` |
-| Last merged PR | [#39](https://github.com/gesh75/claude-mastery-hub/pull/39) — post-merge reconciliation closeout |
+| Last merged PR | [#40](https://github.com/gesh75/claude-mastery-hub/pull/40) — mutation harness |
 | Open PRs | none |
 | Latest CI on `main` | run [`31139306605`](https://github.com/gesh75/claude-mastery-hub/actions/runs/31139306605) — workflow `CI`, check `Quality gate`, event `push`, **success** |
-| Tests | **168** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 20 · gate-hardening 6 · content-counts 5 · model-registry-rendering 10 · workflow-orchestration 8 · managed-agents 30 · evals 19 · context-engineering 12 |
+| Tests | **172** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 21 · gate-hardening 9 · content-counts 5 · model-registry-rendering 10 · workflow-orchestration 8 · managed-agents 30 · evals 19 · context-engineering 12 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main`, live page byte-identical to the repo |
 | Unresolved Critical/Important | none |
@@ -88,18 +88,14 @@ Artifacts upload **only on failure** (7-day retention).
 
 ## Deferred
 
-**Mutation testing.** Nothing in the gate detects a test that executes but
-asserts nothing. The anti-vacuity checks prove the suite *ran*; they cannot
-prove it *verified*.
-
 **Maintainability consolidation.** Keep the app single-file unless extraction
 produces a measurable maintenance benefit; never mix that with a behaviour fix.
 Carried in `PROJECT_ROADMAP.md`; recorded here too so neither file undercounts.
 
 ## Next action
 
-**None.** The cookbook-tracks programme and its post-merge closeout are both
-complete: PR 5 ✅ 3a ✅ 3 ✅ 2a ✅ 2b ✅ 1 ✅ 4 ✅ 6 ✅, plus #37 (nav a11y) and
+**None.** The cookbook-tracks programme, its post-merge closeout and the
+mutation-testing deferral are all complete: PR 5 ✅ 3a ✅ 3 ✅ 2a ✅ 2b ✅ 1 ✅ 4 ✅ 6 ✅, plus #37 (nav a11y) and
 #39 (dashboard cards, `og.png`, SHA backfill).
 
 Do not inherit a section, diagram, Lab or test count from any document; derive it

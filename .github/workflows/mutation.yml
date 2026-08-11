@@ -1,0 +1,58 @@
+# Mutation harness — proves the gate can tell a broken product from a correct one.
+#
+# NOT in branch protection. Protection names exactly one required check, "Quality
+# gate", and this workflow never triggers on pull_request, so it cannot block a
+# merge. That is deliberate: the harness runs real browsers over real specs, and a
+# blocking check whose failure mode is "a browser was slow" would train people to
+# ignore it. It reports; a human acts.
+#
+# The gate's no-continue-on-error rule still applies inside this file: there is no
+# continue-on-error and no `|| true` here, so a failure is a real red run, not an
+# advisory one. scripts/check-static.mjs scans every workflow for both patterns and
+# for unpinned actions, including this one.
+name: Mutation
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mutation:
+    name: Mutation harness
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run the mutation catalogue
+        run: npm run mutation
+
+      - name: Confirm the harness left the tree clean
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "the harness did not restore every mutated file:"
+            git status --porcelain
+            exit 1
+          fi

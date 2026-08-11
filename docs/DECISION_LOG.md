@@ -5,6 +5,44 @@ Newest first. Each entry states the decision, why, and what it rules out.
 
 ---
 
+## 2026-08-10 — Mutation testing runs out-of-band, and carries no exception list
+
+**Decision.** `scripts/mutation.mjs` breaks the product on purpose and requires the
+check that claims to guard it to fail. It runs from `npm run mutation` and from a
+weekly non-blocking workflow, **not** the `Quality gate`. Three sub-second,
+browser-free self-tests **do** run in the blocking gate.
+
+**Why out-of-band.** The catalogue drives real browsers over real specs. A blocking
+check whose failure mode includes "a browser was slow" trains people to ignore it,
+and branch protection names exactly one required check. The workflow never triggers
+on `pull_request`, so it cannot block a merge — but it carries no
+`continue-on-error` and no `|| true` either, so a failure is a real red run.
+
+**Why the self-tests are blocking.** A harness that reports "all mutants killed"
+without applying anything is the disease it exists to cure. The three gate tests
+assert every catalogue anchor is unique in its target file, that restore never uses
+`git checkout`, and that one real mutation is applied, killed and rolled back
+byte-identically. They cost about a second and touch no browser.
+
+**Rules out.** A `knownSurvives` exception list. Every mutation must be killed; a
+survivor is a coverage hole to fix or a mutation to delete **with its reason
+recorded**. One entry was deleted on exactly those grounds — quietly lowering a
+`perFileMinimum` survives, but by design, because that file is a committed artifact
+whose diff a human reviews.
+
+**It paid for itself before it shipped.** Two real holes, both live-verified:
+`correct: 99` on a four-option Practice Lab challenge left all 168 tests green
+(three specs bounds-checked `correct`, each only over its own hardcoded id list),
+and deleting `MODEL_FACTS.opus.availabilityNote` silently dropped rendered text no
+test asserted. Both are now guarded globally rather than per-id.
+
+**Also corrected.** A design review claimed the offline guarantee could be defeated
+by neutering `check-static.mjs`'s URL-assignment walk plus injecting a `fetch()`.
+Re-running it showed the opposite: the defence is layered, and the `BANNED_SINKS`
+identifier scan catches `fetch` by name independently. No hole; the claim was wrong.
+
+---
+
 ## 2026-08-09 — The dated changelog is history, not a claim
 
 **Decision.** Every live-count guard excludes `index.html`'s
