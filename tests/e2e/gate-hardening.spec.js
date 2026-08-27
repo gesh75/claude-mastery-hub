@@ -198,26 +198,26 @@ test.describe('gate hardening (external audit findings)', () => {
     const dir = mkdtempSync(join(tmpdir(), 'cmh-diff-'));
     const eventPath = join(dir, 'event.json');
     writeFileSync(eventPath, JSON.stringify({ ref: 'refs/heads/main' }));
-    const head = spawnSync('git', ['rev-parse', 'HEAD'], {
-      cwd: fileURLToPath(ROOT),
-      encoding: 'utf8'
-    });
+    const cwd = fileURLToPath(ROOT);
+    const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd, encoding: 'utf8' }).stdout.trim();
+    const parent = spawnSync('git', ['rev-parse', `${head}^`], { cwd, encoding: 'utf8' }).stdout.trim();
     const env = {
       ...process.env,
       BUILDKITE: 'true',
       GITHUB_EVENT_NAME: 'push',
       GITHUB_EVENT_PATH: eventPath,
-      GITHUB_SHA: head.stdout.trim()
+      GITHUB_SHA: head
     };
     const run = spawnSync(process.execPath, ['scripts/check-diff.mjs'], {
-      cwd: fileURLToPath(ROOT),
+      cwd,
       encoding: 'utf8',
       env
     });
     rmSync(dir, { recursive: true, force: true });
     expect(run.status, `${run.stdout}\n${run.stderr}`).toBe(0);
     expect(run.stdout).toMatch(/Buildkite GHA adapter/);
-    expect(run.stdout).toMatch(/first parent/);
+    expect(run.stdout).toContain(`from: ${parent}`);
+    expect(run.stdout).toContain(`to:   ${head}`);
     expect(run.stdout).toMatch(/OK: diff integrity check passed/);
   });
 
