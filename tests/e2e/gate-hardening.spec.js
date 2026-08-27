@@ -169,32 +169,34 @@ test.describe('gate hardening (external audit findings)', () => {
 
   // --- Buildkite GHA adapter (hosted native runner) -------------------------
   // The adapter sets GITHUB_EVENT_NAME=push from the GitHub webhook but does
-  // not populate github.event.before/after. GitHub-hosted push still has the
-  // exact payload and must keep failing closed. On Buildkite, first-parent of
-  // GITHUB_SHA is the honest range (same as workflow_dispatch). github.run_id
-  // is not in the adapter's runtime github context (compatibility.md).
+  // not populate github.event.before/after, and it strips BUILDKITE from the
+  // runner-user environment (Buildkite #11). GitHub-hosted push still has
+  // event.before and must keep the exact before..after range. Incomplete
+  // payloads use first-parent of GITHUB_SHA. github.run_id is not in the
+  // adapter's runtime github context (compatibility.md).
 
-  test('push without event.before still fails closed off Buildkite', () => {
+  test('push with event.before still uses the exact before..after range', () => {
     const dir = mkdtempSync(join(tmpdir(), 'cmh-diff-'));
     const eventPath = join(dir, 'event.json');
-    writeFileSync(eventPath, JSON.stringify({ ref: 'refs/heads/main' }));
-    const head = spawnSync('git', ['rev-parse', 'HEAD'], {
-      cwd: fileURLToPath(ROOT),
-      encoding: 'utf8'
-    });
-    const env = { ...process.env, GITHUB_EVENT_NAME: 'push', GITHUB_EVENT_PATH: eventPath, GITHUB_SHA: head.stdout.trim() };
+    const cwd = fileURLToPath(ROOT);
+    const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd, encoding: 'utf8' }).stdout.trim();
+    const parent = spawnSync('git', ['rev-parse', `${head}^`], { cwd, encoding: 'utf8' }).stdout.trim();
+    writeFileSync(eventPath, JSON.stringify({ before: parent, after: head, ref: 'refs/heads/main' }));
+    const env = { ...process.env, GITHUB_EVENT_NAME: 'push', GITHUB_EVENT_PATH: eventPath, GITHUB_SHA: head };
     delete env.BUILDKITE;
     const run = spawnSync(process.execPath, ['scripts/check-diff.mjs'], {
-      cwd: fileURLToPath(ROOT),
+      cwd,
       encoding: 'utf8',
       env
     });
     rmSync(dir, { recursive: true, force: true });
-    expect(run.status, run.stderr).toBe(1);
-    expect(run.stderr).toContain('push event.before is missing');
+    expect(run.status, `${run.stdout}\n${run.stderr}`).toBe(0);
+    expect(run.stdout).toMatch(/event\.before \.\. event\.after/);
+    expect(run.stdout).toContain(`from: ${parent}`);
+    expect(run.stdout).toContain(`to:   ${head}`);
   });
 
-  test('push without event.before uses first-parent on Buildkite', () => {
+  test('push without event.before uses first-parent even when BUILDKITE is stripped', () => {
     const dir = mkdtempSync(join(tmpdir(), 'cmh-diff-'));
     const eventPath = join(dir, 'event.json');
     writeFileSync(eventPath, JSON.stringify({ ref: 'refs/heads/main' }));
@@ -203,11 +205,12 @@ test.describe('gate hardening (external audit findings)', () => {
     const parent = spawnSync('git', ['rev-parse', `${head}^`], { cwd, encoding: 'utf8' }).stdout.trim();
     const env = {
       ...process.env,
-      BUILDKITE: 'true',
       GITHUB_EVENT_NAME: 'push',
       GITHUB_EVENT_PATH: eventPath,
       GITHUB_SHA: head
     };
+    delete env.BUILDKITE;
+    delete env.BUILDKITE_BUILD_ID;
     const run = spawnSync(process.execPath, ['scripts/check-diff.mjs'], {
       cwd,
       encoding: 'utf8',
@@ -215,7 +218,7 @@ test.describe('gate hardening (external audit findings)', () => {
     });
     rmSync(dir, { recursive: true, force: true });
     expect(run.status, `${run.stdout}\n${run.stderr}`).toBe(0);
-    expect(run.stdout).toMatch(/Buildkite GHA adapter/);
+    expect(run.stdout).toMatch(/incomplete payload/);
     expect(run.stdout).toContain(`from: ${parent}`);
     expect(run.stdout).toContain(`to:   ${head}`);
     expect(run.stdout).toMatch(/OK: diff integrity check passed/);
