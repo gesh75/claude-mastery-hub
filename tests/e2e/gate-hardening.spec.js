@@ -1,5 +1,8 @@
 import { spawnSync } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
 
@@ -162,5 +165,66 @@ test.describe('gate hardening (external audit findings)', () => {
       encoding: 'utf8'
     });
     expect(dirty.stdout.trim(), 'index.html must be byte-identical afterwards').toBe('');
+  });
+
+  // --- Buildkite GHA adapter (hosted native runner) -------------------------
+  // The adapter sets GITHUB_EVENT_NAME=push from the GitHub webhook but does
+  // not populate github.event.before/after. GitHub-hosted push still has the
+  // exact payload and must keep failing closed. On Buildkite, first-parent of
+  // GITHUB_SHA is the honest range (same as workflow_dispatch). github.run_id
+  // is not in the adapter's runtime github context (compatibility.md).
+
+  test('push without event.before still fails closed off Buildkite', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'cmh-diff-'));
+    const eventPath = join(dir, 'event.json');
+    writeFileSync(eventPath, JSON.stringify({ ref: 'refs/heads/main' }));
+    const head = spawnSync('git', ['rev-parse', 'HEAD'], {
+      cwd: fileURLToPath(ROOT),
+      encoding: 'utf8'
+    });
+    const env = { ...process.env, GITHUB_EVENT_NAME: 'push', GITHUB_EVENT_PATH: eventPath, GITHUB_SHA: head.stdout.trim() };
+    delete env.BUILDKITE;
+    const run = spawnSync(process.execPath, ['scripts/check-diff.mjs'], {
+      cwd: fileURLToPath(ROOT),
+      encoding: 'utf8',
+      env
+    });
+    rmSync(dir, { recursive: true, force: true });
+    expect(run.status, run.stderr).toBe(1);
+    expect(run.stderr).toContain('push event.before is missing');
+  });
+
+  test('push without event.before uses first-parent on Buildkite', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'cmh-diff-'));
+    const eventPath = join(dir, 'event.json');
+    writeFileSync(eventPath, JSON.stringify({ ref: 'refs/heads/main' }));
+    const cwd = fileURLToPath(ROOT);
+    const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd, encoding: 'utf8' }).stdout.trim();
+    const parent = spawnSync('git', ['rev-parse', `${head}^`], { cwd, encoding: 'utf8' }).stdout.trim();
+    const env = {
+      ...process.env,
+      BUILDKITE: 'true',
+      GITHUB_EVENT_NAME: 'push',
+      GITHUB_EVENT_PATH: eventPath,
+      GITHUB_SHA: head
+    };
+    const run = spawnSync(process.execPath, ['scripts/check-diff.mjs'], {
+      cwd,
+      encoding: 'utf8',
+      env
+    });
+    rmSync(dir, { recursive: true, force: true });
+    expect(run.status, `${run.stdout}\n${run.stderr}`).toBe(0);
+    expect(run.stdout).toMatch(/Buildkite GHA adapter/);
+    expect(run.stdout).toContain(`from: ${parent}`);
+    expect(run.stdout).toContain(`to:   ${head}`);
+    expect(run.stdout).toMatch(/OK: diff integrity check passed/);
+  });
+
+  test('Playwright diagnostics artifact name uses github.sha, not github.run_id', async () => {
+    const src = await readFile(new URL('.github/workflows/ci.yml', ROOT), 'utf8');
+    expect(src, 'github.run_id is unsupported on Buildkite GHA runtime').not.toMatch(/github\.run_id/);
+    expect(src, 'github.run_attempt is unsupported on Buildkite GHA runtime').not.toMatch(/github\.run_attempt/);
+    expect(src).toMatch(/name:\s*playwright-diagnostics-\$\{\{\s*github\.sha\s*\}\}/);
   });
 });

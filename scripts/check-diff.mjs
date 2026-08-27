@@ -21,6 +21,11 @@
  *                 all-zero `before` (branch creation) uses the empty tree; a
  *                 nonzero `before` that is missing locally is a hard failure,
  *                 never HEAD^. GITHUB_SHA, when set, must equal event.after.
+ *                 Buildkite GHA adapter exception: hosted jobs set
+ *                 GITHUB_EVENT_NAME=push but omit github.event.before/after.
+ *                 When BUILDKITE=true and `before` is missing, use first-parent
+ *                 of GITHUB_SHA (same as workflow_dispatch). GitHub-hosted
+ *                 push is unchanged and still fails closed.
  *
  *   dispatch/local  first parent of the tested commit .. tested. The empty tree
  *                 is used only for a true root commit.
@@ -166,42 +171,70 @@ if (rawFrom !== null || rawTo !== null) {
   requireChanges = true;
 } else if (eventName === 'push') {
   const event = readEvent();
-  const before = requireSha(event?.before, 'push event.before', { allowZero: true });
-  const after = requireSha(event?.after, 'push event.after');
+  const buildkiteIncompletePush =
+    process.env.BUILDKITE === 'true' &&
+    (typeof event?.before !== 'string' || event.before.length === 0);
 
-  const ghSha = process.env.GITHUB_SHA;
-  if (ghSha && ghSha.toLowerCase() !== after) {
-    die('GITHUB_SHA does not match push event.after', [
-      `GITHUB_SHA:   ${ghSha}`,
-      `event.after:  ${after}`,
-      'These must agree; a mismatch means the checked-out tree is not the pushed tree.'
-    ]);
-  }
-  if (!commitExists(after)) {
-    die('the pushed commit (event.after) is not present locally', [`after: ${after}`]);
-  }
-
-  if (ZERO40.test(before)) {
-    from = EMPTY_TREE;
-    mode = 'push: branch creation, empty tree .. event.after (exact)';
-    emptyRangeNote = 'branch creation introduced no content';
+  if (buildkiteIncompletePush) {
+    // Hosted GHA adapter synthesizes event_name=push without the GitHub
+    // before/after SHAs. Falling back to first-parent is the same range
+    // workflow_dispatch already uses; it cannot see force-push rewrites,
+    // which remain gated on GitHub-hosted push (the required Quality gate).
+    const tested = process.env.GITHUB_SHA
+      ? requireSha(process.env.GITHUB_SHA, 'GITHUB_SHA')
+      : resolveUserRev('HEAD', 'HEAD');
+    if (!commitExists(tested)) die('the tested commit is not present locally', [`tested: ${tested}`]);
+    to = tested;
+    const parent = git(['rev-parse', '--verify', '--quiet', '--end-of-options', `${tested}^`], { allowFail: true });
+    if (parent.status === 0 && SHA40.test(parent.out)) {
+      from = parent.out.toLowerCase();
+      mode = 'push (Buildkite GHA adapter): first parent of the tested commit .. tested';
+    } else {
+      from = EMPTY_TREE;
+      mode = 'push (Buildkite GHA adapter): root commit, empty tree .. tested';
+    }
+    emptyRangeNote = 'the two commits have identical trees';
+    console.log(
+      'note: Buildkite GHA adapter omitted github.event.before; using first-parent range. GitHub-hosted push still uses exact before..after.'
+    );
   } else {
-    if (!commitExists(before)) {
-      die('the previous pushed commit (event.before) is not present locally', [
-        `before: ${before}`,
-        'Checkout must use fetch-depth: 0.',
-        'Refusing to fall back to HEAD^ or any other commit: that would check a different range',
-        'and could hide everything a force push replaced.'
+    const before = requireSha(event?.before, 'push event.before', { allowZero: true });
+    const after = requireSha(event?.after, 'push event.after');
+
+    const ghSha = process.env.GITHUB_SHA;
+    if (ghSha && ghSha.toLowerCase() !== after) {
+      die('GITHUB_SHA does not match push event.after', [
+        `GITHUB_SHA:   ${ghSha}`,
+        `event.after:  ${after}`,
+        'These must agree; a mismatch means the checked-out tree is not the pushed tree.'
       ]);
     }
-    from = before;
-    // Deliberately no merge-base here. On a force push or rewind the merge-base
-    // of before/after is an ancestor of both, which would drop exactly the
-    // content the rewrite replaced.
-    mode = 'push: event.before .. event.after (exact, no merge-base)';
-    emptyRangeNote = 'the two commits have identical trees';
+    if (!commitExists(after)) {
+      die('the pushed commit (event.after) is not present locally', [`after: ${after}`]);
+    }
+
+    if (ZERO40.test(before)) {
+      from = EMPTY_TREE;
+      mode = 'push: branch creation, empty tree .. event.after (exact)';
+      emptyRangeNote = 'branch creation introduced no content';
+    } else {
+      if (!commitExists(before)) {
+        die('the previous pushed commit (event.before) is not present locally', [
+          `before: ${before}`,
+          'Checkout must use fetch-depth: 0.',
+          'Refusing to fall back to HEAD^ or any other commit: that would check a different range',
+          'and could hide everything a force push replaced.'
+        ]);
+      }
+      from = before;
+      // Deliberately no merge-base here. On a force push or rewind the merge-base
+      // of before/after is an ancestor of both, which would drop exactly the
+      // content the rewrite replaced.
+      mode = 'push: event.before .. event.after (exact, no merge-base)';
+      emptyRangeNote = 'the two commits have identical trees';
+    }
+    to = after;
   }
-  to = after;
 } else {
   const tested = process.env.GITHUB_SHA
     ? requireSha(process.env.GITHUB_SHA, 'GITHUB_SHA')

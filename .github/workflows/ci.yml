@@ -102,7 +102,7 @@ jobs:
         # Pin is the Buildkite GHA native-adapter SHA (compatibility.md). v4.4.3
         # (b4b15b8c) is rejected as E_ACTION_RESOLUTION on Buildkite hosted jobs.
         with:
-          name: playwright-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          name: playwright-diagnostics-${{ github.sha }}
           path: |
             playwright-report/
             test-results/

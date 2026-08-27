@@ -6,14 +6,14 @@
 
 | Field | Value |
 | --- | --- |
-| Last updated | 2026-08-09 |
+| Last updated | 2026-08-27 |
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
 | Branch | `main` |
-| Last merged PR | [#40](https://github.com/gesh75/claude-mastery-hub/pull/40) — mutation harness |
+| Last merged PR | [#42](https://github.com/gesh75/claude-mastery-hub/pull/42) — Buildkite GHA push payload |
 | Open PRs | none |
-| Latest CI on `main` | run [`31139306605`](https://github.com/gesh75/claude-mastery-hub/actions/runs/31139306605) — workflow `CI`, check `Quality gate`, event `push`, **success** |
-| Tests | **172** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 21 · gate-hardening 9 · content-counts 5 · model-registry-rendering 10 · workflow-orchestration 8 · managed-agents 30 · evals 19 · context-engineering 12 |
+| Latest CI on `main` | run [`33033238342`](https://github.com/gesh75/claude-mastery-hub/actions/runs/33033238342) — workflow `CI`, check `Quality gate`, event `push`, **success** |
+| Tests | **175** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 21 · gate-hardening 12 · content-counts 5 · model-registry-rendering 10 · workflow-orchestration 8 · managed-agents 30 · evals 19 · context-engineering 12 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main`, live page byte-identical to the repo |
 | Unresolved Critical/Important | none |
