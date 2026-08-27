@@ -21,11 +21,14 @@
  *                 all-zero `before` (branch creation) uses the empty tree; a
  *                 nonzero `before` that is missing locally is a hard failure,
  *                 never HEAD^. GITHUB_SHA, when set, must equal event.after.
- *                 Buildkite GHA adapter exception: hosted jobs set
- *                 GITHUB_EVENT_NAME=push but omit github.event.before/after.
- *                 When BUILDKITE=true and `before` is missing, use first-parent
- *                 of GITHUB_SHA (same as workflow_dispatch). GitHub-hosted
- *                 push is unchanged and still fails closed.
+ *                 Incomplete-payload exception: GitHub-hosted push always
+ *                 includes event.before (40 hex or 40 zeros). The Buildkite
+ *                 GHA adapter sets GITHUB_EVENT_NAME=push, omits before/after,
+ *                 and strips BUILDKITE from the runner-user environment, so
+ *                 this path cannot key on BUILDKITE=true. When `before` is
+ *                 missing, use first-parent of GITHUB_SHA (same as
+ *                 workflow_dispatch). GitHub-hosted push still uses the exact
+ *                 before..after range because `before` is present.
  *
  *   dispatch/local  first parent of the tested commit .. tested. The empty tree
  *                 is used only for a true root commit.
@@ -171,15 +174,16 @@ if (rawFrom !== null || rawTo !== null) {
   requireChanges = true;
 } else if (eventName === 'push') {
   const event = readEvent();
-  const buildkiteIncompletePush =
-    process.env.BUILDKITE === 'true' &&
-    (typeof event?.before !== 'string' || event.before.length === 0);
+  const incompletePushPayload =
+    typeof event?.before !== 'string' || event.before.length === 0;
 
-  if (buildkiteIncompletePush) {
-    // Hosted GHA adapter synthesizes event_name=push without the GitHub
-    // before/after SHAs. Falling back to first-parent is the same range
-    // workflow_dispatch already uses; it cannot see force-push rewrites,
-    // which remain gated on GitHub-hosted push (the required Quality gate).
+  if (incompletePushPayload) {
+    // GitHub-hosted push always sends event.before. The Buildkite GHA adapter
+    // synthesizes event_name=push without before/after and also strips
+    // BUILDKITE from the runner-user env, so keying on BUILDKITE=true never
+    // fires on the hosted job (Buildkite #11, 2026-08-27). First-parent is
+    // the same range workflow_dispatch already uses. Force-push rewrites
+    // remain gated on GitHub-hosted push, which still has the exact before SHA.
     const tested = process.env.GITHUB_SHA
       ? requireSha(process.env.GITHUB_SHA, 'GITHUB_SHA')
       : resolveUserRev('HEAD', 'HEAD');
@@ -188,14 +192,14 @@ if (rawFrom !== null || rawTo !== null) {
     const parent = git(['rev-parse', '--verify', '--quiet', '--end-of-options', `${tested}^`], { allowFail: true });
     if (parent.status === 0 && SHA40.test(parent.out)) {
       from = parent.out.toLowerCase();
-      mode = 'push (Buildkite GHA adapter): first parent of the tested commit .. tested';
+      mode = 'push (incomplete payload): first parent of the tested commit .. tested';
     } else {
       from = EMPTY_TREE;
-      mode = 'push (Buildkite GHA adapter): root commit, empty tree .. tested';
+      mode = 'push (incomplete payload): root commit, empty tree .. tested';
     }
     emptyRangeNote = 'the two commits have identical trees';
     console.log(
-      'note: Buildkite GHA adapter omitted github.event.before; using first-parent range. GitHub-hosted push still uses exact before..after.'
+      'note: push event.before was omitted; using first-parent range. GitHub-hosted push still uses exact before..after.'
     );
   } else {
     const before = requireSha(event?.before, 'push event.before', { allowZero: true });
