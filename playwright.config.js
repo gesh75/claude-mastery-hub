@@ -4,7 +4,9 @@ export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
-  retries: process.env.CI ? 1 : 0,
+  // Must stay 0. scripts/check-test-results.mjs fails any test with more than
+  // one recorded attempt, so a CI retry can never recover a run.
+  retries: 0,
   workers: process.env.CI ? 1 : 2,
   // The JSON report is what scripts/check-test-results.mjs reads to prove the
   // suite actually ran the tests it claims to. Keep it in every environment so
