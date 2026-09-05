@@ -83,7 +83,7 @@ The gate is built so that a green run cannot be vacuous:
 | [#36](https://github.com/gesh75/claude-mastery-hub/pull/36) | Context engineering + spend attribution | `e3ac3bf` |
 | [#37](https://github.com/gesh75/claude-mastery-hub/pull/37) | Nav-icon a11y | `9b72fda` |
 | [#38](https://github.com/gesh75/claude-mastery-hub/pull/38) | Record reconciliation | `851f4eb` |
-| #39 | Post-merge reconciliation closeout | this PR |
+| [#39](https://github.com/gesh75/claude-mastery-hub/pull/39) | Post-merge reconciliation closeout | `8881d8b` |
 
 ### In progress
 
