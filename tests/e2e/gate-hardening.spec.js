@@ -246,8 +246,10 @@ test.describe('gate hardening (external audit findings)', () => {
 
     for (const name of ['ci.yml', 'mutation.yml', 'copilot-setup-steps.yml']) {
       const wf = await readFile(new URL(`.github/workflows/${name}`, ROOT), 'utf8');
-      const checkouts = (wf.match(/uses:\s*actions\/checkout@/g) ?? []).length;
-      const persist = (wf.match(/persist-credentials:\s*false/g) ?? []).length;
+      // ci.yml documents the flag in a comment; count YAML only.
+      const code = wf.replace(/^\s*#.*$/gm, '');
+      const checkouts = (code.match(/uses:\s*actions\/checkout@/g) ?? []).length;
+      const persist = (code.match(/persist-credentials:\s*false/g) ?? []).length;
       expect(checkouts, `${name} must check out the repo`).toBeGreaterThan(0);
       expect(
         persist,
