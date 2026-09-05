@@ -230,4 +230,31 @@ test.describe('gate hardening (external audit findings)', () => {
     expect(src, 'github.run_attempt is unsupported on Buildkite GHA runtime').not.toMatch(/github\.run_attempt/);
     expect(src).toMatch(/name:\s*playwright-diagnostics-\$\{\{\s*github\.sha\s*\}\}/);
   });
+
+  test('CI retries stay at 0, citations run as a named step, and every checkout drops credentials', async () => {
+    const pw = await readFile(new URL('playwright.config.js', ROOT), 'utf8');
+    // check-test-results.mjs fails any test with results.length > 1, so a CI
+    // retry can never recover a run — it can only turn a flake into an
+    // integrity failure after wasting a browser cycle.
+    expect(pw, 'retries must be unconditionally 0').toMatch(/retries:\s*0/);
+    expect(pw, 'retries must not be CI-conditional').not.toMatch(/retries:\s*process\.env\.CI/);
+
+    const ci = await readFile(new URL('.github/workflows/ci.yml', ROOT), 'utf8');
+    expect(ci, 'Quality gate must invoke check-citations as its own step').toMatch(
+      /npm run check:citations/
+    );
+
+    for (const name of ['ci.yml', 'mutation.yml', 'copilot-setup-steps.yml']) {
+      const wf = await readFile(new URL(`.github/workflows/${name}`, ROOT), 'utf8');
+      // ci.yml documents the flag in a comment; count YAML only.
+      const code = wf.replace(/^\s*#.*$/gm, '');
+      const checkouts = (code.match(/uses:\s*actions\/checkout@/g) ?? []).length;
+      const persist = (code.match(/persist-credentials:\s*false/g) ?? []).length;
+      expect(checkouts, `${name} must check out the repo`).toBeGreaterThan(0);
+      expect(
+        persist,
+        `${name}: every checkout must set persist-credentials: false`
+      ).toBe(checkouts);
+    }
+  });
 });
