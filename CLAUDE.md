@@ -128,7 +128,8 @@ Fast-mode scoping, content-currency policy, and Playwright currency regressions.
 exist); only #15's branch was deleted. Don't delete one without being asked.
 
 ## Known loose ends / ideas
-- **Section-count drift:** hero says "37", README/og say "39/40". Reconcile to
-  one honest number if touched.
-- Periodic currency upkeep as Claude Code ships.
+- Periodic currency upkeep as Claude Code ships (`MODEL_FACTS` last verified
+  2026-07-28; review-due after 30 days — see `GAP_ANALYSIS.md`).
 - More Practice Lab challenges; harder "apply/analyze" exam questions.
+  Advertised section / diagram / Lab / track counts are derived at branch time
+  and guarded by `tests/e2e/content-counts.spec.js` (closed in #22 / #39).

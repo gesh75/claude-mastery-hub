@@ -6,13 +6,13 @@
 
 | Field | Value |
 | --- | --- |
-| Last updated | 2026-08-27 |
+| Last updated | 2026-09-05 |
 | Repository | [`gesh75/claude-mastery-hub`](https://github.com/gesh75/claude-mastery-hub) |
 | Local path | `/Users/georgigaydarov/Projects/claude-mastery-hub` |
-| Branch | `main` |
+| Branch | `cursor/gap-scan-claude-mastery-hub-2b32` |
 | Last merged PR | [#43](https://github.com/gesh75/claude-mastery-hub/pull/43) — Buildkite incomplete push payload |
-| Open PRs | none |
-| Latest CI on `main` | run [`33033238342`](https://github.com/gesh75/claude-mastery-hub/actions/runs/33033238342) — workflow `CI`, check `Quality gate`, event `push`, **success** |
+| Open PRs | this PR — `chore: gap scan + improvement plan` |
+| Latest CI on `main` | run [`33035449029`](https://github.com/gesh75/claude-mastery-hub/actions/runs/33035449029) — workflow `CI`, check `Quality gate`, event `push`, **success** |
 | Tests | **175** — content-currency 13 · p0-responsive-navigation 16 · roadmap-dashboard 9 · persisted-state 20 · practice-lab-validation 21 · gate-hardening 12 · content-counts 5 · model-registry-rendering 10 · workflow-orchestration 8 · managed-agents 30 · evals 19 · context-engineering 12 |
 | Branch protection | **active and verified** on `main` (see below) |
 | Deployment | GitHub Pages serving `main`, live page byte-identical to the repo |
@@ -84,7 +84,7 @@ Artifacts upload **only on failure** (7-day retention).
 | #23 | CURRENT_STATE stops recording a volatile HEAD | merged `a44b472` |
 | #24 | Personal email removed from public docs | merged `36df225` |
 | #27 | MIT LICENSE added | merged `70bfd68` |
-| #28 | Model registry rendering + citation gate | this PR |
+| #28 | Model registry rendering + citation gate | merged `fe53eb6` |
 
 ## Deferred
 
@@ -94,13 +94,11 @@ Carried in `PROJECT_ROADMAP.md`; recorded here too so neither file undercounts.
 
 ## Next action
 
-**None.** The cookbook-tracks programme, its post-merge closeout and the
-mutation-testing deferral are all complete: PR 5 ✅ 3a ✅ 3 ✅ 2a ✅ 2b ✅ 1 ✅ 4 ✅ 6 ✅, plus #37 (nav a11y) and
-#39 (dashboard cards, `og.png`, SHA backfill).
+**Re-verify `MODEL_FACTS` against official Anthropic / Claude Code docs and
+refresh `MODEL_FACTS_VERIFIED_AT`.** Last verified 2026-07-28 — 39 days stale
+on 2026-09-05; policy review-due is 30 days. Ranked leftovers live in
+`GAP_ANALYSIS.md`.
 
 Do not inherit a section, diagram, Lab or test count from any document; derive it
 at branch time, and exclude the dated `#changelog` block from every count guard
 (`DECISION_LOG.md`, 2026-08-09).
-
-Nothing is outstanding. The Notion page was re-synced on 2026-08-10 through the
-MCP connector -- appended, not overwritten, so the #13-#19 record survives.
