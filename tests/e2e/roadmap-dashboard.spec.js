@@ -161,11 +161,36 @@ test.describe('project roadmap dashboard', () => {
     expect(md).toMatch(/## Next action/);
     // Exactly one next-action heading, so the file cannot accumulate several.
     expect(md.match(/## Next action/g)).toHaveLength(1);
+
+    // A leftover "this PR" in a completed milestone table is the class #39
+    // already burned on — #28's placeholder sat stale through ten merges.
+    const mileStart = md.indexOf('## Milestones');
+    const mileEnd = md.indexOf('## Deferred');
+    expect(mileStart, 'the "## Milestones" heading must delimit the table').toBeGreaterThan(0);
+    expect(mileEnd, 'the "## Deferred" heading must close the table').toBeGreaterThan(mileStart);
+    expect(
+      md.slice(mileStart, mileEnd),
+      'merged milestone rows must not keep a this-PR placeholder'
+    ).not.toMatch(/this PR/);
+
+    const roadmap = await readFile(new URL('docs/PROJECT_ROADMAP.md', ROOT), 'utf8');
+    const doneStart = roadmap.indexOf('### Complete');
+    const doneEnd = roadmap.indexOf('### In progress');
+    expect(doneStart, 'PROJECT_ROADMAP must have a Complete section').toBeGreaterThan(0);
+    expect(doneEnd, 'PROJECT_ROADMAP must have an In progress section').toBeGreaterThan(doneStart);
+    expect(
+      roadmap.slice(doneStart, doneEnd),
+      'completed roadmap rows must not keep a this-PR placeholder'
+    ).not.toMatch(/this PR/);
   });
 
   test('CLAUDE.md mandates the session protocol', async () => {
     const md = await readFile(new URL('CLAUDE.md', ROOT), 'utf8');
     expect(md).toMatch(/must read `docs\/CURRENT_STATE\.md` first and update it last/i);
     expect(md).toContain('enforce_admins');
+    // The pre-#22 37 / 39 / 40 drift was closed; leaving it as a "loose end"
+    // sends the next session to rewrite already-correct counts.
+    expect(md, 'section-count drift was closed in #22/#39').not.toMatch(/hero says "37"/);
+    expect(md).not.toMatch(/39\/40/);
   });
 });
