@@ -1,5 +1,10 @@
 # Gap analysis — Claude Mastery Hub
 
+> Merge note (2026-09-20): `origin/main` was merged into this Cursor gap-scan
+> branch. Unique scan/fix work from the PR is kept. Do not drop later main
+> changes in other files.
+
+
 Scanned `main` at `b4f7af6` (PR #43) on 2026-09-05. This is a docs/site repo:
 one offline `index.html`, Playwright + Node gate scripts, no backend.
 
