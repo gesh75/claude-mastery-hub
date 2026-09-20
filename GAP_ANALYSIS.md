@@ -1,181 +1,153 @@
 # Gap analysis — Claude Mastery Hub
 
-Verified 2026-09-05 against `origin/main` at `b4f7af6` (PR #43).
-This is a docs/site repo: one offline `index.html`, Playwright + structural
-gates, no backend. Gaps below are things I could **prove** from the tree,
-`gh`, or a local command — not invented product work.
+> Merge note (2026-09-20): `origin/main` was merged into this Cursor gap-scan
+> branch. Unique scan/fix work from the PR is kept. Do not drop later main
+> changes in other files.
 
-**Live derived counts** (from `index.html`, not inherited):
 
-| Thing | Count | How |
-| --- | ---: | --- |
-| Mastery-tracked sections (`.master-cb`) | 43 | DOM / source |
-| `<section class="sec">` | 44 | `#whats-new` is the one untracked section |
-| Nav links / tracks / diagrams | 44 / 6 / 24 | match README + `og.meta.json` |
-| Practice Lab / exam / quiz questions | 25 / 20 / 126 | `LAB` / `EXAM` / `QUIZ` |
-| Playwright baseline | 175 | `scripts/expected-tests.json` |
+Scanned `main` at `b4f7af6` (PR #43) on 2026-09-05. This is a docs/site repo:
+one offline `index.html`, Playwright + Node gate scripts, no backend.
 
-**What is fine.** Latest `Quality gate` on `main` is green
-([run 33035449029](https://github.com/gesh75/claude-mastery-hub/actions/runs/33035449029),
-push of `b4f7af6`). Weekly Mutation harness green
-([run 33390484653](https://github.com/gesh75/claude-mastery-hub/actions/runs/33390484653),
-2026-08-31). `npm audit --audit-level=high` is clean. No secrets, no
-`pull_request_target`, CI checkout already uses `persist-credentials: false`.
-Advertised section / diagram / Lab / track counts on the **page, README, and
-`og.meta.json`** already match (PR #22 / #39). `check-citations.mjs` is
-invoked against the real tree from
-`tests/e2e/model-registry-rendering.spec.js` (`runCitations()`), so a registry
-defect still fails the Quality gate even though it is not a named CI step.
+**Method.** Read `docs/CURRENT_STATE.md`, the Quality gate, and the gate
+scripts. Ran structural counts against `index.html`. Grepped workflows for
+citation checks, retries, and `persist-credentials`. Compared
+`docs/DECISION_LOG.md` and `package.json` `verify` to `.github/workflows/ci.yml`.
+Did **not** re-verify model facts against primary sources, crawl external
+links, or run a currency rewrite.
 
 ---
 
-## P0 — session-protocol correctness
+## P0
 
-No user-facing product failure. These are P0 because this repo's own rule is
-that `docs/CURRENT_STATE.md` and `CLAUDE.md` are the source of truth for the
-next agent, and both currently **lie**. Each cites a file + evidence.
+### P0-1 — CI retries cannot recover a run
 
-### P0-1. Leftover `this PR` in merged milestone tables
+**Files.** `playwright.config.js:7` · `scripts/check-test-results.mjs:266-270`
 
-The same defect class #39 already burned on: *"#28's `this PR` sat stale
-through ten merges."*
+**Evidence.** Config sets `retries: process.env.CI ? 1 : 0`. The anti-vacuity
+script fails any test whose `results.length > 1` (`retried: … this suite is
+deterministic`). Under `CI=true` a flake that *passes on retry* still fails
+the Quality gate at `npm run check:results`. The retry path cannot succeed; it
+can only waste a browser cycle and then fail closed.
 
-| File | Evidence |
-| --- | --- |
-| `docs/CURRENT_STATE.md:87` | `\| #28 \| Model registry rendering + citation gate \| this PR \|` — merge is `fe53eb6` (`git log -1 fe53eb6`) |
-| `docs/PROJECT_ROADMAP.md:86` | `\| #39 \| Post-merge reconciliation closeout \| this PR \|` — merge is `8881d8b` |
-| `tests/e2e/roadmap-dashboard.spec.js` | The CURRENT_STATE / roadmap tests never forbid a leftover `this PR` in a **completed** milestone row |
+**Fix in this PR.** `retries: 0`, pinned.
 
-`rg 'this PR'` over those two files is the failing check. A future session
-that trusts the table will treat #28 or #39 as the open PR.
+### P0-2 — Copilot setup checkout keeps the default token in `.git/config`
 
-**Fix in this PR:** replace the two placeholders with the merge SHAs; extend
-the existing CURRENT_STATE test so a leftover `this PR` in a completed
-milestone table fails the build. No new spec file (count stays 175).
+**File.** `.github/workflows/copilot-setup-steps.yml:23-24`
 
-### P0-2. `CLAUDE.md` still tells agents the section count is drifted
+**Evidence.** `actions/checkout` is used with no `persist-credentials: false`.
+`ci.yml:10` documents that flag as the repo's security posture (keeps the
+checkout token out of `.git/config`). `ci.yml` and `mutation.yml` both set it.
+This workflow does not. Default checkout writes `GITHUB_TOKEN` into git config
+for the rest of the job.
 
-| File | Evidence |
-| --- | --- |
-| `CLAUDE.md:130-132` | `hero says "37", README/og say "39/40"` |
-| `index.html` hero + `#ringmeta` | advertise **43** sections |
-| `README.md:8` | `43 deep‑dive sections` |
-| `og.meta.json` | `"sections": 43` (generated 2026-08-10) |
-| `tests/e2e/content-counts.spec.js` | would fail if the hero / README / og claims were still 37 / 39 / 40 — **it does not read `CLAUDE.md`** |
-
-Missing test: nothing asserts `CLAUDE.md` stopped claiming the pre-#22 drift.
-An agent following the "Known loose ends" bullet will "reconcile" numbers that
-are already reconciled, or worse, rewrite the hero to 37 and turn the gate red.
-
-**Fix in this PR:** delete the stale bullet; assert the existing CLAUDE.md
-test rejects `hero says "37"` / `39/40`.
+**Fix in this PR.** Same `persist-credentials: false` as the other workflows.
 
 ---
 
-## P1 — real, not this PR
+## P1
 
-### P1-1. Model-facts registry is past review-due
+### P1-1 — Citation checker is not a named Quality-gate step
 
-| File | Evidence |
-| --- | --- |
-| `index.html` (`MODEL_FACTS_VERIFIED_AT='2026-07-28'`) | 39 days old on 2026-09-05 |
-| `scripts/check-citations.mjs` | `REVIEW_DUE_DAYS = 30`; prints `stale by N days, review due` and **exits 0** (DECISION_LOG 2026-08-09: staleness is surfaced, never failed) |
-| `docs/CONTENT_CURRENCY_POLICY.md` | "Review model IDs, pricing, token limits, and availability every two weeks" |
+**Files.** `.github/workflows/ci.yml` (no `check:citations`) ·
+`package.json:13` (`verify` runs it) · `docs/DECISION_LOG.md:116-120`
+(claims `check-citations.mjs` “runs inside the Quality gate”) ·
+`docs/plan/BRIEFS.md:97-98` (PR #28 said “Do not touch the workflow file”)
 
+**Evidence.** `rg check-citations .github/workflows/ci.yml` is empty. The
+script is zero-network and is what kills mutation catalogue entries M-03 and
+M-04. A Playwright test in `tests/e2e/model-registry-rendering.spec.js`
+already execs it against the live tree, so a dangling source *would* fail
+`npm test`. The named step is still missing: a citation defect waits for
+browser install, and the documented gate table in `docs/CURRENT_STATE.md:59-66`
+omits it.
+
+**Fix in this PR.** Add `npm run check:citations` after static checks.
+
+### P1-2 — Model-facts registry is past review-due
+
+**File.** `index.html` (`MODEL_FACTS_VERIFIED_AT='2026-07-28'`)
+
+**Evidence.** `scripts/check-citations.mjs` treats >30 days as review-due
+(surfaced, not failed). On 2026-09-05 that date is **39 days** old.
+`docs/CONTENT_CURRENCY_POLICY.md` asks for a two-week ID/pricing review.
 `WORKFLOW_FACTS_VERIFIED_AT` and `MANAGED_AGENT_FACTS_VERIFIED_AT` are
-`2026-08-09` (27 days) — still inside the 30-day window.
+`2026-08-09` (27 days — not yet due).
 
-Out of scope here: a currency pass needs official-docs re-verification, not a
-date bump. That is the next agent job.
+**Not fixed here.** A currency pass needs primary-source re-verification.
+Out of scope for this scan.
 
-### P1-2. Durable records stopped at #38 / #28 / #19
+### P1-3 — Session-of-record docs still say “this PR” for merged work
 
-| File | Evidence |
-| --- | --- |
-| `docs/roadmap/index.html:85` | header still says "Updated 2026-07-31" |
-| `docs/roadmap/index.html` cards | last card is PR #38 (`851f4eb`); **#39–#43 are missing** (og regenerate, mutation harness, three CI adapter pins) |
-| `tests/e2e/roadmap-dashboard.spec.js:93` | only requires `PR #13`…`#22` — later cards can vanish unnoticed |
-| `docs/CURRENT_STATE.md` milestones | table ends at #28; #29–#43 are absent (not just the leftover `this PR`) |
-| `docs/CHANGELOG_EXECUTION.md` | newest entry is **2026-07-30 / PR #19**; #20–#43 never landed |
+**Files.** `docs/CURRENT_STATE.md:87` (`#28` … `this PR`) ·
+`docs/PROJECT_ROADMAP.md:86` (`#39` … `this PR`)
 
-Filling those tables is a dedicated docs PR, not a drive-by.
+**Evidence.** Header of `CURRENT_STATE.md` correctly names last merged PR
+**#43**. The milestones table still labels #28 as the in-flight PR.
+`PROJECT_ROADMAP.md` never recorded #40–#43 and still calls #39 “this PR”.
+Agents that trust those tables inherit a finished programme as current work.
 
-### P1-3. Playwright `retries: 1` under CI contradicts the anti-vacuity checker
+**Not fixed here** beyond the required `CURRENT_STATE.md` session update
+(test count, open PR, next action, Quality-gate row). Full roadmap backfill
+is a docs-only follow-up.
 
-| File | Evidence |
-| --- | --- |
-| `playwright.config.js:7` | `retries: process.env.CI ? 1 : 0` |
-| `scripts/check-test-results.mjs:266-271` | any `flaky` status or `results.length > 1` **fails the gate** ("this suite is deterministic") |
+### P1-4 — `CLAUDE.md` agent brief is a year of PRs behind
 
-A flake that recovers on retry still fails `check:results`. The retry setting
-cannot save the job; it only burns time. Fix is `retries: 0` always. Skipped
-here to keep the fix list to three.
+**File.** `CLAUDE.md`
 
-### P1-4. Copilot setup checkout keeps the default credential persist
+**Evidence.** Checkpoint date `2026-07-12`. History stops at #15. “Known
+loose ends” still claims hero/README/og section-count drift (`37` / `39/40`).
+`tests/e2e/content-counts.spec.js` already derives those counts from the DOM
+and would fail if the live page drifted. The loose end is stale instruction,
+not a live product bug. Ship-flow still names branch
+`claude/product-gaps-improvements-h5gdn4`.
 
-| File | Evidence |
-| --- | --- |
-| `.github/workflows/copilot-setup-steps.yml:23-24` | `actions/checkout` with **no** `persist-credentials: false` |
-| `.github/workflows/ci.yml:10,53` and `mutation.yml:35` | both set `persist-credentials: false` and document why |
-
-Default persist writes `GITHUB_TOKEN` into `.git/config`. This job is
-`contents: read` and only runs on that file / `workflow_dispatch`, so it is
-not a fork-PR hole — but it is the one checkout that violates the repo's own
-security comment.
-
-**Fix in this PR:** add `persist-credentials: false`.
+**Not fixed here.** Rewriting the Omega brief is a dedicated docs job.
 
 ---
 
-## P2 — later, or by design
+## P2
 
-- **`check-citations` is not a named CI step.** `.github/workflows/ci.yml`
-  does not run `npm run check:citations`. `docs/plan/BRIEFS.md:98` said "Do
-  not touch the workflow file"; `docs/DECISION_LOG.md:119-120` still says the
-  checker "runs inside the Quality gate". Coverage is via Playwright, not a
-  first-class step. Adding the step would be belt-and-suspenders, not a hole.
-- **`CLAUDE.md` history stops at #15** (checkpoint date 2026-07-12). Session
-  protocol is still correct; the history block is memorabilia.
-- **Quiz gaps** for `#start-here`, `#whats-new`, `#cheatsheet`, `#lab`,
-  `#ai-glossary`, `#exam` (38 quiz keys vs 43 tracked sections). The last five
-  are reference / engines, not lessons. `#start-here` is the only plausible
-  add.
-- **Link liveness** stays out of the gate on purpose (DECISION_LOG 2026-08-09).
-- **Single-file maintainability** remains the one deferred architectural item.
-- **`docs/plan/`** briefs still carry count arithmetic (`86 → 96`, etc.) that
-  DECISION_LOG 2026-08-09 already forbade inheriting. Historical; do not "fix"
-  the archive.
+| ID | Gap | Evidence | Why not now |
+| --- | --- | --- | --- |
+| P2-1 | Roadmap dashboard header still says “Updated 2026-07-31” | `docs/roadmap/index.html:85` | Cosmetic; test count is derived from `expected-tests.json` |
+| P2-2 | `docs/NOTION_SYNC.md` and `docs/plan/VERIFIED_BASELINE.md` freeze old counts (78/167 tests, 12 Lab items, 41 sections) | Those files say they are historical / “do not copy” | Deleting them loses the audit trail; leave as dated snapshots |
+| P2-3 | README has no `npm test` / `npm run verify` instructions | `README.md` “Use it” is open-the-file only | DX only; Copilot instructions already document the commands |
+| P2-4 | Six sections have no `QUIZ` key | `start-here`, `whats-new`, `lab`, `exam`, `cheatsheet`, `ai-glossary` (38 quiz keys / 44 sections; 126 questions) | Looks intentional (intro, news, the lab/exam themselves, reference pages) |
+| P2-5 | No Dependabot / Renovate | `.github/` has no dependabot workflow | Dev-toolchain only; `npm audit --audit-level=high` already blocks the gate |
+| P2-6 | Maintainability consolidation (split `index.html`) | Already deferred in `docs/PROJECT_ROADMAP.md` | Explicitly out of scope |
+| P2-7 | External link liveness | `docs/DECISION_LOG.md` 2026-08-09 ruled it out of the Quality gate | Network in CI is non-deterministic by policy |
 
----
+**Dead code.** No unused scripts or orphaned specs. `tests/helpers/lab.js` is
+outside `*.spec.js` on purpose. `@axe-core/playwright` is used in
+`tests/e2e/p0-responsive-navigation.spec.js`. `scripts/make-og.mjs` is
+on-demand; `og.meta.json` is asserted live.
 
-## Fixes in this PR (3, all small)
-
-1. Replace leftover `this PR` in `docs/CURRENT_STATE.md` (#28 → `fe53eb6`)
-   and `docs/PROJECT_ROADMAP.md` (#39 → `8881d8b`); guard completed milestone
-   tables in the existing roadmap spec.
-2. Delete the stale `CLAUDE.md` 37 / 39 / 40 loose end; guard the existing
-   CLAUDE.md spec against those strings.
-3. `persist-credentials: false` on `.github/workflows/copilot-setup-steps.yml`.
-
-No `index.html` edits. No dependency upgrades. No new features.
+**Secrets.** No live credentials. The only secret-shaped string in product
+markup is the educational placeholder `ghp_xxx` in an MCP example
+(`index.html` MCP section).
 
 ---
 
-## What I proved / skipped
+## Fixes in this PR (3, all CI/security)
 
-**Proved.** `main` Quality gate and Mutation are green. Audit clean. Live
-counts 43 / 25 / 24 / 6. Two leftover `this PR` rows. `CLAUDE.md` still
-claims the #22 drift. Model-facts date is 39 days old. Copilot checkout is
-the only one that persists credentials. `retries: 1` cannot pass
-`check:results`. Roadmap / CURRENT_STATE / CHANGELOG_EXECUTION are behind
-#39–#43. No secret matches in tracked files.
+1. `playwright.config.js` — `retries: 0` so the anti-vacuity gate and the
+   runner agree.
+2. `.github/workflows/copilot-setup-steps.yml` — `persist-credentials: false`.
+3. `.github/workflows/ci.yml` — named `npm run check:citations` step.
 
-**Skipped.** Official-docs re-fetch of the model lineup (Exa MCP rate-limited;
-a date bump without verification would violate the currency policy). Filling
-roadmap cards and changelog for #39–#43. Setting `retries: 0`. Adding
-`check:citations` as a named CI step. Running the full Playwright suite
-before this file existed (ran after the three fixes). Single-file extraction.
+One gate-hardening test pins all three so they cannot silently revert.
 
-**Next recommended agent job.** Re-verify `MODEL_FACTS` against official
-Anthropic / Claude Code docs and refresh `MODEL_FACTS_VERIFIED_AT` (last
-verified 2026-07-28, 39 days stale, policy review-due at 30).
+---
+
+## What this scan skipped
+
+Primary-source model/pricing re-verification; live GitHub Pages byte-compare;
+external URL crawl; Notion re-sync; splitting `index.html`; dependency
+upgrades; new Lab/exam items; rewriting `CLAUDE.md` history.
+
+## Next recommended agent job
+
+Re-verify `MODEL_FACTS` / `MODEL_SOURCES` / `BENCHMARK_EVIDENCE` against
+primary sources and bump `MODEL_FACTS_VERIFIED_AT` (39 days past the 30-day
+review-due threshold).

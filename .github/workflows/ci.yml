@@ -76,6 +76,12 @@ jobs:
       - name: Static integrity checks
         run: npm run check:static
 
+      # Registry schema, two-way citations, host allowlist. Zero network calls.
+      # Also executed from a Playwright spec; this named step fails before the
+      # browser install so a dangling source does not wait for Chromium.
+      - name: Registry and citation integrity
+        run: npm run check:citations
+
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
